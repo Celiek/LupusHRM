@@ -5,13 +5,13 @@ CREATE TABLE pracownik (
     typ_pracownika VARCHAR(50) NOT NULL,
     zdjecie BYTEA  -- BLOB przechowywane jako BYTEA w PostgreSQL
 );
-
+//update 1 ususniecie not null dla pracownika
 CREATE TABLE godziny_pracy (
     id SERIAL PRIMARY KEY,
     id_pracownika INT NOT NULL,
     data DATE NOT NULL,
-    start_pracy TIME NOT NULL,
-    stop_pracy TIME NOT NULL,
+    start_pracy TIME ,
+    stop_pracy TIME ,
     opis TEXT,
     FOREIGN KEY (id_pracownika) REFERENCES pracownik(id_pracownika) ON DELETE CASCADE
 );
