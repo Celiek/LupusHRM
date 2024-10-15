@@ -4,16 +4,21 @@ CREATE TABLE pracownik (
     nazwisko VARCHAR(50) NOT NULL,
     typ_pracownika VARCHAR(50) NOT NULL,
     zdjecie BYTEA  -- BLOB przechowywane jako BYTEA w PostgreSQL
+    data_dolaczenia DATE DEFAULT CURRENT_DATE
 );
-//update 1 ususniecie not null dla pracownika
-CREATE TABLE godziny_pracy (
+
+CREATE TABLE wyplata_miesieczna (
     id SERIAL PRIMARY KEY,
-    id_pracownika INT NOT NULL,
-    data DATE NOT NULL,
-    start_pracy TIME ,
-    stop_pracy TIME ,
-    opis TEXT,
-    FOREIGN KEY (id_pracownika) REFERENCES pracownik(id_pracownika) ON DELETE CASCADE
+    id_pracownika INTEGER REFERENCES pracownik(id_pracownika),
+    kwota NUMERIC(10, 2),
+    data_wyplaty TIMESTAMP
+);
+
+CREATE TABLE wyplata_tygodniowa (
+    id SERIAL PRIMARY KEY,
+    id_pracownika INTEGER REFERENCES pracownik(id_pracownika),
+    kwota NUMERIC(10, 2),
+    data_wyplaty TIMESTAMP
 );
 
 CREATE TABLE wyplaty (
@@ -24,3 +29,36 @@ CREATE TABLE wyplaty (
     wyplata_miesieczna NUMERIC(10, 2),
     FOREIGN KEY (id_pracownika) REFERENCES pracownik(id_pracownika) ON DELETE CASCADE
 );
+
+Select start_pracy, stop_pracy,To_CHAR(data,'DAY') AS dzien_tygodnia from godziny_pracy;
+
+CREATE VIEW widok_godzin_pracy AS
+SELECT
+    gp.id_pracownika,
+    p.imie,
+    p.nazwisko,
+    p.typ_pracownika,
+    p.zdjecie,
+    (gp.stop_pracy - gp.start_pracy) AS godzin_przepracowane,
+    TO_CHAR(gp.data, 'DAY') AS dzien_tygodnia
+FROM
+    godziny_pracy gp
+JOIN
+    pracownik p ON gp.id_pracownika = p.id_pracownika;
+
+//ilosc godzin przepracowanych w danym tygodniu i estymowana wyplata
+SELECT
+    p.imie,
+    p.nazwisko,
+    EXTRACT(YEAR FROM h.data) AS rok,
+    EXTRACT(WEEK FROM h.data) AS tydzien,
+    SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) /3600 ) AS godziny_przepracowane,
+	SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) / 3600) * 28 AS przewidywana_wyplata
+FROM
+    godziny_pracy h
+JOIN
+    pracownik p ON h.id_pracownika = p.id_pracownika
+GROUP BY
+    p.imie, p.nazwisko, EXTRACT(YEAR FROM h.data), EXTRACT(WEEK FROM h.data)
+ORDER BY
+    p.nazwisko, p.imie, rok, tydzien;
