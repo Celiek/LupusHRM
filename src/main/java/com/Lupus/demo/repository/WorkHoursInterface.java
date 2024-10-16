@@ -1,18 +1,29 @@
 package com.Lupus.demo.repository;
 
 import com.Lupus.demo.model.WorkHours;
+import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 //todo
-//pobieranie godzin pracy dla wszystkich użyszkodników
-//pobieranie godzin pracy dla jednego użyszkodnika
-//pobieranie godzin pracy dla użytkonwika per dzień,per tydzeiń i  per miesiąc
+//pobieranie godzin pracy dla wszystkich użyszkodników DONE
+//pobieranie godzin pracy dla jednego użyszkodnika DONE
+//pobieranie godzin pracy dla pracownika per dzień
+//pobieranie godzin pracy dla pracownika per miesiąc
 
 //ustawianie stopu pracy dla wszystkich pracowników
-//pobieranie info wraz ze zdjęciem wszystkich rpacowników
+//pobieranie info wraz ze zdjęciem wszystkich pracowników dla pracownika wyższego szczebla
+//pobieranie info wraz ze zdjęciem wszystkich pracowników dla administratora
+
+
+//ustawianie startu pracy dla wszystkich pracowników
+//poprawianie czasu startu pracy dla wszystkich pracowników
+//poprawianie czasu pracy dla jednego pracownika
 
 
 
@@ -22,12 +33,12 @@ public interface WorkHoursInterface extends CrudRepository<WorkHours, Long> {
     @Transactional
     @Modifying
     @Query(value = "SELECT id_pracownika:id ,(start_pracy - stop_pracy) AS czas_pracy, opis )",nativeQuery = true)
-    void getWorkHoursDaily(Long id);
+    List<Object[]> getWorkHoursDaily(Long id);
 
-    //zwraca ilosc przepracowanych godzin,imie, nazwisko i estymowanąwypłątę w biezacym tygodniu przez wszystkich pracowników
+    //zwraca imie, nazwisko zdjecie i estymowaną wypłątę w biezacym tygodniu przez wszystkich pracowników
     @Query(value = "SELECT\n" +
             "    p.imie,\n" +
-            "    p.nazwisko,\n" +
+            "    p.nazwisko, p.zdjecie" +
             "    EXTRACT(YEAR FROM h.data) AS rok,\n" +
             "    EXTRACT(WEEK FROM h.data) AS tydzien,\n" +
             "    SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) /3600 ) AS godziny_przepracowane,\n" +
@@ -40,14 +51,84 @@ public interface WorkHoursInterface extends CrudRepository<WorkHours, Long> {
             "    p.imie, p.nazwisko, EXTRACT(YEAR FROM h.data), EXTRACT(WEEK FROM h.data)\n" +
             "ORDER BY\n" +
             "    p.nazwisko, p.imie, rok, tydzien;" , nativeQuery = true)
-    void getWorkHoursWeekly();
+    List<Object[]> getWorkHoursWeekly();
 
     //zwraca ilosc przepracowanych godzin w biezacym miesiacu
-    void getWorkHoursMonthly(Long id);
+    @Query(value="SELECT \n" +
+            "    p.imie,\n" +
+            "    p.nazwisko,\n" +
+            "    EXTRACT(YEAR FROM h.data) AS rok,\n" +
+            "    EXTRACT(MONTH FROM h.data) AS miesiac,\n" +
+            "    SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) / 3600) AS godziny_przepracowane,\n" +
+            "    SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) / 3600) * 28 AS przewidywana_wyplata,\n" +
+            "    COALESCE(SUM(w.zaliczki), 0) AS suma_zaliczek,\n" +
+            "    COALESCE(SUM(w.wyplaty_tygodniowe), 0) AS suma_wyplat_tygodniowych,\n" +
+            "    (SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) / 3600) * 28 \n" +
+            "    - COALESCE(SUM(w.zaliczki), 0)) AS wyplata_po_odjeciu\n" +
+            "FROM \n" +
+            "    godziny_pracy h\n" +
+            "JOIN \n" +
+            "    pracownik p ON h.id_pracownika = p.id_pracownika\n" +
+            "LEFT JOIN \n" +
+            "    wyplaty w ON h.id_pracownika = w.id_pracownika \n" +
+            "              AND EXTRACT(YEAR FROM h.data) = EXTRACT(YEAR FROM w.data)\n" +
+            "              AND EXTRACT(MONTH FROM h.data) = EXTRACT(MONTH FROM w.data)\n" +
+            "GROUP BY \n" +
+            "    p.imie, p.nazwisko, EXTRACT(YEAR FROM h.data), EXTRACT(MONTH FROM h.data)\n" +
+            "ORDER BY \n" +
+            "    p.nazwisko, p.imie, rok, miesiac;\n", nativeQuery = true)
+    List<Object[]> getWorkHoursMonthly(Long id);
 
-    //ustawianie startu pracy dal popjecynczego pracownika
+    //ustawianie startu pracy dal pojedynczego pracownika
     @Query(value = "INSERT INTO godziny_pracy (id_pracownika, data, start_pracy) " +
             "SELECT id_pracownika, CURRENT_DATE, CURRENT_TIME FROM pracownik",
             nativeQuery = true)
-    void insertWorkHoursForAllEmployees();
+    List<Object[]> insertWorkHoursForAllEmployees();
+
+    //pobieranie ilosci przepracwonaych godzin w danym miesiacu dla pracownika
+    @Query(value = "SELECT " +
+            "p.imie, " +
+            "p.nazwisko, " +
+            "EXTRACT(YEAR FROM h.data) AS rok, " +
+            "EXTRACT(MONTH FROM h.data) AS miesiac, " +
+            "SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) / 3600) AS godziny_przepracowane, " +
+            "SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) / 3600) * 28 AS przewidywana_wyplata, " +
+            "COALESCE(SUM(w.zaliczki), 0) AS suma_zaliczek, " +
+            "COALESCE(SUM(w.wyplaty_tygodniowe), 0) AS suma_wyplat_tygodniowych, " +
+            "(SUM(EXTRACT(EPOCH FROM (h.stop_pracy - h.start_pracy)) / 3600) * 28 " +
+            "- COALESCE(SUM(w.zaliczki), 0)) AS wyplata_po_odjeciu " +
+            "FROM godziny_pracy h " +
+            "JOIN pracownik p ON h.id_pracownika = p.id_pracownika " +
+            "LEFT JOIN wyplaty w ON h.id_pracownika = w.id_pracownika " +
+            "AND EXTRACT(YEAR FROM h.data) = EXTRACT(YEAR FROM w.data) " +
+            "AND EXTRACT(MONTH FROM h.data) = EXTRACT(MONTH FROM w.data) " +
+            "WHERE p.id_pracownika = :idPracownika " +
+            "GROUP BY p.imie, p.nazwisko, EXTRACT(YEAR FROM h.data), EXTRACT(MONTH FROM h.data) " +
+            "ORDER BY p.nazwisko, p.imie, rok, miesiac",
+            nativeQuery = true)
+    List<Object[]> findWorkHoursAndPaymentsByEmployeeId(@Param("idPracownika") Long idPracownika);
+
+    //start pracy dla wszystkich pracownikow
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO godziny_pracy (id_pracownika, data, start_pracy, stop_pracy) " +
+            "SELECT id_pracownika, CURRENT_DATE, CURRENT_TIME, CURRENT_TIME + INTERVAL '8 hours' " +
+            "FROM pracownik",
+            nativeQuery = true)
+    void startWorkForAllEmployees();
+
+    //zatrzymuje naliczanie czasu pracy dla wszystkich pracowników / przerwa w pracy
+    @Query(value = "UPDATE godziny_pracy\n" +
+            "SET czas_przerw = COALESCE(czas_przerw, '00:00:00'::TIME) + (NOW() - start_pracy)\n" +
+            "WHERE data = CURRENT_DATE;",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void breakTimeForAllEmployees();
+
+    //koniec pracy, dodaje wartość do kolumny stop_pracy godzine zakońćzenia pracy
+    @Query( value = "UPDATE godziny_pracy\n" +
+            "SET stop_pracy = NOW();",nativeQuery = true)
+    @Modifying
+    @Transactional
+    void endOfBreakForAllEmplyees();
 }
