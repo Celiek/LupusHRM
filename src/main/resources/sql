@@ -32,19 +32,20 @@ CREATE TABLE wyplaty (
 
 Select start_pracy, stop_pracy,To_CHAR(data,'DAY') AS dzien_tygodnia from godziny_pracy;
 
-CREATE VIEW widok_godzin_pracy AS
+CREATE OR REPLACE VIEW widok_godzin_pracy AS
 SELECT
     gp.id_pracownika,
     p.imie,
     p.nazwisko,
     p.typ_pracownika,
     p.zdjecie,
-    (gp.stop_pracy - gp.start_pracy) AS godzin_przepracowane,
+    (gp.stop_pracy - gp.start_pracy - COALESCE(gp.czas_przerw, '00:00:00'::TIME)) AS godzin_przepracowane,
     TO_CHAR(gp.data, 'DAY') AS dzien_tygodnia
 FROM
     godziny_pracy gp
 JOIN
     pracownik p ON gp.id_pracownika = p.id_pracownika;
+
 
 //ilosc godzin przepracowanych w danym tygodniu i estymowana wyplata
 SELECT

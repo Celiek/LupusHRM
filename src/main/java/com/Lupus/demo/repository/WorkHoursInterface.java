@@ -13,7 +13,7 @@ import java.util.List;
 //todo
 //pobieranie godzin pracy dla wszystkich użyszkodników DONE
 //pobieranie godzin pracy dla jednego użyszkodnika DONE
-//pobieranie godzin pracy dla pracownika per dzień
+//pobieranie godzin pracy dla pracownika per dzień DONE
 //pobieranie godzin pracy dla pracownika per miesiąc
 
 //ustawianie stopu pracy dla wszystkich pracowników
@@ -131,4 +131,35 @@ public interface WorkHoursInterface extends CrudRepository<WorkHours, Long> {
     @Modifying
     @Transactional
     void endOfBreakForAllEmplyees();
+
+    //pobiera czas pracy przepracowany przez danego przacownika w dniu today
+    @Query(value = "SELECT " +
+            "gp.data, " +
+            "gp.start_pracy, " +
+            "gp.stop_pracy, " +
+            "gp.czas_przerw, " +
+            "p.imie, " +
+            "p.nazwisko, " +
+            "p.zdjecie " +
+            "FROM godziny_pracy gp " +
+            "JOIN pracownik p ON gp.id_pracownika = p.id_pracownika " +
+            "WHERE gp.data = CURRENT_DATE AND gp.id_pracownika = :idPracownika",
+            nativeQuery = true)
+    List<Object[]> findWorkHoursByEmployeeId(@Param("idPracownika") Long idPracownika);
+
+    //pobierane dane pracownika z ostatnich 30 dni kalendarzowych
+    @Query(value = "SELECT " +
+            "gp.data, " +
+            "gp.start_pracy, " +
+            "gp.stop_pracy, " +
+            "gp.czas_przerw, " +
+            "p.imie, " +
+            "p.nazwisko " +
+            "FROM godziny_pracy gp " +
+            "JOIN pracownik p ON gp.id_pracownika = p.id_pracownika " +
+            "WHERE gp.id_pracownika = :idPracownika " +
+            "AND gp.data >= CURRENT_DATE - INTERVAL '30 days' " +
+            "ORDER BY gp.data DESC",
+            nativeQuery = true)
+    List<Object[]> findWorkHoursByEmployeeIdAndRecent(@Param("idPracownika") Long idPracownika);
 }
