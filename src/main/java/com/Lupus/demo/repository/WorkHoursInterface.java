@@ -1,29 +1,26 @@
 package com.Lupus.demo.repository;
 
 import com.Lupus.demo.model.WorkHours;
-import jakarta.persistence.Table;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalTime;
 import java.util.List;
 
 //todo
 //pobieranie godzin pracy dla wszystkich użyszkodników DONE
 //pobieranie godzin pracy dla jednego użyszkodnika DONE
 //pobieranie godzin pracy dla pracownika per dzień DONE
-//pobieranie godzin pracy dla pracownika per miesiąc
+//pobieranie godzin pracy dla pracownika per miesiąc DONE
 
-//ustawianie stopu pracy dla wszystkich pracowników
-//pobieranie info wraz ze zdjęciem wszystkich pracowników dla pracownika wyższego szczebla
-//pobieranie info wraz ze zdjęciem wszystkich pracowników dla administratora
+//ustawianie stopu pracy dla wszystkich pracowników DONE
 
-
-//ustawianie startu pracy dla wszystkich pracowników
-//poprawianie czasu startu pracy dla wszystkich pracowników
-//poprawianie czasu pracy dla jednego pracownika
+//ustawianie startu pracy dla wszystkich pracowników DONE
+//poprawianie czasu startu pracy dla wszystkich pracowników DONE
+//poprawianie czasu pracy dla jednego pracownika DONE
 
 
 
@@ -79,7 +76,7 @@ public interface WorkHoursInterface extends CrudRepository<WorkHours, Long> {
             "    p.nazwisko, p.imie, rok, miesiac;\n", nativeQuery = true)
     List<Object[]> getWorkHoursMonthly(Long id);
 
-    //ustawianie startu pracy dal pojedynczego pracownika
+    //ustawianie startu pracy dlawszystkich pracowników
     @Query(value = "INSERT INTO godziny_pracy (id_pracownika, data, start_pracy) " +
             "SELECT id_pracownika, CURRENT_DATE, CURRENT_TIME FROM pracownik",
             nativeQuery = true)
@@ -131,6 +128,18 @@ public interface WorkHoursInterface extends CrudRepository<WorkHours, Long> {
     @Modifying
     @Transactional
     void endOfBreakForAllEmplyees();
+
+
+    //aktualizuje czas startu pracy dla użytkownika
+    @Query(value = "UPDATE godziny_pracy SET start_pracy = :czas WHERE data = CURRENT_DATE AND id_pracownika = :id_pracownika;" , nativeQuery = true)
+    void updateStartTimeForEmployee(@Param("czas") LocalTime czas,
+                                    @Param("id_pracownika")Long id_pracownika);
+
+    //aktualizuje czas startu pracy dla wszystkich pracowników
+    @Query(value="UPDATE godziny_pracy \n" +
+            "SET start_pracy = :czas \n" +
+            "WHERE data = CURRENT_DATE;")
+    void updateStartTimeFOrEmployees(@Param("czas")LocalTime time);
 
     //pobiera czas pracy przepracowany przez danego przacownika w dniu today
     @Query(value = "SELECT " +

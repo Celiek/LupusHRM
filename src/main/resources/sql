@@ -1,6 +1,9 @@
+
+//update dodać 2 imie
 CREATE TABLE pracownik (
     id_pracownika SERIAL PRIMARY KEY,
     imie VARCHAR(50) NOT NULL,
+    drugie_imie VARCHAR(50),
     nazwisko VARCHAR(50) NOT NULL,
     typ_pracownika VARCHAR(50) NOT NULL,
     zdjecie BYTEA  -- BLOB przechowywane jako BYTEA w PostgreSQL
