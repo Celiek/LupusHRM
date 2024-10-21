@@ -22,8 +22,6 @@ import java.util.List;
 //poprawianie czasu startu pracy dla wszystkich pracowników DONE
 //poprawianie czasu pracy dla jednego pracownika DONE
 
-
-
 public interface WorkHoursInterface extends CrudRepository<WorkHours, Long> {
 
     //zwraca ilosc godzin pracownika danego dnia;

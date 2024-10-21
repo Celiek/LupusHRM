@@ -14,14 +14,16 @@ CREATE TABLE wyplata_miesieczna (
     id SERIAL PRIMARY KEY,
     id_pracownika INTEGER REFERENCES pracownik(id_pracownika),
     kwota NUMERIC(10, 2),
-    data_wyplaty TIMESTAMP
+    data_wyplaty TIMESTAMP,
+    zaliczka numeric(10,2)
 );
 
 CREATE TABLE wyplata_tygodniowa (
     id SERIAL PRIMARY KEY,
     id_pracownika INTEGER REFERENCES pracownik(id_pracownika),
     kwota NUMERIC(10, 2),
-    data_wyplaty TIMESTAMP
+    data_wyplaty TIMESTAMP,
+    zaliczka numeric(10,2)
 );
 
 CREATE TABLE wyplaty (
