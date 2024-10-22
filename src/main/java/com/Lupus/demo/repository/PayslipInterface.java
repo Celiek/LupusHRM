@@ -12,12 +12,12 @@ import java.util.List;
 //TODO
 //zliczanie wypłat tygodniowych z potrąceniem zaliczki
 //zliczanie wypłat miesięcznych z potrąceniem zalizek tygodniowych
-//dodanie wypłaty dla jednego pracownika
-//dodanie wypłaty dla wszystkich pracowników
+//dodanie wypłaty dla jednego pracownika DONE
+//dodanie wypłaty dla wszystkich pracowników DONE
 //potrącenie z wypłaty kosztów za uszkodzenia/cokowliek innego
 
-//ustawianie wypłat tygodniowych
-//ustawianie wypłat miesięcznych
+//ustawianie wypłat tygodniowych DONE
+//ustawianie wypłat miesięcznych DONE
 //ustawianie zaliczek
 
 
@@ -107,4 +107,7 @@ public interface PayslipInterface extends CrudRepository<Payslip, Long> {
             nativeQuery = true)
     void updateMonthlyPayment(@Param("nowaKwotaMiesieczna") Double nowaKwotaMiesieczna,
                               @Param("idPracownika") Long idPracownika);
+
+
+
 }
