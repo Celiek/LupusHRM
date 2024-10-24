@@ -37,4 +37,6 @@ public class WorkHours {
     @Column(name = "opis")
     private String opis;
 
+    private Date czas_przerw;
+
 }

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @Entity
@@ -29,5 +30,8 @@ public class Payslip {
 
     @Column(name = "wyplata_miesieczna", precision = 10, scale = 2)
     private BigDecimal wyplataMiesieczna;
+
+    @Column(name = "data_wyplaty")
+    private Date data_wyplaty;
 
 }
