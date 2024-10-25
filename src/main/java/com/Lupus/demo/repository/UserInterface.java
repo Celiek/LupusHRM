@@ -1,5 +1,6 @@
 package com.Lupus.demo.repository;
 
+import com.Lupus.demo.dto.UserDTO;
 import com.Lupus.demo.model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -44,4 +45,6 @@ public interface UserInterface extends CrudRepository<User, Long> {
     List<User> findAll();
 
     User findUserById(Long id);
+
+    void addUser(UserDTO userDTO);
 }

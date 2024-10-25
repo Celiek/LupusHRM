@@ -3,10 +3,7 @@ package com.Lupus.demo.controller;
 import com.Lupus.demo.services.PayslipService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -77,7 +74,7 @@ public class PayslipController {
             return ResponseEntity.status(500).body(blad+ e.getMessage());
         }
     }
-
+    @PostMapping("/monthly/{idPracownika/update}")
     public ResponseEntity<String> updateMonthlyPayment(Double nowaKwotaMiesiecza, Long idPracownika){
         try{
             payslipService.updateMonthlyPayment(nowaKwotaMiesiecza,idPracownika);
@@ -86,7 +83,7 @@ public class PayslipController {
             return ResponseEntity.status(500).body(blad +e.getMessage());
         }
     }
-
+    @PostMapping("/monthly")
     public ResponseEntity<List<Object[]>> findMonthlyPaymentsWithDetails(){
         try {
             List<Object[]> payments = payslipService.findMonthlyPaymentsWithDetails();
@@ -95,7 +92,7 @@ public class PayslipController {
             return ResponseEntity.status(500).body(null);
         }
     }
-
+    @GetMapping("/monthly/{idPracownika}")
     public ResponseEntity<List<Object[]>> findMonthlyPaymentsWithDetailsByEmployeeId(Long idPracownika){
         try{
             List<Object[]> payments = payslipService.findMonthlyPaymentsWithDetailsByEmployeeId(idPracownika);
@@ -104,7 +101,7 @@ public class PayslipController {
             return ResponseEntity.status(500).body(null);
         }
     }
-
+    @GetMapping("/weekly/{idPracownika}")
     public ResponseEntity<List<Object[]>> findWeeklyPaymentsByEmployeeId(Long idPracownik){
         try{
             List<Object[]> payments = payslipService.findWeeklyPaymentsByEmployeeId(idPracownik);
@@ -113,7 +110,7 @@ public class PayslipController {
             return ResponseEntity.status(500).body(null);
         }
     }
-
+    @GetMapping("/weekly")
     public ResponseEntity<List<Object[]>> findWeeklyPaymentsForAllEmployees(){
         try {
             List<Object[]> payments = payslipService.findWeeklyPaymentsForAllEmployees();
@@ -122,7 +119,7 @@ public class PayslipController {
             return ResponseEntity.status(500).body(null);
         }
     }
-
+    @GetMapping("/weekly/date")
     public ResponseEntity<List<Object[]>> findPaymentsByDate(LocalDate dataWyplaty){
         try{
             List<Object[]> payments = payslipService.findPaymentsByDate(dataWyplaty);
@@ -131,7 +128,7 @@ public class PayslipController {
             return ResponseEntity.status(500).body(null);
         }
     }
-
+    @GetMapping("/payments")
     public ResponseEntity<List<Object[]>> findPaymentsByDateAndEmployeeId(LocalDate dataWyplaty, Long idPracownika){
         try{
             List<Object[]> payments = payslipService.findPaymentsByDateAndEmployeeId(dataWyplaty, idPracownika);
@@ -140,7 +137,7 @@ public class PayslipController {
             return ResponseEntity.status(500).body(null);
         }
     }
-
+    @GetMapping("/payments")
     public ResponseEntity<List<Object[]>> findWeeklyPaymentsByEmployeId(Long idPracownika){
         try{
             List<Object[]> payments = payslipService.findWeeklyPaymentsByEmployeId(idPracownika);
