@@ -44,7 +44,8 @@ public interface UserInterface extends CrudRepository<User, Long> {
     // Znajdź wszystkich użytkowników
     List<User> findAll();
 
-    User findUserById(Long id);
+    //do dopracowania
+    List<User> findUserById(Long id);
 
     void addUser(UserDTO userDTO);
 }
