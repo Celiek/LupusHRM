@@ -27,7 +27,7 @@ public class User {
     @Column(name = "data_Przyjazdu")
     private Date data_przyjazdu;
     @Column(name = "data_rozpoczecia_pracy")
-    private LocalDate data_rozpoczecia_pracy;
+    private Date data_rozpoczecia_pracy;
     @Column(name = "drugie_imie")
     private String drugieImie;
     @OneToMany(mappedBy = "pracownik", cascade = CascadeType.ALL)

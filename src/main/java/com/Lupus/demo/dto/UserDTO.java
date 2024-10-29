@@ -18,6 +18,7 @@ public class UserDTO implements Serializable {
     private String Nazwisko;
     private String Typ_pracownika;
     private Date Data_Dolaczenia;
+    private Date data_rozpoczecia_pracy;
     private byte[] zdjecie;
     private List<WorkHours> workHoursUser;
 }

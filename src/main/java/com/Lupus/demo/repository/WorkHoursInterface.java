@@ -78,7 +78,7 @@ public interface WorkHoursInterface extends CrudRepository<WorkHours, Long> {
     @Query(value = "INSERT INTO godziny_pracy (id_pracownika, data, start_pracy) " +
             "SELECT id_pracownika, CURRENT_DATE, CURRENT_TIME FROM pracownik",
             nativeQuery = true)
-    List<Object[]> insertWorkHoursForAllEmployees();
+    void insertWorkHoursForAllEmployees();
 
     //pobieranie ilosci przepracwonaych godzin w danym miesiacu dla pracownika
     @Query(value = "SELECT " +

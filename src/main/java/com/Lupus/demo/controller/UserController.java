@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/user")
@@ -71,13 +72,12 @@ public class UserController {
         }
     }
 
-    public ResponseEntity<String> addUser(@RequestParam String imie,
-                                          @RequestParam String nazwisko,
-                                          @RequestParam String typPracownika,
-                                          @RequestParam ){
+    public ResponseEntity<String> addUser(@RequestParam UserDTO userDTO){
         try{
             userInterface.addUser(userDTO);
             return ResponseEntity.ok().body("Pomyślnie dodano nowego użytkownika");
+        } catch (Exception e){
+            return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
 }

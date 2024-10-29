@@ -26,7 +26,7 @@ public class UserService {
         user.setTyp_pracownika(userDTO.getTyp_pracownika());
         user.setZdjecie(userDTO.getZdjecie());
         user.setData_przyjazdu(userDTO.getData_Dolaczenia());
-        user.setData_rozpoczecia_pracy(userDTO.getData_rozpoczecia_pracy);
+        user.setData_rozpoczecia_pracy(userDTO.getData_rozpoczecia_pracy());
         user.setDrugieImie(userDTO.getDrugieImie());
 
         userInterface.save(user);
