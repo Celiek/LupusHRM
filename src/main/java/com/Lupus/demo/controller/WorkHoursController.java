@@ -1,13 +1,10 @@
 package com.Lupus.demo.controller;
 
-import com.Lupus.demo.repository.WorkHoursInterface;
 import com.Lupus.demo.services.WorkHoursService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -21,6 +18,7 @@ public class WorkHoursController {
     @Autowired
     private final WorkHoursService workHoursService;
 
+    @GetMapping("/dailyByPracownik")
     public ResponseEntity<List<Object[]>> getWorkHoursDaily(Long idPracownika){
         try{
 
@@ -29,7 +27,7 @@ public class WorkHoursController {
             return ResponseEntity.status(500).body(new ArrayList<>());
         }
     }
-
+    @GetMapping("/weekly")
     public ResponseEntity<List<Object[]>> getWorkHoursWeekly(){
         try{
             return ResponseEntity.ok().body(workHoursService.getWorkHoursWeekly());
@@ -37,7 +35,7 @@ public class WorkHoursController {
             return ResponseEntity.status(500).body(new ArrayList<>());
         }
     }
-
+    @PostMapping("/startDay/update")
     public ResponseEntity<String> insertWorkHoursForAllEmployees(){
         try{
             return ResponseEntity.ok().body("Rozpoczęto dzień pracy");
@@ -46,6 +44,7 @@ public class WorkHoursController {
         }
     }
 
+    @GetMapping("/workhours/byEmployee")
     public ResponseEntity<List<Object[]>> findWorkHoursAndPaymentsByEmployeeId(Long idPracownika){
         try{
             return ResponseEntity.ok().body(workHoursService.findWorkHoursAndPaymentsByEmployeeId(idPracownika));
@@ -53,7 +52,7 @@ public class WorkHoursController {
             return ResponseEntity.status(500).body(new ArrayList<>());
         }
     }
-
+    @PostMapping("/startDay")
     public ResponseEntity<String> startWorkForAllEmployees(){
         try{
              workHoursService.startWorkForAllEmployees();
@@ -62,7 +61,7 @@ public class WorkHoursController {
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
-
+    @PostMapping("/breakStart")
     public ResponseEntity<String> breakTimeForAllEmployees(){
         try {
             workHoursService.breakTimeForAllEmployees();
@@ -72,6 +71,7 @@ public class WorkHoursController {
         }
     }
     //dodać info o długości przerw
+    @PostMapping("/breakStop")
     public ResponseEntity<String> endOfBreakForAllEmplyees(){
         try {
             workHoursService.endOfBreakForAllEmplyees();
@@ -80,7 +80,7 @@ public class WorkHoursController {
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
-
+    @PostMapping("/startDay")
     public ResponseEntity<String> updateStartTimeForEmployee(@RequestParam LocalTime czas,
                                                              @RequestParam Long idPracownika){
         try{
@@ -90,7 +90,7 @@ public class WorkHoursController {
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
-
+    @PostMapping("/startDay/update")
     public ResponseEntity<String> updateStartTimeFOrEmployees(@RequestParam LocalTime time){
         try{
             workHoursService.updateStartTimeFOrEmployees(time);
@@ -99,7 +99,7 @@ public class WorkHoursController {
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
-
+    @GetMapping("/worHours/byEmployee")
     public ResponseEntity<List<Object[]>> findWorkHoursByEmployeeId(@RequestParam Long idPracownika){
         try{
             return ResponseEntity.ok().body( workHoursService.findWorkHoursByEmployeeId(idPracownika));
@@ -107,7 +107,7 @@ public class WorkHoursController {
             return ResponseEntity.status(500).body( new ArrayList<>());
         }
     }
-
+    @GetMapping("/workHours/byEmployee/recent")
     public ResponseEntity<List<Object[]>> findWorkHoursByEmployeeIdAndRecent(@RequestParam Long idPracownika){
         try{
             return ResponseEntity.ok().body( workHoursService.findWorkHoursByEmployeeIdAndRecent(idPracownika));
