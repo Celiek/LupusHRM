@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Date;
 
-public interface PayslipMonthly extends CrudRepository<PayslipMonthly,Long> {
+public interface PayslipMonthlyInterface extends CrudRepository<PayslipMonthlyInterface,Long> {
 
     //dodawanie mieisecznej wypłąty dla pracownika
     @Query(value="INSERT INTO wyplaty_miesieczne (id_pracownika, kwota, data_wyplaty)\n" +
