@@ -30,7 +30,7 @@ public class PayslipController {
         }
     }
     @PostMapping("/monthly")
-    public ResponseEntity<String> insertWeeklyPayments(Double kwota, Double zaliczka){
+    public ResponseEntity<String> insertWeeklyPayments( @RequestParam Double kwota,@RequestParam Double zaliczka){
         try{
             payslipService.insertWeeklyPayments(kwota,zaliczka);
             return ResponseEntity.ok("Wypłąty tygodniowe zostały dodane.");
@@ -39,7 +39,7 @@ public class PayslipController {
         }
     }
     @PostMapping("/weekly/updates")
-    public ResponseEntity<String> insertMonthlyPayments(Double kwotaMiesieczna){
+    public ResponseEntity<String> insertMonthlyPayments(@RequestParam Double kwotaMiesieczna){
         try {
             payslipService.insertMonthlyPayments(kwotaMiesieczna);
             return ResponseEntity.ok("Wypłaty miesięczne dla wszystkich pracowników zostały dodane.");
@@ -48,7 +48,7 @@ public class PayslipController {
         }
     }
     @PostMapping("/weekly/update")
-    public ResponseEntity<String> updateWeeklyPayments(Double nowaKwota, Double nowaZaliczka){
+    public ResponseEntity<String> updateWeeklyPayments(@RequestParam Double nowaKwota,@RequestParam Double nowaZaliczka){
         try{
             payslipService.updateWeeklyPayments(nowaKwota, nowaZaliczka);
             return ResponseEntity.ok("Wypłaty tygodniowe pracowników zostały zaktualizowane.");
@@ -57,7 +57,7 @@ public class PayslipController {
         }
     }
     @PostMapping("/monthly/updates")
-    public ResponseEntity<String> updateMonthlyPayments(Double nowaKwotaMiesięczna){
+    public ResponseEntity<String> updateMonthlyPayments(@RequestParam Double nowaKwotaMiesięczna){
         try{
             payslipService.updateMonthlyPayments(nowaKwotaMiesięczna);
             return ResponseEntity.ok("Wypłaty miesięczne pracowników zostały zaktualizowane.");
@@ -66,7 +66,7 @@ public class PayslipController {
         }
     }
     @PostMapping("/weekly/{idPracownika}/}")
-    public ResponseEntity<String> updateWeeklyPayment(Double nowaKwota,Double nowaZaliczka, Long idPracownika){
+    public ResponseEntity<String> updateWeeklyPayment(@RequestParam Double nowaKwota,@RequestParam Double nowaZaliczka, Long idPracownika){
         try {
             payslipService.updateWeeklyPayment(nowaKwota, nowaZaliczka, idPracownika);
             return ResponseEntity.ok("Wypłata tygodniowa dla pracownika została zaktualizowana.");
@@ -75,7 +75,7 @@ public class PayslipController {
         }
     }
     @PostMapping("/monthly/{idPracownika/update}")
-    public ResponseEntity<String> updateMonthlyPayment(Double nowaKwotaMiesiecza, Long idPracownika){
+    public ResponseEntity<String> updateMonthlyPayment(@RequestParam Double nowaKwotaMiesiecza,@RequestParam Long idPracownika){
         try{
             payslipService.updateMonthlyPayment(nowaKwotaMiesiecza,idPracownika);
             return ResponseEntity.ok("Wypłata tygodniowa dla pracownika zostałą zaktualizowana.");
@@ -93,7 +93,7 @@ public class PayslipController {
         }
     }
     @GetMapping("/monthly/{idPracownika}")
-    public ResponseEntity<List<Object[]>> findMonthlyPaymentsWithDetailsByEmployeeId(Long idPracownika){
+    public ResponseEntity<List<Object[]>> findMonthlyPaymentsWithDetailsByEmployeeId(@RequestParam Long idPracownika){
         try{
             List<Object[]> payments = payslipService.findMonthlyPaymentsWithDetailsByEmployeeId(idPracownika);
             return ResponseEntity.ok(payments);
@@ -102,7 +102,7 @@ public class PayslipController {
         }
     }
     @GetMapping("/weekly/{idPracownika}")
-    public ResponseEntity<List<Object[]>> findWeeklyPaymentsByEmployeeId(Long idPracownik){
+    public ResponseEntity<List<Object[]>> findWeeklyPaymentsByEmployeeId(@RequestParam Long idPracownik){
         try{
             List<Object[]> payments = payslipService.findWeeklyPaymentsByEmployeeId(idPracownik);
             return ResponseEntity.ok(payments);
@@ -120,7 +120,7 @@ public class PayslipController {
         }
     }
     @GetMapping("/weekly/date")
-    public ResponseEntity<List<Object[]>> findPaymentsByDate(LocalDate dataWyplaty){
+    public ResponseEntity<List<Object[]>> findPaymentsByDate(@RequestParam LocalDate dataWyplaty){
         try{
             List<Object[]> payments = payslipService.findPaymentsByDate(dataWyplaty);
             return ResponseEntity.ok(payments);
@@ -129,7 +129,7 @@ public class PayslipController {
         }
     }
     @GetMapping("/payments")
-    public ResponseEntity<List<Object[]>> findPaymentsByDateAndEmployeeId(LocalDate dataWyplaty, Long idPracownika){
+    public ResponseEntity<List<Object[]>> findPaymentsByDateAndEmployeeId(@RequestParam LocalDate dataWyplaty, Long idPracownika){
         try{
             List<Object[]> payments = payslipService.findPaymentsByDateAndEmployeeId(dataWyplaty, idPracownika);
             return ResponseEntity.ok(payments);
@@ -138,7 +138,7 @@ public class PayslipController {
         }
     }
     @GetMapping("/payments")
-    public ResponseEntity<List<Object[]>> findWeeklyPaymentsByEmployeId(Long idPracownika){
+    public ResponseEntity<List<Object[]>> findWeeklyPaymentsByEmployeId(@RequestParam Long idPracownika){
         try{
             List<Object[]> payments = payslipService.findWeeklyPaymentsByEmployeId(idPracownika);
             return ResponseEntity.ok(payments);

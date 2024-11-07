@@ -20,7 +20,7 @@ public class Payslip {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pracownika", nullable = false)
-    private User user;
+    private Worker worker;
 
     @Column(name = "zaliczki", precision = 10, scale = 2)
     private BigDecimal zaliczki;

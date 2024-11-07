@@ -1,81 +1,55 @@
 package com.Lupus.demo.controller;
 
-import com.Lupus.demo.dto.UserDTO;
-import com.Lupus.demo.repository.UserInterface;
-import jakarta.persistence.Id;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
+import com.Lupus.demo.model.Role;
+import com.Lupus.demo.services.UserService;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.sql.PreparedStatement;
-import java.time.LocalDate;
-import java.util.Date;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserInterface userInterface;
-    private String error = "Wystąpił błąd: ";
+    private final UserService userService;
+    private String error = "Wystapił bład: ";
 
-    @PostMapping("/deleteUser")
-    public ResponseEntity<String> deleteUserById(
-            @RequestParam Long userId){
+    @RequestMapping("/createAccount")
+    public ResponseEntity<String> createAccount(@RequestParam String login, @RequestParam String haslo, Role rola){
         try{
-            userInterface.deleteUserById(userId);
-            return ResponseEntity.ok("Usunięto użytkownika");
+            userService.createAccount(login, haslo, rola);
+            return ResponseEntity.ok().body("Pomyslnie utworzono uzytkownika");
+        } catch (Exception e){
+            return ResponseEntity.status(500).body(error + e.getMessage());
+        }
+    }
+    @Transactional
+    @RequestMapping("/updatePassword")
+    public ResponseEntity<String> updatePasswordByWorkerId(@RequestParam Long idPracownika,@RequestParam String haslo){
+        try{
+            userService.updatePasswordByWorkerId(idPracownika, haslo);
+            return ResponseEntity.ok().body("Pomyslnie zaktualizowano haslo");
         } catch (Exception e){
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
 
-    public ResponseEntity<String> updateUser(@RequestParam("idPracownika") Long idPracownika,
-                                             @RequestParam("imie") String imie,
-                                             @RequestParam("nazwisko") String nazwisko,
-                                             @RequestParam("typPracownika") String typPracownika,
-                                             @RequestParam("zdjecie") byte[] zdjecie,
-                                             @RequestParam("dataPrzyjazdu") LocalDate dataPrzyjazdu,
-                                             @RequestParam("dataRozpoczeciaPracy") LocalDate dataRozpoczeciaPracy,
-                                             @RequestParam("drugieImie") String drugieImie){
+    @RequestMapping("/deleteUser")
+    public ResponseEntity<String> deleteUserByWorkerId(@RequestParam Long idPracownika){
         try{
-            userInterface.updateUser(idPracownika, imie, nazwisko, typPracownika, zdjecie, dataPrzyjazdu, dataRozpoczeciaPracy, drugieImie);
-            return ResponseEntity.ok("Zaktualizowano uzytkownika " + imie+ " "+ nazwisko);
+            userService.deleteUserByWorkerId( idPracownika);
+            return ResponseEntity.ok().body("Usunieto Uzytkownika");
         } catch (Exception e){
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
-
-    public ResponseEntity<String> changeEmployeeType(@RequestParam("idPracownika") Long idPracownika,
-                                                     @RequestParam("typPracownika") String typPracownika){
+    @RequestMapping("/createAccounts")
+    public ResponseEntity<String>createAccountsForEveryone(@RequestParam String haslo){
         try{
-            userInterface.changeEmployeeType(idPracownika, typPracownika);
-            return ResponseEntity.ok().body("Pomyślnie zaktualizowano użytkownika");
-        } catch (Exception e){
-            return ResponseEntity.status(500).body(error + e.getMessage());
-        }
-    }
-
-    public ResponseEntity<String> findAll(){
-        try{
-            return (ResponseEntity<String>) userInterface.findAll();
-        } catch (Exception e){
-            return ResponseEntity.status(500).body(error + e.getMessage());
-        }
-    }
-
-    public ResponseEntity<String> findUserById(@RequestParam Long idPracownika){
-        try{
-            return (ResponseEntity<String>) userInterface.findUserById(idPracownika);
-        } catch (Exception e){
-            return ResponseEntity.status(500).body(error + e.getMessage());
-        }
-    }
-
-    public ResponseEntity<String> addUser(@RequestParam UserDTO userDTO){
-        try{
-            userInterface.addUser(userDTO);
-            return ResponseEntity.ok().body("Pomyślnie dodano nowego użytkownika");
+            userService.createAccountsForEveryone(haslo);
+            return ResponseEntity.ok().body("Pomyslnie wygenerowano dane logowania dla wszystkich uzytkownikow");
         } catch (Exception e){
             return ResponseEntity.status(500).body(error + e.getMessage());
         }

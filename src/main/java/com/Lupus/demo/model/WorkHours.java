@@ -23,7 +23,7 @@ public class WorkHours {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_pracownika",nullable = false)
-    private User user;
+    private Worker worker;
 
     @Column(name = "data", nullable = false)
     private LocalDate data;

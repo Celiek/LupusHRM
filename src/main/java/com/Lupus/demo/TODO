@@ -1,0 +1,6 @@
+TODO:
+
+- skonfigurowaś spring security
+- utpwrzyć repozytorium i kontroler dla klasy user
+- poprawic błędy związane e.getMessage w kontrolerze payslipMonthly
+- skonfigurowac CORS

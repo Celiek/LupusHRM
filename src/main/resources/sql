@@ -35,6 +35,14 @@ CREATE TABLE wyplaty (
     FOREIGN KEY (id_pracownika) REFERENCES pracownik(id_pracownika) ON DELETE CASCADE
 );
 
+CREATE TABLE userLogowanie (
+    id_uzytkownika SERIAL PRIMARY KEY,
+    login VARCHAR(20) NOT NULL,
+    password VARCHAR(20) NOT NULL,
+    id_pracownika INTEGER UNIQUE REFERENCES pracownik(id_pracownika) ON DELETE CASCADE
+);
+
+
 Select start_pracy, stop_pracy,To_CHAR(data,'DAY') AS dzien_tygodnia from godziny_pracy;
 
 CREATE OR REPLACE VIEW widok_godzin_pracy AS
