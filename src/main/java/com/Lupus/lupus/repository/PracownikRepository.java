@@ -1,6 +1,6 @@
-package com.LUPUS.lupus.repository;
+package com.Lupus.lupus.repository;
 
-import com.LUPUS.lupus.entity.pracownik;
+import com.Lupus.lupus.entity.pracownik;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

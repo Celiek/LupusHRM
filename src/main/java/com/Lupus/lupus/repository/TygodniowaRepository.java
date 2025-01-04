@@ -1,7 +1,7 @@
-package com.LUPUS.lupus.repository;
+package com.Lupus.lupus.repository;
 
-import com.LUPUS.lupus.DTO.WyplataTygodniowaDTO;
-import com.LUPUS.lupus.entity.wyplataTygodniowa;
+import com.Lupus.lupus.DTO.WyplataTygodniowaDTO;
+import com.Lupus.lupus.entity.wyplataTygodniowa;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,6 +1,6 @@
-package com.LUPUS.lupus.repository;
+package com.Lupus.lupus.repository;
 
-import com.LUPUS.lupus.entity.wyplataMiesieczna;
+import com.Lupus.lupus.entity.wyplataMiesieczna;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

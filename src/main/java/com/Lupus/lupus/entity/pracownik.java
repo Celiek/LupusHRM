@@ -1,4 +1,4 @@
-package com.LUPUS.lupus.entity;
+package com.Lupus.lupus.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

@@ -1,6 +1,6 @@
-package com.LUPUS.lupus.service;
+package com.Lupus.lupus.service;
 
-import com.LUPUS.lupus.repository.PracownikRepository;
+import com.Lupus.lupus.repository.PracownikRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

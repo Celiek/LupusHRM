@@ -1,14 +1,17 @@
-package com.LUPUS.lupus.controler;
+package com.Lupus.lupus.controler;
 
-import com.LUPUS.lupus.DTO.CzasPracyDTO;
-import com.LUPUS.lupus.service.CzasPracyService;
+import com.Lupus.lupus.DTO.CzasPracyDTO;
+import com.Lupus.lupus.service.CzasPracyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/czasPracy")
@@ -36,25 +39,26 @@ public class czasPracyController {
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
-    @GetMapping("/sumGodzinyPracyById")
-    public ResponseEntity<List<CzasPracyDTO>> sumGodzinyPracyForEmployeeOnDate(@RequestParam Long idPracownika,
-                                                                               @RequestParam LocalDate dataStart) {
+    @GetMapping("/sumGodzinyPracyByIdForEmployee")
+    public ResponseEntity<List<Map<String, Object>>> sumGodzinyPracyForEmployeeOnDate(@RequestParam Long idPracownika,
+                                                                               @RequestParam  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataStart) {
         try {
-            List<CzasPracyDTO> result = service.sumGodzinyPracyForEmployeeOnDate(idPracownika, dataStart);
+            List<Map<String, Object>> result = service.sumGodzinyPracyForEmployeeOnDate(idPracownika, dataStart);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             CzasPracyDTO errorDTO = new CzasPracyDTO();
-            errorDTO.setErrorMessage(error + e.getMessage());
-            return ResponseEntity.status(500).body(Collections.singletonList(errorDTO));
+            Map<String, Object> errorMap =Map.of("error", "Wystąpił błąd: " + e.getMessage());
+            return ResponseEntity.status(500).body(Collections.singletonList(errorMap));
         }
     }
 
 
     @GetMapping("/sumGodzinyPracyById")
-    public ResponseEntity<String> sumGodzinyPracyForEmployeeBetweenDates(@RequestParam LocalDate dataStart,
+    public ResponseEntity<String> sumGodzinyPracyForEmployeeBetweenDates(@RequestParam Long id_pracownik,
+                                                                         @RequestParam LocalDate dataStart,
                                                                          @RequestParam LocalDate dataEnd){
         try{
-                service.sumGodzinyPracyForEmployeeBetweenDates(dataStart, dataEnd);
+                service.sumGodzinyPracyForEmployeeBetweenDates(id_pracownik,dataStart, dataEnd);
                 return ResponseEntity.ok("Zsumowane godziny pracy dla pracownika:");
         } catch (Exception e){
                 return ResponseEntity.status(500).body(error + e.getMessage());

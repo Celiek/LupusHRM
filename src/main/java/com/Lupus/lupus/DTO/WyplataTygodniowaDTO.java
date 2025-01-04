@@ -1,4 +1,4 @@
-package com.LUPUS.lupus.DTO;
+package com.Lupus.lupus.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
