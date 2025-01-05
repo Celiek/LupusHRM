@@ -65,28 +65,27 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
 //                                                    @Param("endDate") LocalDate endDate);
 
 
-    @Query("SELECT new com.Lupus.lupus.DTO.CzasPracyDTO(" +
-            "c.id_pracownik, " +           // id_pracownik
-            "c.data_pracy, " +             // data_pracy
-            "c.start_pracy, " +            // start_pracy
-            "c.stop_pracy, " +             // stop_pracy
-            "c.czas_przerwy, " +            // czas_przerw
-            "null) " +                     // Optional error message
+    @Query(value = "SELECT c.id_pracownik, " +
+            "SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')))/3600) AS godziny_pracy " +
             "FROM czas_pracy c " +
             "WHERE c.id_pracownik = :id_pracownika " +
-            "AND c.data_pracy BETWEEN :startDate AND :endDate")
-    List<CzasPracyDTO> findGodzinyPracyBetweenDates(@Param("id_pracownika")Long id_pracownik, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);;
+            "AND c.data_pracy BETWEEN :startDate AND :endDate " +
+            "GROUP BY c.id_pracownik",
+            nativeQuery = true)
+    List<Map<String, Object>> findGodzinyPracyBetweenDates(@Param("id_pracownika")Long id_pracownik, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
 
 
     //ilosc godzin przepracowanych przez pracownikod od do
-    @Query(value = "SELECT id_pracownika, " +
-            "SUM(EXTRACT(EPOCH FROM (stop_pracy - start_pracy - COALESCE(czas_przerwy, INTERVAL '0')))/3600) AS godziny_pracy " +
-            "FROM czas_pracy " +
-            "WHERE data_pracy BETWEEN :startDate AND :endDate " +
-            "GROUP BY id_pracownika", nativeQuery = true)
-    List<CzasPracyDTO> sumGodzinyPracy(@Param("startDate") LocalDate startDate,
+    @Query(value = "SELECT c.id_pracownik, " +
+            "SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')))/3600) " +
+            "FROM czas_pracy c " +
+            "WHERE c.data_pracy BETWEEN :startDate AND :endDate " +
+            "GROUP BY c.id_pracownik",
+            nativeQuery = true)
+    List<Object[]> sumGodzinyPracy(@Param("startDate") LocalDate startDate,
                                    @Param("endDate") LocalDate endDate);
+
 
     //aktualizuje godzine startu czasu pracy dla pracownika
     @Modifying

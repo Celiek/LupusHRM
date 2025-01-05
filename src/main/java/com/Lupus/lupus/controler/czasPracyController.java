@@ -4,6 +4,7 @@ import com.Lupus.lupus.DTO.CzasPracyDTO;
 import com.Lupus.lupus.service.CzasPracyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,25 +55,35 @@ public class czasPracyController {
 
 
     @GetMapping("/sumGodzinyPracyById")
-    public ResponseEntity<String> sumGodzinyPracyForEmployeeBetweenDates(@RequestParam Long id_pracownik,
+    public ResponseEntity<List<Map<String, Object>>> sumGodzinyPracyForEmployeeBetweenDates(@RequestParam Long id_pracownik,
                                                                          @RequestParam LocalDate dataStart,
                                                                          @RequestParam LocalDate dataEnd){
         try{
-                service.sumGodzinyPracyForEmployeeBetweenDates(id_pracownik,dataStart, dataEnd);
-                return ResponseEntity.ok("Zsumowane godziny pracy dla pracownika:");
+                List<Map<String, Object>> result = service.sumGodzinyPracyForEmployeeBetweenDates(id_pracownik, dataStart, dataEnd);
+                return ResponseEntity.ok(result);
         } catch (Exception e){
-                return ResponseEntity.status(500).body(error + e.getMessage());
+            CzasPracyDTO errorDTO = new CzasPracyDTO();
+            Map<String, Object> errorMap =Map.of("error", "Wystąpił błąd: " + e.getMessage());
+            return ResponseEntity.status(500).body(Collections.singletonList(errorMap));
         }
     }
 
     @GetMapping("/sumGodzinyPracy")
-    public ResponseEntity<String> sumGodzinyPracy(@RequestParam LocalDate startDate,
+    public ResponseEntity<List<Object[]>> sumGodzinyPracy(@RequestParam LocalDate startDate,
                                                   @RequestParam LocalDate endDate){
         try {
-            service.sumGodzinyPracy(startDate, endDate);
-            return ResponseEntity.ok("Zsumowanie godziny pracy dla pracownikow");
-        } catch (Exception e){
-            return ResponseEntity.status(500).body(error + e.getMessage());
+            // Wywołanie usługi i pobranie wyników
+            List<Object[]> results = service.sumGodzinyPracy(startDate, endDate);
+            // Zwrócenie wyników
+            return ResponseEntity.ok(results);
+        } catch (IllegalArgumentException e) {
+            // Obsługa konkretnego wyjątku
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonList(new Object[]{"Błąd argumentów: " + e.getMessage()}));
+        } catch (Exception e) {
+            // Obsługa innych ogólnych wyjątków
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonList(new Object[]{"Wystąpił błąd: " + e.getMessage()}));
         }
     }
 
@@ -85,6 +96,21 @@ public class czasPracyController {
         } catch (Exception e){
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
+    }
 
+    @GetMapping("/findCzasPracyByDate")
+    public ResponseEntity<List<Object[]>> findCzasPracyByDate(@RequestParam LocalDate dataPracy){
+        try{
+            List<Object[]> result = service.findCzasPracyByDate(dataPracy);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            // Obsługa konkretnego wyjątku
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonList(new Object[]{"Błąd argumentów: " + e.getMessage()}));
+        } catch (Exception e) {
+            // Obsługa innych ogólnych wyjątków
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonList(new Object[]{"Wystąpił błąd: " + e.getMessage()}));
+        }
     }
 }

@@ -5,16 +5,14 @@ import com.Lupus.lupus.entity.czas_pracy;
 import com.Lupus.lupus.repository.CzasPracyRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,16 +54,15 @@ public class CzasPracyService {
     }
 
     // Zliczanie godzin pracy dla pracownika w okresie między dwoma datami
-    public List<CzasPracyDTO> sumGodzinyPracyForEmployeeBetweenDates(Long id_pracownik,LocalDate dataStart, LocalDate dataEnd) {
+    public List<Map<String,Object>> sumGodzinyPracyForEmployeeBetweenDates(Long id_pracownik,LocalDate dataStart, LocalDate dataEnd) {
         //List<CzasPracyDTO> result = repo.findGodzinyPracyBetweenDates(dataStart, dataEnd);
         return repo.findGodzinyPracyBetweenDates(id_pracownik,dataStart, dataEnd );
     }
 
 
     // Zliczanie godzin pracy dla wszystkich pracowników w zadanym okresie
-    public List<CzasPracyDTO> sumGodzinyPracy(LocalDate startDate, LocalDate endDate){
-        List<CzasPracyDTO> result = repo.sumGodzinyPracy(startDate, endDate);
-        return result;
+    public List<Object[]> sumGodzinyPracy(LocalDate startDate, LocalDate endDate){
+        return repo.sumGodzinyPracy(startDate, endDate);
     }
 
     // Zaktualizowanie godziny rozpoczęcia pracy dla pracownika na konkretną datę
@@ -91,5 +88,9 @@ public class CzasPracyService {
                         (String) result[5]
                 ))
                 .toList();
+    }
+
+    public List<Object[]> findCzasPracyByDate(LocalDate dataPracy){
+        return repo.findCzasPracyByDate(dataPracy);
     }
 }
