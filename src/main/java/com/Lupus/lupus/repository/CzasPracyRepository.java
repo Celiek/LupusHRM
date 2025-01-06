@@ -44,7 +44,7 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
             "       NULL AS error_message\n" +
             "FROM czas_pracy c\n" +
             "WHERE c.data_pracy = :dataPracy",nativeQuery = true)
-    List<Object[]> findCzasPracyByDate(@Param("dataPracy") LocalDate dataPracy);
+    List<Object[]> findCzasPracyByDate  (@Param("dataPracy") LocalDate dataPracy);
 
     //zlicza ilosc godzin przepracowanych danego dnia dla jednego pracownika
     //poprawic tak zeby imie nazwisko i zdjecie zwracalo
