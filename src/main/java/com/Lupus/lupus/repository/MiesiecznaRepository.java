@@ -2,13 +2,12 @@ package com.Lupus.lupus.repository;
 
 import com.Lupus.lupus.entity.wyplataMiesieczna;
 import jakarta.transaction.Transactional;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigDecimal;
+import java.lang.annotation.Native;
 import java.sql.Date;
 import java.time.LocalDate;
 
@@ -27,10 +26,10 @@ public interface MiesiecznaRepository extends CrudRepository<wyplataMiesieczna, 
     //dodawanie wyplat dla pojedynczego pracownika
     @Modifying
     @Transactional
-    @Query("INSERT INTO WyplataMiesieczna (idPracownika, kwotaMiesieczna, sumaZaliczek, dataWyplatyMiesiecznej) " +
+    @Query(value = "INSERT INTO WyplataMiesieczna (idPracownika, kwotaMiesieczna, sumaZaliczek, dataWyplatyMiesiecznej) " +
             "SELECT p.idPracownika, :kwotaMiesieczna, :sumaZaliczek, :dataWyplaty " +
             "FROM Pracownik p " +
-            "WHERE p.idPracownika = :idPracownika")
+            "WHERE p.idPracownika = :idPracownika", nativeQuery = true)
     void inserMonthlyPayments(@Param("idPracownika") Long idPracownika,
                               @Param("sumaZaliczek")Double sumaZaliczek,
                               @Param("dataWyplaty")LocalDate dataWyplaty,
@@ -78,5 +77,5 @@ public interface MiesiecznaRepository extends CrudRepository<wyplataMiesieczna, 
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM wyplata_miesieczna WHERE data_wyplaty_miesiecznej = :dataWyplaty", nativeQuery = true)
-    void deleteMonthlypaymentsByDate(@Param("data")LocalDate dataWyplaty);
+    void deleteMonthlypaymentsByDate(@Param("dataWyplaty")LocalDate dataWyplaty);
 }

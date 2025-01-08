@@ -31,7 +31,7 @@ public class miesiecznaService {
     public void updateMonthlyPayments(Double nowaKwota,
                                       Double nowaZaliczka,
                                       LocalDate nowaData){
-        repo.updateMonthlyPayments(nowaKwota, nowaZaliczka, nowaData);
+        repo.updateMonthlyPayments(nowaKwota, nowaZaliczka,nowaData);
     }
     @Transactional
     public void updateMonthlyPayment(Double nowaKwota,

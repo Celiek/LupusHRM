@@ -2,7 +2,6 @@ package com.Lupus.lupus.controler;
 
 import com.Lupus.lupus.service.miesiecznaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,9 @@ public class wyplataMiesiecznaController {
     private final miesiecznaService service;
 
     @PostMapping("/monthlyPayments")
-    public ResponseEntity<String> insertMonthlyPayment(@RequestParam Double kwotaMiesieczna,@RequestParam Double kwotaZaliczek,@RequestParam LocalDate dataWyplaty){
+    public ResponseEntity<String> insertMonthlyPayment(@RequestParam Double kwotaMiesieczna,
+                                                       @RequestParam Double kwotaZaliczek,
+                                                       @RequestParam LocalDate dataWyplaty){
         try {
             service.insertMonthlyPayment(kwotaMiesieczna, kwotaZaliczek, dataWyplaty);
             return ResponseEntity.ok("ok");
