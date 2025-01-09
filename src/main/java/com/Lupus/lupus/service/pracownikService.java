@@ -5,8 +5,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.MappedByteBuffer;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class pracownikService {
@@ -26,19 +30,65 @@ public class pracownikService {
         repo.addPracownik(imie,dimie,nazwisko,typ,zdjecie,data,login,haslo);
     }
 
-    public List<Object[]> findAllUsers(){
-        return repo.findallUsers();
+    public List<Map<String,Object>> findAllUsers(){
+        List<Object[]> results = repo.findallUsers(); // Pobierz dane z repozytorium
+        List<Map<String, Object>> mappedResults = new ArrayList<>();
+
+        // Konwertowanie wyników Object[] na Map
+        for (Object[] row : results) {
+            Map<String, Object> rowMap = new HashMap<>();
+            rowMap.put("imie", row[0]);
+            rowMap.put("drugie_imie", row[1]);
+            rowMap.put("nazwisko", row[2]);
+            rowMap.put("typ_pracownika", row[3]);
+            rowMap.put("zdjecie", row[4]);
+            rowMap.put("data_dolaczenia", row[5]);
+            mappedResults.add(rowMap);
+        }
+        return mappedResults;
     }
 
-    public List<Object[]> findUserById(Long idPracownik){
-        return repo.findUserById(idPracownik);
+    public List<Map<String,Object>> findUserById(Long idPracownik){
+            List<Object[]> results = repo.findUserById(idPracownik);
+            List<Map<String,Object>> mappedResults = new ArrayList<>();
+
+            for(Object[] row : results){
+                Map<String,Object> rowMap = new HashMap<>();
+                rowMap.put("imie",row[0]);
+                rowMap.put("drugie_imie",row[1]);
+                rowMap.put("nazwisko",row[2]);
+                rowMap.put("typ_pracownika",row[3]);
+                rowMap.put("zdjecie",row[4]);
+                rowMap.put("data_dolaczenia",row[5]);
+            }
+
+            return mappedResults;
     }
 
-    public List<Object[]> findUserByName(String imie){
-        return repo.findUserByName(imie);
+    public List<Map<String,Object>> findUserByName(String imie){
+        List<Object[]> results = repo.findUserByName(imie);
+        List<Map<String,Object>> mappedResults = new ArrayList<>();
+
+        for (Object[] row: results){
+            Map<String,Object> rowMap = new HashMap<>();
+            rowMap.put("imie",row[0]);
+            rowMap.put("drugie_imie",row[1]);
+            rowMap.put("nazwisko",row[2]);
+            rowMap.put("typ_pracownika",row[3]);
+            rowMap.put("zdjecie",row[4]);
+            rowMap.put("data_dolaczenia",row[5]);
+        }
+        return mappedResults;
     }
 
     public void deletePracownikById(Long idPracownik){
         repo.deletePracownikById(idPracownik);
+    }
+
+    public void updatePracownik(String imie,String dimie,
+                                String nazwisko, String typPracownika,
+                                Byte[] zdjecie, LocalDate data,
+                                String login, String haslo){
+        repo.updatePracownik(imie, dimie, nazwisko, typPracownika, zdjecie, data, login, haslo);
     }
 }

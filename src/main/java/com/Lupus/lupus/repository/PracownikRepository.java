@@ -13,8 +13,9 @@ public interface PracownikRepository extends CrudRepository<pracownik, Long> {
     @Query(value="SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
     List<Object[]> findallUsers();
 
-    @Query(value="SELECT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
-    List<Object[]> findallUsersWithId();
+    //nie pamietam po co to dodalem
+//    @Query(value="SELECT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
+//    List<Object[]> findUsersWithId();
 
     @Query(value = "SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik where id_pracownika= :idPracownik",nativeQuery = true)
     List<Object[]> findUserById(@Param("idPracownik")Long idPracownik);

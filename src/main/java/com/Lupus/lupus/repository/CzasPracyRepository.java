@@ -1,6 +1,5 @@
 package com.Lupus.lupus.repository;
 
-import com.Lupus.lupus.DTO.CzasPracyDTO;
 import com.Lupus.lupus.entity.czas_pracy;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
