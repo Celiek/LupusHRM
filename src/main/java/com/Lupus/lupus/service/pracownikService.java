@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.MappedByteBuffer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,11 +22,11 @@ public class pracownikService {
                              String dimie,
                              String nazwisko,
                              String typ,
-                             Byte[] zdjecie,
+                             byte[] zdjecie,
                              LocalDate data,
                              String login,
                              String haslo){
-        repo.addPracownik(imie,dimie,nazwisko,typ,zdjecie,data,login,haslo);
+        repo.addPracownik(imie.toUpperCase(),dimie.toUpperCase(),nazwisko.toUpperCase(),typ,zdjecie,data,login,haslo);
     }
 
     public List<Map<String,Object>> findAllUsers(){
@@ -66,7 +65,7 @@ public class pracownikService {
     }
 
     public List<Map<String,Object>> findUserByName(String imie){
-        List<Object[]> results = repo.findUserByName(imie);
+        List<Object[]> results = repo.findUserByName(imie.toUpperCase());
         List<Map<String,Object>> mappedResults = new ArrayList<>();
 
         for (Object[] row: results){
@@ -87,7 +86,7 @@ public class pracownikService {
 
     public void updatePracownik(String imie,String dimie,
                                 String nazwisko, String typPracownika,
-                                Byte[] zdjecie, LocalDate data,
+                                byte[] zdjecie, LocalDate data,
                                 String login, String haslo){
         repo.updatePracownik(imie, dimie, nazwisko, typPracownika, zdjecie, data, login, haslo);
     }

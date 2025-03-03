@@ -2,9 +2,9 @@ package com.Lupus.lupus.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
-import java.util.List;
 
 @Data
 @Entity
@@ -23,6 +23,7 @@ public class pracownik {
     @Column(name = "typ_pracownika")
     private String typ_pracownika;
     @Column(name = "zdjecie")
+    @Lob
     private byte[] zdjecie;
     @Column(name = "data_dolaczenia")
     private Date data_dolaczenia;

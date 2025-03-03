@@ -1,6 +1,8 @@
 package com.Lupus.lupus.repository;
 
 import com.Lupus.lupus.entity.pracownik;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +12,7 @@ import java.util.List;
 
 public interface PracownikRepository extends CrudRepository<pracownik, Long> {
 
-    @Query(value="SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
+    @Query(value="SELECT DISTINCT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
     List<Object[]> findallUsers();
 
     //nie pamietam po co to dodalem
@@ -20,19 +22,21 @@ public interface PracownikRepository extends CrudRepository<pracownik, Long> {
     @Query(value = "SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik where id_pracownika= :idPracownik",nativeQuery = true)
     List<Object[]> findUserById(@Param("idPracownik")Long idPracownik);
 
-    @Query(value="SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia FROM pracownik where imie = :imie",nativeQuery = true)
+    @Query(value="SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia FROM pracownik where imie = UPPER(:imie)",nativeQuery = true)
     List<Object[]> findUserByName(@Param("imie")String imie);
 
     @Query(value="DELETE from pracownik where id_pracownika = :idPracownik",nativeQuery = true)
     void deletePracownikById(@Param("idPracownik")Long idPracownik);
 
-    @Query(value = "Insert into pracownik(imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo " +
+    @Transactional
+    @Modifying
+    @Query(value = "Insert into pracownik(imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo )" +
             "VALUES(:imie,:dimie, :nazwisko, :typ, :zdjecie,:data,:login,:haslo);",nativeQuery = true)
     void addPracownik(@Param("imie")String imie,
                       @Param("dimie")String dimie,
                       @Param("nazwisko")String nazwisko,
                       @Param("typ")String typ,
-                      @Param("zdjecie")Byte[] zdjecie,
+                      @Param("zdjecie") byte[] zdjecie,
                       @Param("data") LocalDate data,
                       @Param("login")String login,
                       @Param("haslo")String haslo);
@@ -52,7 +56,7 @@ public interface PracownikRepository extends CrudRepository<pracownik, Long> {
                          @Param("dimie")String dimie,
                          @Param("nazwisko")String nazwisko,
                          @Param("typ")String typ,
-                         @Param("zdjecie")Byte[] zdjecie,
+                         @Param("zdjecie") byte[] zdjecie,
                          @Param("data") LocalDate data,
                          @Param("login")String login,
                          @Param("haslo")String haslo);
