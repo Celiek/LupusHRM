@@ -26,7 +26,7 @@ public class pracownikService {
                              LocalDate data,
                              String login,
                              String haslo){
-        repo.addPracownik(imie.toUpperCase(),dimie.toUpperCase(),nazwisko.toUpperCase(),typ,zdjecie,data,login,haslo);
+        repo.addPracownik(imie,dimie,nazwisko,typ,zdjecie,data,login,haslo);
     }
 
     public List<Map<String,Object>> findAllUsers(){
@@ -65,7 +65,7 @@ public class pracownikService {
     }
 
     public List<Map<String,Object>> findUserByName(String imie){
-        List<Object[]> results = repo.findUserByName(imie.toUpperCase());
+        List<Object[]> results = repo.findUserByName(imie);
         List<Map<String,Object>> mappedResults = new ArrayList<>();
 
         for (Object[] row: results){
@@ -76,6 +76,7 @@ public class pracownikService {
             rowMap.put("typ_pracownika",row[3]);
             rowMap.put("zdjecie",row[4]);
             rowMap.put("data_dolaczenia",row[5]);
+            mappedResults.add(rowMap);
         }
         return mappedResults;
     }
@@ -89,5 +90,9 @@ public class pracownikService {
                                 byte[] zdjecie, LocalDate data,
                                 String login, String haslo){
         repo.updatePracownik(imie, dimie, nazwisko, typPracownika, zdjecie, data, login, haslo);
+    }
+
+    public void deletePracownikByNameAndSurname(String imie,String nazwisko){
+        repo.deletePracownikByNameAndSurname(imie, nazwisko);
     }
 }

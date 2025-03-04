@@ -2,7 +2,6 @@ package com.Lupus.lupus.controler;
 
 import com.Lupus.lupus.service.pracownikService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.valves.rewrite.InternalRewriteMap;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/pracownik")
@@ -58,7 +59,9 @@ public class pracownikController {
     @GetMapping("/userByName")
     public ResponseEntity<List<Map<String,Object>>> findUserByName(@RequestParam String imie) {
         try {
-            List<Map<String, Object>> results = service.findUserByName(imie.toUpperCase());
+            //System.out.println("Parametr imie: " + imie); // Debugowanie
+            List<Map<String, Object>> results = service.findUserByName(imie);
+            //System.out.println("Wynik zapytania: " + results.size()); // Czy coś zwróciło?
             return ResponseEntity.ok(results);
         } catch (Exception e) {
             return ResponseEntity.status(500).body((List<Map<String, Object>>) Collections.singletonMap("error", e.getMessage()));
@@ -68,7 +71,7 @@ public class pracownikController {
     public ResponseEntity<String> deletePracownikById(@RequestParam Long pracownikID){
         try {
             service.deletePracownikById(pracownikID);
-            return ResponseEntity.ok("ok");
+            return ResponseEntity.ok("Usunieto");
         } catch (Exception e){
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
@@ -84,6 +87,17 @@ public class pracownikController {
             return ResponseEntity.ok("ok");
         } catch (Exception e){
             return ResponseEntity.status(500).body("Error" +e.getMessage());
+        }
+    }
+
+    @PostMapping("/deleteByNameAndSurname")
+    public ResponseEntity<String> deletePracownikByNameAndSurname(@RequestParam String imie,
+                                                                  @RequestParam String nazwisko){
+        try{
+            service.deletePracownikByNameAndSurname(imie, nazwisko);
+            return ResponseEntity.ok("usunieto pracownika" + imie + " " + nazwisko);
+        } catch (Exception e){
+            return ResponseEntity.status(500).body("Error " + e.getMessage());
         }
     }
 

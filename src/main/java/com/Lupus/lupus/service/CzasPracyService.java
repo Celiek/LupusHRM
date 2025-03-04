@@ -1,19 +1,18 @@
 package com.Lupus.lupus.service;
 
-import com.Lupus.lupus.DTO.CzasPracyDTO; // Załóżmy, że masz odpowiednią klasę DTO
-import com.Lupus.lupus.entity.czas_pracy;
+import com.Lupus.lupus.DTO.CzasPracyDTO;
 import com.Lupus.lupus.repository.CzasPracyRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class CzasPracyService {

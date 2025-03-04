@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
+//dodac usuwanie po imieniu i nazwisku
+
 public interface PracownikRepository extends CrudRepository<pracownik, Long> {
 
     @Query(value="SELECT DISTINCT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
@@ -22,9 +24,12 @@ public interface PracownikRepository extends CrudRepository<pracownik, Long> {
     @Query(value = "SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik where id_pracownika= :idPracownik",nativeQuery = true)
     List<Object[]> findUserById(@Param("idPracownik")Long idPracownik);
 
-    @Query(value="SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia FROM pracownik where imie = UPPER(:imie)",nativeQuery = true)
+    @Query(value="SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia FROM pracownik WHERE imie = INITCAP(:imie)"
+            ,nativeQuery = true)
     List<Object[]> findUserByName(@Param("imie")String imie);
 
+    @Transactional
+    @Modifying
     @Query(value="DELETE from pracownik where id_pracownika = :idPracownik",nativeQuery = true)
     void deletePracownikById(@Param("idPracownik")Long idPracownik);
 
@@ -60,4 +65,11 @@ public interface PracownikRepository extends CrudRepository<pracownik, Long> {
                          @Param("data") LocalDate data,
                          @Param("login")String login,
                          @Param("haslo")String haslo);
+
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM pracownik where imie = :imie AND nazwisko = :nazwisko"
+    ,nativeQuery = true)
+    void deletePracownikByNameAndSurname(@Param("imie") String imie,
+                                    @Param("nazwisko") String nazwisko);
 }

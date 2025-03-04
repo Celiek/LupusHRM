@@ -14,8 +14,12 @@ import java.util.List;
 
 //TODO
 //dodawanie wyplat tygodniowych DONE
-//usuwanie wyplat tygodniowych
-//zliczanie wyplat tygodniowcyh z ostatniego miesiaca
+//usuwanie wyplat tygodniowych Done
+//zliczanie wyplat tygodniowcyh z ostatniego miesiaca Maybe ?
+//pokazywanie wyplat tygodniowych dla pracownikow
+//zliczanie wyplat miesiecznych dla pracownikow
+//pokazywanie wyplat miesiecznych dla pracownikow
+//pokazywanie wyplat tygodniowych dla pracownika
 //
 
 
@@ -51,17 +55,21 @@ public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, 
                                           @RequestParam("zaliczka")Double zaliczka,
                                           @RequestParam("data")Date data);
 
-        //do przerobienia idk co mialem w glowie jak to pisalem
-    //    @Query(value = "SELECT new com.example.dto.WyplataTygodniowaDTO(wt.idPracownika, p.imie, p.nazwisko, " +
-    //            "wt.kwotaTygodniowa, wt.zaliczkaTygodniowa, wt.dataWyplatyTygodniowej) " +
-    //            "FROM wyplata_tygodniowa wt " +
-    //            "JOIN Pracownik p ON wt.idPracownika = p.idPracownika " +
-    //            "WHERE wt.dataWyplatyTygodniowej = :dataWyplaty " +
-    //            "ORDER BY p.idPracownika",nativeQuery = true)
-    //    List<WyplataTygodniowaDTO> findWeeklyPaymentsWithDetails(@Param("dataWyplaty") Date dataWyplaty);
+    //wyseietlanie wyplaty tygodniowej dla pracownika po imieniu i nazwisku
+    @Transactional
+    @Modifying
+    @Query(value = "select p.imie,p.nazwisko, w.kwota_tygodniowa,w.zaliczka_tygodniowa,w.data_wyplaty_tygodniowej\n" +
+            "from wyplata_tygodniowa w \n" +
+            "join pracownik p on p.id_pracownika = w.id_pracownika " +
+            "WHERE p.imie = :imie AND p.nazwisko = :nazwisko"
+            ,nativeQuery = true)
+    void getweeklyPaychekEmployee(@RequestParam("imie") String imie,
+                                  @RequestParam("nazwisko") String nazwisko);
 
-
-
+    //wyswietlanie wyplaty tygodniowej dla wszystkich pracownikow
+    @Query(value = "",
+    nativeQuery = true)
+    void getWeeklyPaycheks();
 
 
 
