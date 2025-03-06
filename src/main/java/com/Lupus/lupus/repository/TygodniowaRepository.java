@@ -1,6 +1,5 @@
 package com.Lupus.lupus.repository;
 
-import com.Lupus.lupus.DTO.WyplataTygodniowaDTO;
 import com.Lupus.lupus.entity.wyplataTygodniowa;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,15 +9,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
-import java.util.List;
 
 //TODO
 //dodawanie wyplat tygodniowych DONE
 //usuwanie wyplat tygodniowych Done
-//zliczanie wyplat tygodniowcyh z ostatniego miesiaca Maybe ?
-//pokazywanie wyplat tygodniowych dla pracownikow
-//zliczanie wyplat miesiecznych dla pracownikow
-//pokazywanie wyplat miesiecznych dla pracownikow
+//pokazywanie wyplat tygodniowych dla pracownikow DONE
+//zliczanie wyplat miesiecznych dla pracownikow DONE
+//pokazywanie wyplat miesiecznych dla pracownikow DONE
 //pokazywanie wyplat tygodniowych dla pracownika
 //
 
@@ -55,23 +52,78 @@ public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, 
                                           @RequestParam("zaliczka")Double zaliczka,
                                           @RequestParam("data")Date data);
 
-    //wyseietlanie wyplaty tygodniowej dla pracownika po imieniu i nazwisku
+    //wyswietlanie wyplaty tygodniowej dla pracownika po imieniu i nazwisku
+    //TODO
+    //dodac przedzial dat 
     @Transactional
     @Modifying
     @Query(value = "select p.imie,p.nazwisko, w.kwota_tygodniowa,w.zaliczka_tygodniowa,w.data_wyplaty_tygodniowej\n" +
             "from wyplata_tygodniowa w \n" +
             "join pracownik p on p.id_pracownika = w.id_pracownika " +
-            "WHERE p.imie = :imie AND p.nazwisko = :nazwisko"
+            "WHERE DATE_PART('week',w.data_wyplaty_tygodniowej) = DATE_PART('week', :data)" +
+            "AND (p.imie = :imie AND p.nazwisko = :nazwisko)"
             ,nativeQuery = true)
     void getweeklyPaychekEmployee(@RequestParam("imie") String imie,
-                                  @RequestParam("nazwisko") String nazwisko);
+                                  @RequestParam("nazwisko") String nazwisko,
+                                  @RequestParam("data") Date data);
 
     //wyswietlanie wyplaty tygodniowej dla wszystkich pracownikow
-    @Query(value = "",
+    @Query(value = "select p.imie,p.nazwisko, w.kwota_tygodniowa,w.zaliczka_tygodniowa,w.data_wyplaty_tygodniowej\n" +
+            "from wyplata_tygodniowa w \n" +
+            "join pracownik p on p.id_pracownika = w.id_pracownika ",
     nativeQuery = true)
     void getWeeklyPaycheks();
 
+    @Query(value = "select p.imie,p.nazwisko, w.kwota_tygodniowa,w.zaliczka_tygodniowa,w.data_wyplaty_tygodniowej\n" +
+            "from wyplata_tygodniowa w \n" +
+            "join pracownik p on p.id_pracownika = w.id_pracownika WHERE p.imie = :imie AND p.nazwisko = :nazwisko",
+    nativeQuery = true)
+    void getWeeklyPaychek(@RequestParam("imie") String imie,
+                          @RequestParam("nazwisko")String nazwisko);
 
+    //miesieczna wyplata dla pracownikow
+    @Query(value="SELECT \n" +
+            "    p.imie,\n" +
+            "\tp.drugie_imie,\n" +
+            "    p.nazwisko,\n" +
+            "    SUM(w.kwota_tygodniowa) AS suma_wyplat_miesiecznych,\n" +
+            "\tSUM(w.kwota_tygodniowa - w.zaliczka_tygodniowa) AS wyplata_z_potraceniem\n" +
+            "FROM \n" +
+            "    pracownik p\n" +
+            "JOIN \n" +
+            "    wyplata_tygodniowa w ON p.id_pracownika = w.id_pracownika\n" +
+            "where \n" +
+            "\tw.data_wyplaty_tygodniowej BETWEEN :start AND :stop \n" +
+            "GROUP BY \n" +
+            "    p.imie, \n" +
+            "    p.nazwisko,\n" +
+            "\tp.drugie_imie;",
+    nativeQuery = true)
+    void getMonthlyPaycheks(@RequestParam("start") Date start,
+                            @RequestParam("stop") Date stop);
 
-
+    //miesieczna wyplata dla pracownika
+    @Query(value = "\n" +
+            "SELECT \n" +
+            "    p.imie,\n" +
+            "\tp.drugie_imie,\n" +
+            "    p.nazwisko,\n" +
+            "    SUM(w.kwota_tygodniowa) AS suma_wyplat_miesiecznych,\n" +
+            "\tSUM(w.kwota_tygodniowa - w.zaliczka_tygodniowa) AS wyplata_z_potraceniem\n" +
+            "FROM \n" +
+            "    pracownik p\n" +
+            "JOIN \n" +
+            "    wyplata_tygodniowa w ON p.id_pracownika = w.id_pracownika\n" +
+            "where \n" +
+            "\tw.data_wyplaty_tygodniowej BETWEEN '2025-03-01' AND '2025-03-06'\n" +
+            "\tAND p.imie = :imie AND p.drugie_imie = :dimie AND p.nazwisko = :nazwisko\n" +
+            "GROUP BY \n" +
+            "    p.imie, \n" +
+            "    p.nazwisko,\n" +
+            "\tp.drugie_imie;")
+    void getMonthlyPaycheck(@RequestParam("start") Date start,
+                            @RequestParam("stop") Date stop,
+                            @RequestParam("imie") String imie,
+                            @RequestParam("dimie")String  dimie,
+                            @RequestParam("nazwisko") String nazwisko);
 }
