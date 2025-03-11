@@ -30,7 +30,10 @@ public class corsConfig {
                         .defaultSuccessUrl("/dashboard", true) // Gdzie przekierować po zalogowaniu
                         .failureUrl("/moje-logowanie?error=true") // Gdzie przekierować po błędzie
                         .permitAll())
-                .logout(logout -> logout.permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/lupu-logout?logout=true")
+                        .permitAll());
 
         return http.build();
     }
