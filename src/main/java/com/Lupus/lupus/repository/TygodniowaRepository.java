@@ -54,7 +54,7 @@ public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, 
 
     //wyswietlanie wyplaty tygodniowej dla pracownika po imieniu i nazwisku
     //TODO
-    //dodac przedzial dat 
+    //dodac przedzial dat DONE
     @Transactional
     @Modifying
     @Query(value = "select p.imie,p.nazwisko, w.kwota_tygodniowa,w.zaliczka_tygodniowa,w.data_wyplaty_tygodniowej\n" +
@@ -81,7 +81,7 @@ public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, 
     void getWeeklyPaychek(@RequestParam("imie") String imie,
                           @RequestParam("nazwisko")String nazwisko);
 
-    //miesieczna wyplata dla pracownikow
+    //zliczana miesieczna wyplata dla pracownikow
     @Query(value="SELECT \n" +
             "    p.imie,\n" +
             "\tp.drugie_imie,\n" +
@@ -103,24 +103,17 @@ public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, 
                             @RequestParam("stop") Date stop);
 
     //miesieczna wyplata dla pracownika
-    @Query(value = "\n" +
-            "SELECT \n" +
-            "    p.imie,\n" +
-            "\tp.drugie_imie,\n" +
-            "    p.nazwisko,\n" +
-            "    SUM(w.kwota_tygodniowa) AS suma_wyplat_miesiecznych,\n" +
-            "\tSUM(w.kwota_tygodniowa - w.zaliczka_tygodniowa) AS wyplata_z_potraceniem\n" +
-            "FROM \n" +
-            "    pracownik p\n" +
-            "JOIN \n" +
-            "    wyplata_tygodniowa w ON p.id_pracownika = w.id_pracownika\n" +
-            "where \n" +
-            "\tw.data_wyplaty_tygodniowej BETWEEN '2025-03-01' AND '2025-03-06'\n" +
-            "\tAND p.imie = :imie AND p.drugie_imie = :dimie AND p.nazwisko = :nazwisko\n" +
+    @Query(value = "SELECT p.imie, p.drugie_imie, p.nazwisko,\n" +
+            "SUM(w.kwota_tygodniowa) AS suma_wyplat_miesiecznych,\n" +
+            "SUM(w.kwota_tygodniowa - w.zaliczka_tygodniowa) AS wyplata_z_potraceniem\n" +
+            "FROM pracownik p JOIN \n" +
+            "wyplata_tygodniowa w ON p.id_pracownika = w.id_pracownika\n" +
+            "where w.data_wyplaty_tygodniowej BETWEEN :start AND :stop \n" +
+            "AND p.imie = :imie AND p.drugie_imie = :dimie AND p.nazwisko = :nazwisko\n" +
             "GROUP BY \n" +
-            "    p.imie, \n" +
-            "    p.nazwisko,\n" +
-            "\tp.drugie_imie;")
+            "p.imie, \n" +
+            "p.nazwisko,\n" +
+            "p.drugie_imie;",nativeQuery = true)
     void getMonthlyPaycheck(@RequestParam("start") Date start,
                             @RequestParam("stop") Date stop,
                             @RequestParam("imie") String imie,

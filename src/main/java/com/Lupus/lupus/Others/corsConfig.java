@@ -1,8 +1,10 @@
 package com.Lupus.lupus.Others;
 
+import com.Lupus.lupus.repository.PracownikRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -18,7 +20,17 @@ public class corsConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Włączenie CORS
                 .csrf(csrf -> csrf.disable()) // Wyłączenie CSRF dla testów (opcjonalne)
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/pracownik/**").hasAnyAuthority("PRACOWNIK", "ADMIN", "ADAS")
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/lupus-logowanie")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/dashboard", true) // Gdzie przekierować po zalogowaniu
+                        .failureUrl("/moje-logowanie?error=true") // Gdzie przekierować po błędzie
+                        .permitAll())
+                .logout(logout -> logout.permitAll());
 
         return http.build();
     }
@@ -44,5 +56,10 @@ public class corsConfig {
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         source.registerCorsConfiguration("/**", config);
         return source;
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService(PracownikRepository pracownikRepository) {
+        return new CustomUserDetailsService(pracownikRepository);
     }
 }

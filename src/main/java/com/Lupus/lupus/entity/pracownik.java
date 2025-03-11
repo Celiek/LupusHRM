@@ -1,8 +1,8 @@
 package com.Lupus.lupus.entity;
 
+import com.Lupus.lupus.Others.Role;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 
@@ -21,7 +21,8 @@ public class pracownik {
     @Column(name="nazwisko")
     private String nazwisko;
     @Column(name = "typ_pracownika")
-    private String typ_pracownika;
+    @Enumerated(EnumType.STRING)
+    private Role typ_pracownika;
     @Column(name = "zdjecie")
     @Lob
     private byte[] zdjecie;

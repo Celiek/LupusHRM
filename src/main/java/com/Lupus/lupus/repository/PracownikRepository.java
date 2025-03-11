@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 //dodac usuwanie po imieniu i nazwisku
 
@@ -16,6 +17,10 @@ public interface PracownikRepository extends CrudRepository<pracownik, Long> {
 
     @Query(value="SELECT DISTINCT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
     List<Object[]> findallUsers();
+
+    //logowanie uzytkownikow
+    @Query(value = "select * from pracownik where login = :login",nativeQuery = true)
+    Optional<pracownik> findByLogin(@Param("login") String login);
 
     //nie pamietam po co to dodalem
 //    @Query(value="SELECT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)

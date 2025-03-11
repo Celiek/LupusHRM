@@ -1,11 +1,13 @@
 package com.Lupus.lupus.controler;
 
+import com.Lupus.lupus.service.tygodniowaService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import com.Lupus.lupus.service.tygodniowaService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
 
@@ -16,7 +18,7 @@ public class wyplataTygodniowaController {
 
     private final tygodniowaService service;
 
-    @PostMapping("/insertWeekyPaychek")
+    @PostMapping("/insertWeeklyPaychek")
     public ResponseEntity<String> insertWeeklyPaycheck(@RequestParam Long idPracownika,
                                                        @RequestParam Double kwota,
                                                        @RequestParam Double zaliczka,
@@ -90,16 +92,16 @@ public class wyplataTygodniowaController {
         }
     }
 
-    @GetMapping("/getWeeklyPaychek")
-    public ResponseEntity<String> getWeeklyPaychek(@RequestParam String imie,
-                                                   @RequestParam String nazwisko){
-        try{
-            service.getWeeklyPaychek(imie, nazwisko);
-            return ResponseEntity.ok("ok");
-        } catch (Exception e){
-            return ResponseEntity.status(500).body("Error " + e.getMessage());
-        }
-    }
+//    @GetMapping("/getWeeklyPaychek")
+//    public ResponseEntity<String> getWeeklyPaychek(@RequestParam String imie,
+//                                                   @RequestParam String nazwisko){
+//        try{
+//            service.getWeeklyPaychek(imie, nazwisko);
+//            return ResponseEntity.ok("ok");
+//        } catch (Exception e){
+//            return ResponseEntity.status(500).body("Error " + e.getMessage());
+//        }
+//    }
 
     @GetMapping("/getMonthlyPaycheks")
     public ResponseEntity<String> getMonthlyPaycheks(@RequestParam Date start,
