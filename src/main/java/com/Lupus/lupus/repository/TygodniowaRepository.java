@@ -16,8 +16,8 @@ import java.util.Date;
 //pokazywanie wyplat tygodniowych dla pracownikow DONE
 //zliczanie wyplat miesiecznych dla pracownikow DONE
 //pokazywanie wyplat miesiecznych dla pracownikow DONE
-//pokazywanie wyplat tygodniowych dla pracownika
-//
+//pokazywanie wyplat tygodniowych dla pracownika DONE
+//dodac ilosc przepracowanych godzin dzisiajc
 
 
 public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, Long> {

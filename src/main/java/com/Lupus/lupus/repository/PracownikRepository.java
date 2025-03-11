@@ -20,7 +20,7 @@ public interface PracownikRepository extends CrudRepository<pracownik, Long> {
 
     //logowanie uzytkownikow
     @Query(value = "select * from pracownik where login = :login",nativeQuery = true)
-    Optional<pracownik> findByLogin(@Param("login") String login);
+    Optional<pracownik> findByLogin(@Param("login") String login );
 
     //nie pamietam po co to dodalem
 //    @Query(value="SELECT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
