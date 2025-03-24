@@ -1,6 +1,6 @@
 package com.Lupus.lupus.repository;
 
-import com.Lupus.lupus.entity.pracownik;
+import com.Lupus.lupus.entity.Pracownik;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,14 +13,14 @@ import java.util.Optional;
 
 //dodac usuwanie po imieniu i nazwisku
 
-public interface PracownikRepository extends CrudRepository<pracownik, Long> {
+public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
 
     @Query(value="SELECT DISTINCT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
     List<Object[]> findallUsers();
 
     //logowanie uzytkownikow
     @Query(value = "select * from pracownik where login = :login",nativeQuery = true)
-    Optional<pracownik> findByLogin(@Param("login") String login );
+    Optional<Pracownik> findByLogin(@Param("login") String login);
 
     //nie pamietam po co to dodalem
 //    @Query(value="SELECT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)

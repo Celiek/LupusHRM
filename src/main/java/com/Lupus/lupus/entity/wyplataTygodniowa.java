@@ -21,5 +21,5 @@ public class wyplataTygodniowa {
     private Date data_wyplaty_tygodniowej;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="id_pracownika",referencedColumnName ="id_pracownika")
-    private pracownik pracownik;
+    private Pracownik pracownik;
 }

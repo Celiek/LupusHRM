@@ -27,6 +27,7 @@ public class JwtAuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login  (@RequestBody LoginRequest request) {
+        System.out.println("🔍 Otrzymane dane logowania: " + request.getLogin() + " | " + request.getHaslo());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getLogin(), request.getHaslo())
         );

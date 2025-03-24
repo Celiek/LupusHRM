@@ -21,6 +21,6 @@ public class wyplataMiesieczna {
     private Date data_wyplaty_miesiecznej;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_pracownika",referencedColumnName = "id_pracownika")
-    private pracownik pracownik;
+    private Pracownik pracownik;
 
 }

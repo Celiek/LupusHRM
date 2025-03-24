@@ -1,24 +1,19 @@
 package com.Lupus.lupus.service;
 
-import com.Lupus.lupus.repository.PracownikRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
 
-import com.Lupus.lupus.entity.pracownik;
-
-import java.util.Collections;
+import com.Lupus.lupus.entity.Pracownik;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final pracownik pracownik;
+    private final Pracownik pracownik;
 
-    public CustomUserDetails(pracownik pracownik) {
+    public CustomUserDetails(Pracownik pracownik) {
         this.pracownik = pracownik;
     }
 

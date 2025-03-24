@@ -1,6 +1,6 @@
 package com.Lupus.lupus.Others;
 
-import com.Lupus.lupus.entity.pracownik;
+import com.Lupus.lupus.entity.Pracownik;
 import com.Lupus.lupus.repository.PracownikRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,11 +19,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        pracownik pracownik = pracownikRepository.findByLogin(username)
+        System.out.println("🔍 Szukam użytkownika: " + username);
+
+        Pracownik pracownik = pracownikRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Nie znaleziono użytkownika"));
+        System.out.println("Znaleziono uzytkownika " + pracownikRepository.findUserByName(username) + " z rola: " + pracownik.getTyp_pracownika());
         return User.withUsername(pracownik.getLogin())
                 .password(pracownik.getHaslo())
-                .roles(String.valueOf(pracownik.getTyp_pracownika()))
+                .authorities(String.valueOf(pracownik.getTyp_pracownika()))
                 .build();
     }
 }
