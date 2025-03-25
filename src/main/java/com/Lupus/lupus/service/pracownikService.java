@@ -59,6 +59,7 @@ public class pracownikService {
                 rowMap.put("typ_pracownika",row[3]);
                 rowMap.put("zdjecie",row[4]);
                 rowMap.put("data_dolaczenia",row[5]);
+                mappedResults.add(rowMap);
             }
 
             return mappedResults;
@@ -94,5 +95,13 @@ public class pracownikService {
 
     public void deletePracownikByNameAndSurname(String imie,String nazwisko){
         repo.deletePracownikByNameAndSurname(imie, nazwisko);
+    }
+
+    public void getLogin(String username){
+        repo.getPracownikLogin(username);
+    }
+
+    public String findRoleByLogin(String login){
+        return repo.findRoleByLogin(login);
     }
 }

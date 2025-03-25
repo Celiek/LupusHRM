@@ -3,10 +3,14 @@ package com.Lupus.lupus.entity;
 import com.Lupus.lupus.Others.Role;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import java.sql.Date;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "pracownik")
 public class Pracownik {
@@ -23,8 +27,7 @@ public class Pracownik {
     @Column(name = "typ_pracownika")
     @Enumerated(EnumType.STRING)
     private Role typ_pracownika;
-    @Column(name = "zdjecie")
-    @Lob
+    @Column(name = "zdjecie",columnDefinition = "bytea",nullable = true)
     private byte[] zdjecie;
     @Column(name = "data_dolaczenia")
     private Date data_dolaczenia;
@@ -34,9 +37,4 @@ public class Pracownik {
     private String login;
     @Column(name = "haslo")
     private String haslo;
-//    @OneToMany(mappedBy = "pracownik",cascade = CascadeType.ALL,orphanRemoval = true)
-//    private List<wyplataMiesieczna> wyplataMiesieczna;
-//    @OneToMany(mappedBy = "pracownik",cascade = CascadeType.ALL,orphanRemoval = true)
-//    private List<wyplataTygodniowa> wyplataTygodniowa;
-
 }

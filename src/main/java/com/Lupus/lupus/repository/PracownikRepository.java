@@ -19,7 +19,8 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     List<Object[]> findallUsers();
 
     //logowanie uzytkownikow
-    @Query(value = "select * from pracownik where login = :login",nativeQuery = true)
+    //zmiana na jpql
+    @Query("SELECT p FROM Pracownik p WHERE p.login = :login")
     Optional<Pracownik> findByLogin(@Param("login") String login);
 
     //nie pamietam po co to dodalem
@@ -77,4 +78,11 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     ,nativeQuery = true)
     void deletePracownikByNameAndSurname(@Param("imie") String imie,
                                     @Param("nazwisko") String nazwisko);
+
+    @Transactional
+    @Query(value = "Select login from pracownik where login = :login",nativeQuery = true)
+    void getPracownikLogin(@Param("login") String login);
+
+    @Query(value = "SELECT typ_pracownika from pracownik where login = :login",nativeQuery = true)
+    String findRoleByLogin(@Param("login")String login);
 }
