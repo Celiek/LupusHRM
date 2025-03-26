@@ -43,4 +43,12 @@ public class JwtFilterValidator extends OncePerRequestFilter {
         }
         filterChain.doFilter(request,response);
     }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        System.out.println("Sprawdzam shouldNotFilter dla ścieżki: " + path);
+        return path.equals("/api/auth/login");
+    }
+
 }

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -24,12 +26,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         System.out.println("Dane z frontu: " + authRequest.getUsername()+ " haslo " + authRequest.getPassword());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-        String token = tokenGenerator.generateToken(authentication.getName());
-        return ResponseEntity.ok(token);
+        String token = tokenGenerator.generateToken(authentication.getName(),authentication);
+        return ResponseEntity.ok(Collections.singletonMap("token",token));
     }
 
 }

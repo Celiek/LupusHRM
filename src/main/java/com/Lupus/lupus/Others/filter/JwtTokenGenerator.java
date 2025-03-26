@@ -2,11 +2,14 @@ package com.Lupus.lupus.Others.filter;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenGenerator {
@@ -14,9 +17,15 @@ public class JwtTokenGenerator {
 
     private final Key key = Keys.hmacShaKeyFor(SecretToken.getBytes(StandardCharsets.UTF_8));
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Authentication authentication) {
+        String roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        System.out.println("Role Uzytkownika : " + roles);
         return Jwts.builder()
                 .setSubject(username)
+                .claim("roles",roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 24000 * 60 * 60)) // Token ważny przez godzinę
                 .signWith(key, SignatureAlgorithm.HS256)

@@ -2,10 +2,8 @@ package com.Lupus.lupus.entity;
 
 import com.Lupus.lupus.Others.Role;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import java.sql.Date;
 

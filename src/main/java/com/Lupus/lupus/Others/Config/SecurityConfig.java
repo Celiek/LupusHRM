@@ -1,6 +1,5 @@
 package com.Lupus.lupus.Others.Config;
 
-import com.Lupus.lupus.Exceptionhandling.CustomAuthenticationSuccessHandler;
 import com.Lupus.lupus.Others.filter.JwtFilterValidator;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +12,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
@@ -27,11 +25,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtFilterValidator filterValidator;
-    private final CustomAuthenticationSuccessHandler customauthenticationSuccessHandler;
 
-    public SecurityConfig(JwtFilterValidator filterValidator, CustomAuthenticationSuccessHandler customauthenticationSuccessHandler) {
-        this.filterValidator = filterValidator;
-        this.customauthenticationSuccessHandler = customauthenticationSuccessHandler;
+    public SecurityConfig(JwtFilterValidator filterValidator) {
+       this.filterValidator = filterValidator;
     }
 
     @Bean
@@ -55,17 +51,10 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                             .requestMatchers("/api/auth/login").permitAll()
+                            .requestMatchers("/admin-dashboard").hasAnyRole("ADMIN","ADAS")
+                            .requestMatchers("/pracownik").hasRole("FIZYCZNY")
                             .anyRequest().authenticated()
                     )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(customauthenticationSuccessHandler)
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll()
-                )
                 .addFilterBefore(filterValidator, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
