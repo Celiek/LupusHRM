@@ -53,4 +53,11 @@ public class JwtTokenGenerator {
             throw new RuntimeException("Token jest pusty: " + e.getMessage());
         }
     }
+
+    public Jws<Claims> parseToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+    }
 }

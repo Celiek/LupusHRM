@@ -38,11 +38,12 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
     void insertStartDayForEmployees();
 
     //zlicza ilosc godzin przepracowanych godzin danego dnia dla wszystkich pracownikow
-    @Query(value = "SELECT c.id_pracownik, c.data_pracy, c.start_pracy, c.stop_pracy, \n" +
-            "       COALESCE(c.czas_przerwy, INTERVAL '0 seconds') AS czas_przerwy, \n" +
-            "       NULL AS error_message\n" +
-            "FROM czas_pracy c\n" +
-            "WHERE c.data_pracy = :dataPracy",nativeQuery = true)
+    @Query(value = "SELECT p.imie, p.nazwisko, p.drugie_imie, c.data_pracy, c.start_pracy, c.stop_pracy, " +
+            "COALESCE(c.czas_przerwy, INTERVAL '0 seconds') AS czas_przerwy, " +
+            "NULL AS error_message " +
+            "FROM pracownik p " +
+            "JOIN czas_pracy c ON c.id_pracownik = p.id_pracownika " +
+            "WHERE c.data_pracy = :dataPracy", nativeQuery = true)
     List<Object[]> findCzasPracyByDate  (@Param("dataPracy") LocalDate dataPracy);
 
     //zlicza ilosc godzin przepracowanych danego dnia dla jednego pracownika

@@ -1,5 +1,6 @@
 package com.Lupus.lupus.repository;
 
+import com.Lupus.lupus.DTO.PracownikDto;
 import com.Lupus.lupus.entity.Pracownik;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
 
-    @Query(value="SELECT DISTINCT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
+    @Query(value="SELECT DISTINCT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login,haslo From pracownik ORDER BY imie",nativeQuery = true)
     List<Object[]> findallUsers();
 
     //logowanie uzytkownikow
@@ -63,7 +64,8 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
             "    login = COALESCE(:login, login),\n" +
             "    haslo = COALESCE(:haslo, haslo)\n" +
             "WHERE id_pracownika = :id_pracownika;",nativeQuery = true)
-    void updatePracownik(@Param("imie")String imie,
+    void updatePracownik(@Param("id_pracownika")Long id_pracownika,
+                         @Param("imie")String imie,
                          @Param("dimie")String dimie,
                          @Param("nazwisko")String nazwisko,
                          @Param("typ")String typ,

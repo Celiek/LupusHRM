@@ -51,8 +51,14 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                             .requestMatchers("/api/auth/login").permitAll()
-                            .requestMatchers("/admin-dashboard").hasAnyRole("ADMIN","ADAS")
-                            .requestMatchers("/pracownik").hasRole("FIZYCZNY")
+                            .requestMatchers("/admin-dashboard").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/lista").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/addUser").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/deletById").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/updatePracownik").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/findCzasPracyByDate").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/deleteByNameAndSurname").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/pracownik").hasAuthority("FIZYCZNY")
                             .anyRequest().authenticated()
                     )
                 .addFilterBefore(filterValidator, UsernamePasswordAuthenticationFilter.class);
