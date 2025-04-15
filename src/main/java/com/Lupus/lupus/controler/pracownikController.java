@@ -4,6 +4,7 @@ import com.Lupus.lupus.DTO.PracownikDto;
 import com.Lupus.lupus.service.pracownikService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,22 +28,34 @@ public class pracownikController {
     private final pracownikService service;
 
     @PostMapping("/addPracownik")
-    public ResponseEntity<String> addPracownik(@RequestParam String imie,
-                                               @RequestParam String dimie,
-                                               @RequestParam String nazwisko,
-                                               @RequestParam String typ,
-                                               @RequestParam MultipartFile zdjecie,
-                                               @RequestParam LocalDate data,
-                                               @RequestParam String login,
-                                               @RequestParam String haslo){
-        try{
+    public ResponseEntity<?> addPracownik(
+            @RequestParam String imie,
+            @RequestParam(required = false, defaultValue = "") String dimie,
+            @RequestParam String nazwisko,
+            @RequestParam String typ,
+            @RequestParam MultipartFile zdjecie,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
+            @RequestParam String login,
+            @RequestParam String haslo) {
+        try {
+            // Walidacja pliku (zdjęcia)
+            if (zdjecie.isEmpty()) {
+                return ResponseEntity.badRequest().body("Zdjęcie jest wymagane.");
+            }
+
             byte[] zdj = zdjecie.getBytes();
+            // Wywołanie serwisu
             service.addPracownik(imie, dimie, nazwisko, typ, zdj, data, login, haslo);
-            return ResponseEntity.ok().body("ok");
+
+            return ResponseEntity.ok("Pracownik został dodany pomyślnie.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error: " +e.getMessage());
+            // Logowanie błędu (przykładowo)
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Wystąpił błąd podczas dodawania pracownika: " + e.getMessage());
         }
     }
+
 
     @GetMapping("/listall")
     public ResponseEntity<?> findAllUsers() {

@@ -38,7 +38,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(List.of("http://127.0.0.1:5500","http://localhost:5500","http://127.0.0.1:5500/LupusFrontend/login.html"));
+                        config.setAllowedOrigins(List.of("http://127.0.0.1:5500","http://localhost:5500"));
                         config.setAllowCredentials(true);
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowedHeaders(Arrays.asList("Authorization","Content-Type","Accept"));
@@ -52,12 +52,15 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                             .requestMatchers("/api/auth/login").permitAll()
                             .requestMatchers("/admin-dashboard").hasAnyAuthority("ADMIN","ADAS")
-                            .requestMatchers("/lista").hasAnyAuthority("ADMIN","ADAS")
-                            .requestMatchers("/addUser").hasAnyAuthority("ADMIN","ADAS")
-                            .requestMatchers("/deletById").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/listall").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/addPracownik").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/deleteByID").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/updatePracownik").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/findCzasPracyByDate").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/deleteByNameAndSurname").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/sumGodzinyPracy").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/insertweeklyPaychecks").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/insertWeeklyPaychek").hasAnyAuthority("ADMIN", "ADAS")
                             .requestMatchers("/pracownik").hasAuthority("FIZYCZNY")
                             .anyRequest().authenticated()
                     )

@@ -25,7 +25,7 @@ public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, 
     @Modifying
     @Transactional
     @Query(value = "INSERT into wyplata_tygodniowa(kwota_tygodniowa,zaliczka_tygodniowa,data_wyplaty_tygodniowej,id_pracownika)\n" +
-            "VALUES(:kwota,:zaliczka,:data_wyplaty_tygodniowej,:idPracownika", nativeQuery = true)
+            "VALUES(:kwota,:zaliczka,:data_wyplaty_tygodniowej,:idPracownika)", nativeQuery = true)
     void insertWeelkyPaycheck(@Param("idPracownika")Long idPracownika,
                                          @Param("kwota")Double kwota,
                                          @Param("zaliczka")Double zaliczka,

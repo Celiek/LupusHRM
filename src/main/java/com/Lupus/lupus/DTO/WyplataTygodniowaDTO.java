@@ -1,20 +1,15 @@
 package com.Lupus.lupus.DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter @Setter
+@Data
 public class WyplataTygodniowaDTO {
-    private Long idPracownika;
-    private String imie;
-    private String nazwisko;
-    private Double kwotaTygodniowa;
-    private Double zaliczkaTygodniowa;
-    private Date dataWyplatyTygodniowej;
+    private Double kwota;
+    private Double zaliczka;
+    private Date data_wyplaty_tygodniowej;
 }

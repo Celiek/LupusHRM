@@ -1,6 +1,5 @@
 package com.Lupus.lupus.repository;
 
-import com.Lupus.lupus.DTO.PracownikDto;
 import com.Lupus.lupus.entity.Pracownik;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;

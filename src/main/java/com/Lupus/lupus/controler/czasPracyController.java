@@ -21,7 +21,7 @@ public class czasPracyController {
     private final CzasPracyService service;
 
 
-    @PostMapping("/update")
+    @PostMapping("/updateCzasPracy")
     public ResponseEntity<String> updateStartPracy(@RequestParam Long idPracownika){
         try{
             service.updateStartPracy(idPracownika);

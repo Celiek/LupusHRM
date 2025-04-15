@@ -2,6 +2,8 @@ package com.Lupus.lupus.controler;
 
 import com.Lupus.lupus.Others.filter.JwtTokenGenerator;
 import lombok.Data;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +33,15 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         String token = tokenGenerator.generateToken(authentication.getName(),authentication);
-        return ResponseEntity.ok(Collections.singletonMap("token",token));
+        System.out.println("Wygeneroway token: " + token);
+
+//        return ResponseEntity.ok(Collections.singletonMap("token",token));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(Collections.singletonMap("token", token));
     }
 
 }

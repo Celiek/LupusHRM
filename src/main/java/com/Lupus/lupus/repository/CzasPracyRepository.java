@@ -75,13 +75,13 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
     List<Map<String, Object>> findGodzinyPracyBetweenDates(@Param("id_pracownika")Long id_pracownik, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
 
-
-    //ilosc godzin przepracowanych przez pracownikod od do
-    @Query(value = "SELECT c.id_pracownik, " +
+    //ilosc godzin przepracowanych przez pracownikow od od do
+    @Query(value = "SELECT c.id_pracownik, p.imie, p.nazwisko, p.zdjecie, " +
             "SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')))/3600) " +
             "FROM czas_pracy c " +
+            "Join pracownik p on p.id_pracownika  = c.id_pracownik "+
             "WHERE c.data_pracy BETWEEN :startDate AND :endDate " +
-            "GROUP BY c.id_pracownik",
+            "GROUP BY c.id_pracownik, p.imie, p.nazwisko, p.zdjecie",
             nativeQuery = true)
     List<Object[]> sumGodzinyPracy(@Param("startDate") LocalDate startDate,
                                    @Param("endDate") LocalDate endDate);

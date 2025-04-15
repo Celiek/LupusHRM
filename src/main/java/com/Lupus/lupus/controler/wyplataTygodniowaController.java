@@ -1,13 +1,12 @@
 package com.Lupus.lupus.controler;
 
+import com.Lupus.lupus.DTO.WyplataRequest;
+import com.Lupus.lupus.DTO.WyplataTygodniowaDTO;
 import com.Lupus.lupus.service.tygodniowaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -19,30 +18,32 @@ public class wyplataTygodniowaController {
     private final tygodniowaService service;
 
     @PostMapping("/insertWeeklyPaychek")
-    public ResponseEntity<String> insertWeeklyPaycheck(@RequestParam Long idPracownika,
-                                                       @RequestParam Double kwota,
-                                                       @RequestParam Double zaliczka,
-                                                       @RequestParam Date data_wyplaty){
+    public ResponseEntity<String> insertWeeklyPaycheck(@RequestBody WyplataRequest request) {
         try {
-
-            service.insertWeeklyPaycheck(idPracownika, kwota, zaliczka, data_wyplaty);
-            return  ResponseEntity.ok("dodano wyplate pracownikowi");
-        } catch (Exception e){
-            return ResponseEntity.status(500).body("Error "+ e.getMessage());
-        }
-    }
-
-    @PostMapping("/insertweeklyPaycheks")
-    public ResponseEntity<String> insertWeeklyPaychecks(@RequestParam Double kwota,
-                                                        @RequestParam Double zaliczka,
-                                                        @RequestParam Date dataWyplaty){
-        try{
-            service.insertWeeklyPaychecks(kwota, zaliczka, dataWyplaty);
-            return ResponseEntity.ok("dodano wyplaty tygodniowe");
-        } catch (Exception e){
+            service.insertWeeklyPaycheck(
+                    request.getIdPracownika(),
+                    request.getKwota(),
+                    request.getZaliczka(),
+                    request.getData_wyplaty()
+            );
+            return ResponseEntity.ok("dodano wyplate pracownikowi");
+        } catch (Exception e) {
             return ResponseEntity.status(500).body("Error " + e.getMessage());
         }
     }
+
+
+    @PostMapping("/insertweeklyPaychecks")
+    public ResponseEntity<String> insertWyplatyDlaWszystkich(@RequestBody WyplataTygodniowaDTO dto) {
+        try {
+            service.insertWeeklyPaychecks(dto.getKwota(), dto.getZaliczka(), dto.getData_wyplaty_tygodniowej());
+            return ResponseEntity.ok("Wypłaty tygodniowe zostały dodane dla wszystkich pracowników.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Błąd podczas dodawania wypłat: " + e.getMessage());
+        }
+    }
+
+
 
     @PostMapping("/updatePaychek")
     public ResponseEntity<String> updateWeeklyPaycheckForEmployee(@RequestParam Long idPracownika,
