@@ -115,14 +115,16 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
 
     //zwraca ilość przepracowanych godzin przez pracowników - czas przerw
     @Query(value = """
-    SELECT ROUND(EXTRACT(EPOCH FROM (NOW() - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0'))) / 3600, 2)
+    SELECT ROUND(
+        EXTRACT(EPOCH FROM (NOW() - (CURRENT_DATE + c.start_pracy) - COALESCE(c.czas_przerwy, INTERVAL '0')))
+        / 3600, 2) AS godziny_pracy
     FROM czas_pracy c
     JOIN pracownik p ON p.id_pracownika = c.id_pracownik
     WHERE c.data_pracy = CURRENT_DATE
       AND p.imie = 'Adam'
       AND p.nazwisko = 'Markuszewski'
       AND c.start_pracy IS NOT NULL
-    LIMIT 1
+    LIMIT 1;
     """, nativeQuery = true)
     Double getCzasPracy();
 

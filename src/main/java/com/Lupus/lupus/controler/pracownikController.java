@@ -8,10 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -21,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @RequestMapping("/api/pracownik")
 @RequiredArgsConstructor
 public class pracownikController {
@@ -192,9 +189,10 @@ public class pracownikController {
     }
 
     //zwraca ilość godzin przecowanych dzisiaj
-    @GetMapping("/czasPracyDzisiaj")
+    @GetMapping("/czasPracyToday")
     public ResponseEntity<Double> getCzasPracyDlaAdama() {
         try {
+            System.out.println("dotarło do kontrolera czasPracyToday");
             Double czas = service.getCzasPracy();
             return czas != null ? ResponseEntity.ok(czas) : ResponseEntity.notFound().build();
         } catch (Exception e) {

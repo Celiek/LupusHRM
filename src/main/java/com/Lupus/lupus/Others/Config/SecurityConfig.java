@@ -66,7 +66,7 @@ public class SecurityConfig {
                             .requestMatchers("/getMonthlyPaycheks").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/pierwszyStartDzisiaj").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/sumaPrzerwDzisiaj").hasAnyAuthority("ADMIN","ADAS")
-                            .requestMatchers("/czasPracyDzisiaj").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/api/pracownik/czasPracyToday").hasAnyAuthority("ROLE_ADMIN", "ROLE_ADAS")
                             .requestMatchers("/nowiDzis").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/getWeeklyPaycheksForEmployee").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/pracownik").hasAuthority("FIZYCZNY")
