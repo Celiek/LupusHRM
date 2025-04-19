@@ -1,11 +1,15 @@
 package com.Lupus.lupus.service;
 
+import com.Lupus.lupus.DTO.MonthlyProjection;
+import com.Lupus.lupus.DTO.WeeklyPayDto;
 import com.Lupus.lupus.repository.TygodniowaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.Lupus.lupus.DTO.WeeklyPayProjection;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class tygodniowaService {
@@ -40,14 +44,15 @@ public class tygodniowaService {
     }
 
     @Transactional
-    public void getweeklyPaychekEmployee(String imie, String nazwisko, Date data){
-        repo.getweeklyPaychekEmployee(imie, nazwisko, data);
+    public WeeklyPayProjection getweeklyPaychekEmployee(String imie, String nazwisko, Date data) {
+        return repo.getweeklyPaychekEmployee(imie, nazwisko, data);
     }
 
     @Transactional
-    public void getWeeklyPaycheks(){
-        repo.getWeeklyPaycheks();
+    public List<WeeklyPayProjection> getWeeklyPaycheks(Date od, Date ddo) {
+        return repo.getWeeklyPaycheks(od, ddo);
     }
+
 
     @Transactional
     public void getWeeklyPaychek(String imie, String nazwisko){
@@ -55,8 +60,14 @@ public class tygodniowaService {
     }
 
     @Transactional
-    public void getMonthlyPaycheks(Date start, Date stop){
-        repo.getMonthlyPaycheks(start, stop);
+    public List<MonthlyProjection> getMonthlyPaycheks(Date start, Date stop){
+        return repo.getMonthlyPaycheks(start, stop);
+    }
+
+    public List<WeeklyPayProjection>getWeeklyPaychecksForEmployeeInDateRange(
+            String imie, String nazwisko, Date od, Date ddo)
+    {
+        return repo.getWeeklyPaychecksForEmployeeInDateRange(imie, nazwisko, od, ddo);
     }
 
     @Transactional

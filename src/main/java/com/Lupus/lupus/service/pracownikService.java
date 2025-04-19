@@ -100,4 +100,22 @@ public class pracownikService {
     public void deletePracownikByNameAndSurname(String imie,String nazwisko){
         repo.deletePracownikByNameAndSurname(imie, nazwisko);
     }
+
+    public long countEmployeesStartedToday() {
+        return repo.countTodayNewEmployees();
+    }
+
+    public String getFirstStartTimeToday() {
+        return repo.findFirstStartTimeToday();
+    }
+
+    public double getTotalBreakTimeTodayInHours() {
+        Double minutes = repo.getTotalBreakTimeInMinutesToday();
+        return minutes != null ? minutes / 60.0 : 0.0;
+    }
+
+    public Double getCzasPracy() {
+        return repo.getCzasPracy();
+    }
+
 }

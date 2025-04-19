@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 //dodac usuwanie po imieniu i nazwisku
@@ -22,10 +23,6 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     //zmiana na jpql
     @Query("SELECT p FROM Pracownik p WHERE p.login = :login")
     Optional<Pracownik> findByLogin(@Param("login") String login);
-
-    //nie pamietam po co to dodalem
-//    @Query(value="SELECT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik ORDER BY imie",nativeQuery = true)
-//    List<Object[]> findUsersWithId();
 
     @Query(value = "SELECT imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia From pracownik where id_pracownika= :idPracownik",nativeQuery = true)
     List<Object[]> findUserById(@Param("idPracownik")Long idPracownik);
@@ -86,4 +83,48 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
 
     @Query(value = "SELECT typ_pracownika from pracownik where login = :login",nativeQuery = true)
     String findRoleByLogin(@Param("login")String login);
+
+    //zlicza ile osób rozpoczęło dzisiaj pracę
+    @Query(value = """
+    SELECT COUNT(DISTINCT c.id_pracownik)
+    FROM czas_pracy c
+    WHERE c.data_pracy = CURRENT_DATE
+""", nativeQuery = true)
+    long countTodayNewEmployees();
+
+    //zwraca godzinę startu opracy pracowników
+    @Query(value = """
+    SELECT TO_CHAR(c.start_pracy, 'HH24:MI')
+    FROM czas_pracy c
+    WHERE c.data_pracy = CURRENT_DATE
+    ORDER BY c.start_pracy ASC
+    LIMIT 1
+    """, nativeQuery = true)
+    String findFirstStartTimeToday();
+
+    //zwraca czas przerw w minutach
+    @Query(value = """
+    SELECT 
+        SUM(EXTRACT(EPOCH FROM COALESCE(c.czas_przerwy, INTERVAL '0')) / 60)
+    FROM pracownik p
+    LEFT JOIN czas_pracy c 
+        ON p.id_pracownika = c.id_pracownik 
+        AND c.data_pracy = CURRENT_DATE
+    """, nativeQuery = true)
+    Double getTotalBreakTimeInMinutesToday();
+
+    //zwraca ilość przepracowanych godzin przez pracowników - czas przerw
+    @Query(value = """
+    SELECT ROUND(EXTRACT(EPOCH FROM (NOW() - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0'))) / 3600, 2)
+    FROM czas_pracy c
+    JOIN pracownik p ON p.id_pracownika = c.id_pracownik
+    WHERE c.data_pracy = CURRENT_DATE
+      AND p.imie = 'Adam'
+      AND p.nazwisko = 'Markuszewski'
+      AND c.start_pracy IS NOT NULL
+    LIMIT 1
+    """, nativeQuery = true)
+    Double getCzasPracy();
+
+
 }

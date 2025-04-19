@@ -62,25 +62,28 @@ public class pracownikController {
         try {
             List<PracownikDto> results = service.findAllUsers();  // Pobierz dane z serwisu
             return ResponseEntity.ok(results);  // Zwróć odpowiedź z danymi;
-        } catch (Exception e){
+        } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
             errorResponse.put("timestamp", LocalDateTime.now());
             errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
             errorResponse.put("details", "Wystąpił błąd podczas przetwarzania żądania");
-            return ResponseEntity.status(500).body(errorResponse);        }
+            return ResponseEntity.status(500).body(errorResponse);
+        }
     }
 
     @GetMapping("/userById")
-    public ResponseEntity<List<Map<String,Object>>> findUserById(@RequestParam Long idPracownik){
-        try{
-            List<Map<String,Object>> results = service.findUserById(idPracownik);
+    public ResponseEntity<List<Map<String, Object>>> findUserById(@RequestParam Long idPracownik) {
+        try {
+            List<Map<String, Object>> results = service.findUserById(idPracownik);
             return ResponseEntity.ok(results);
-        } catch(Exception e){
-            return ResponseEntity.status(500).body((List<Map<String, Object>>) Collections.singletonMap("error", e.getMessage()));        }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body((List<Map<String, Object>>) Collections.singletonMap("error", e.getMessage()));
         }
+    }
+
     @GetMapping("/userByName")
-    public ResponseEntity<List<Map<String,Object>>> findUserByName(@RequestParam String imie) {
+    public ResponseEntity<List<Map<String, Object>>> findUserByName(@RequestParam String imie) {
         try {
             //System.out.println("Parametr imie: " + imie); // Debugowanie
             List<Map<String, Object>> results = service.findUserByName(imie);
@@ -90,37 +93,39 @@ public class pracownikController {
             return ResponseEntity.status(500).body((List<Map<String, Object>>) Collections.singletonMap("error", e.getMessage()));
         }
     }
+
     @PostMapping("/deleteByID")
-    public ResponseEntity<String> deletePracownikById(@RequestParam Long pracownikID){
+    public ResponseEntity<String> deletePracownikById(@RequestParam Long pracownikID) {
         try {
             service.deletePracownikById(pracownikID);
             return ResponseEntity.ok("Usunieto");
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
+
     @PostMapping("/addUser")
-    public ResponseEntity<String> updatePracownik(@RequestParam String imie,@RequestParam String dimie,
+    public ResponseEntity<String> updatePracownik(@RequestParam String imie, @RequestParam String dimie,
                                                   @RequestParam String nazwisko, @RequestParam String typPracownika,
                                                   @RequestParam MultipartFile zdjecie, @RequestParam LocalDate data,
-                                                  @RequestParam String login,@RequestParam String haslo,
-                                                  @RequestParam Long idPracownika){
-        try{
+                                                  @RequestParam String login, @RequestParam String haslo,
+                                                  @RequestParam Long idPracownika) {
+        try {
             byte[] zdj = zdjecie.getBytes();
-            service.updatePracownik(idPracownika,imie, dimie, nazwisko, typPracownika, zdj, data, login, haslo);
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdj, data, login, haslo);
             return ResponseEntity.ok("ok");
-        } catch (Exception e){
-            return ResponseEntity.status(500).body("Error" +e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error" + e.getMessage());
         }
     }
 
     @PostMapping("/deleteByNameAndSurname")
     public ResponseEntity<String> deletePracownikByNameAndSurname(@RequestParam String imie,
-                                                                  @RequestParam String nazwisko){
-        try{
+                                                                  @RequestParam String nazwisko) {
+        try {
             service.deletePracownikByNameAndSurname(imie, nazwisko);
             return ResponseEntity.ok("usunieto pracownika" + imie + " " + nazwisko);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(500).body("Error " + e.getMessage());
         }
     }
@@ -136,7 +141,7 @@ public class pracownikController {
                                                   @RequestParam String login,
                                                   @RequestParam String haslo) {
         try {
-            service.updatePracownik(idPracownika,imie, dimie, nazwisko, typPracownika, zdjecie, data, login, haslo);
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecie, data, login, haslo);
             return ResponseEntity.ok("Pracownik został zaktualizowany pomyślnie.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -145,5 +150,56 @@ public class pracownikController {
         }
     }
 
-}
+    //wyswietla ilosc pracowników którzy rozpoczęli pracę dzisiaj
+    @GetMapping("/nowiDzis")
+    public ResponseEntity<?> getEmployeesStartedToday() {
+        try {
+            long count = service.countEmployeesStartedToday();
+            return ResponseEntity.ok(count);
+        } catch (Exception e) {
+            // Logujemy błąd (opcjonalnie)
+            e.printStackTrace();
 
+            // Zwracamy status 500 + wiadomość
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Wystąpił błąd podczas zliczania nowych pracowników: " + e.getMessage());
+        }
+    }
+
+    //zwraca godzinę startu pracy
+    @GetMapping("/pierwszyStartDzisiaj")
+    public ResponseEntity<?> getFirstStartTimeToday() {
+        try {
+            String godzina = service.getFirstStartTimeToday();
+            if (godzina == null) {
+                return ResponseEntity.ok("Brak pracowników, którzy dziś rozpoczęli pracę.");
+            }
+            return ResponseEntity.ok(godzina);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Błąd: " + e.getMessage());
+        }
+    }
+
+    //zwraca czas przerw w minutach
+    @GetMapping("/sumaPrzerwDzisiaj")
+    public ResponseEntity<Double> getTodayBreakTimeOnlyNumber() {
+        try {
+            double hours = service.getTotalBreakTimeTodayInHours();
+            return ResponseEntity.ok(hours);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    //zwraca ilość godzin przecowanych dzisiaj
+    @GetMapping("/czasPracyDzisiaj")
+    public ResponseEntity<Double> getCzasPracyDlaAdama() {
+        try {
+            Double czas = service.getCzasPracy();
+            return czas != null ? ResponseEntity.ok(czas) : ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+}

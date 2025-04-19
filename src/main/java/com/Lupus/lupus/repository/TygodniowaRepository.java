@@ -1,5 +1,7 @@
 package com.Lupus.lupus.repository;
 
+import com.Lupus.lupus.DTO.MonthlyProjection;
+import com.Lupus.lupus.DTO.WeeklyPayProjection;
 import com.Lupus.lupus.entity.wyplataTygodniowa;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
+import java.util.List;
 
 //TODO
 //dodawanie wyplat tygodniowych DONE
@@ -56,23 +59,50 @@ public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, 
     //TODO
     //dodac przedzial dat DONE
     @Transactional
-    @Modifying
     @Query(value = "select p.imie,p.nazwisko, w.kwota_tygodniowa,w.zaliczka_tygodniowa,w.data_wyplaty_tygodniowej\n" +
             "from wyplata_tygodniowa w \n" +
             "join pracownik p on p.id_pracownika = w.id_pracownika " +
-            "WHERE DATE_PART('week',w.data_wyplaty_tygodniowej) = DATE_PART('week', :data)" +
+            "WHERE DATE_PART('week',w.data_wyplaty_tygodniowej) = DATE_PART('week', CAST(:data AS DATE))" +
             "AND (p.imie = :imie AND p.nazwisko = :nazwisko)"
             ,nativeQuery = true)
-    void getweeklyPaychekEmployee(@RequestParam("imie") String imie,
-                                  @RequestParam("nazwisko") String nazwisko,
-                                  @RequestParam("data") Date data);
+    WeeklyPayProjection getweeklyPaychekEmployee(@RequestParam("imie") String imie,
+                                          @RequestParam("nazwisko") String nazwisko,
+                                          @RequestParam("data") Date data);
+    //pokazuje wyplaty trygodniowe dlka pracownika z zakresu od do
+    @Query(value = """
+        SELECT p.imie,
+               p.nazwisko,
+               w.kwota_tygodniowa,
+               w.zaliczka_tygodniowa,
+               w.data_wyplaty_tygodniowej
+        FROM wyplata_tygodniowa w
+        JOIN pracownik p ON p.id_pracownika = w.id_pracownika
+        WHERE w.data_wyplaty_tygodniowej BETWEEN :od AND :do
+          AND p.imie = :imie
+          AND p.nazwisko = :nazwisko
+        """, nativeQuery = true)
+    List<WeeklyPayProjection> getWeeklyPaychecksForEmployeeInDateRange(
+            @Param("imie") String imie,
+            @Param("nazwisko") String nazwisko,
+            @Param("od") Date od,
+            @Param("do") Date doData);
+
 
     //wyswietlanie wyplaty tygodniowej dla wszystkich pracownikow
-    @Query(value = "select p.imie,p.nazwisko, w.kwota_tygodniowa,w.zaliczka_tygodniowa,w.data_wyplaty_tygodniowej\n" +
-            "from wyplata_tygodniowa w \n" +
-            "join pracownik p on p.id_pracownika = w.id_pracownika ",
-    nativeQuery = true)
-    void getWeeklyPaycheks();
+    //z przedziału daty od do
+    @Query(value = """
+    SELECT p.imie AS imie,
+           p.nazwisko AS nazwisko,
+           w.kwota_tygodniowa AS kwotaTygodniowa,
+           w.zaliczka_tygodniowa AS zaliczkaTygodniowa,
+           w.data_wyplaty_tygodniowej AS dataWyplatyTygodniowej
+    FROM wyplata_tygodniowa w
+    JOIN pracownik p ON p.id_pracownika = w.id_pracownika
+    WHERE w.data_wyplaty_tygodniowej BETWEEN :od AND :ddo
+""", nativeQuery = true)
+    List<WeeklyPayProjection> getWeeklyPaycheks(@Param("od") Date od,
+                                                @Param("ddo") Date ddo);
+
 
     @Query(value = "select p.imie,p.nazwisko, w.kwota_tygodniowa,w.zaliczka_tygodniowa,w.data_wyplaty_tygodniowej\n" +
             "from wyplata_tygodniowa w \n" +
@@ -99,8 +129,8 @@ public interface TygodniowaRepository extends CrudRepository<wyplataTygodniowa, 
             "    p.nazwisko,\n" +
             "\tp.drugie_imie;",
     nativeQuery = true)
-    void getMonthlyPaycheks(@RequestParam("start") Date start,
-                            @RequestParam("stop") Date stop);
+    List<MonthlyProjection> getMonthlyPaycheks(@RequestParam("start") Date start,
+                                               @RequestParam("stop") Date stop);
 
     //miesieczna wyplata dla pracownika
     @Query(value = "SELECT p.imie, p.drugie_imie, p.nazwisko,\n" +

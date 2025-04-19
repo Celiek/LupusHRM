@@ -1,14 +1,18 @@
 package com.Lupus.lupus.controler;
 
+import com.Lupus.lupus.DTO.MonthlyProjection;
+import com.Lupus.lupus.DTO.WeeklyPayProjection;
 import com.Lupus.lupus.DTO.WyplataRequest;
 import com.Lupus.lupus.DTO.WyplataTygodniowaDTO;
 import com.Lupus.lupus.service.tygodniowaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/wyplataTyg")
@@ -71,25 +75,31 @@ public class wyplataTygodniowaController {
     }
 
     @GetMapping("/getWeeklyPaychek")
-    public ResponseEntity<String> getweeklyPaychekEmployee(@RequestParam String imie,
-                                                           @RequestParam String nazwisko,
-                                                           @RequestParam Date data){
-        try{
-            service.getweeklyPaychekEmployee(imie,nazwisko,data);
-            return ResponseEntity.ok("ok");
-        } catch (Exception e){
-            return  ResponseEntity.status(500).body("Error " +e.getMessage());
+    public ResponseEntity<WeeklyPayProjection> getweeklyPaychekEmployee(@RequestParam String imie,
+                                                                        @RequestParam String nazwisko,
+                                                                        @RequestParam Date data) {
+        try {
+            WeeklyPayProjection projection = service.getweeklyPaychekEmployee(imie, nazwisko, data);
+            if (projection == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(projection);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
         }
     }
 
-    @GetMapping("/getWeeklyPaycheks")
-    public ResponseEntity<String> getWeeklyPaycheks(){
 
+    @GetMapping("/getWeeklyPaycheks")
+    public ResponseEntity<List<WeeklyPayProjection>>getWeeklyPaycheks(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date od,
+                                                                      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date ddo){
         try{
-            service.getWeeklyPaycheks();
-            return ResponseEntity.ok("ok");
+            List<WeeklyPayProjection> lista = service.getWeeklyPaycheks(od, ddo);
+            service.getWeeklyPaycheks(od,ddo);
+            return ResponseEntity.ok(lista);
         } catch (Exception e){
-            return ResponseEntity.status(500).body("Error " +e.getMessage());
+            return ResponseEntity.status(500).build();
         }
     }
 
@@ -105,15 +115,33 @@ public class wyplataTygodniowaController {
 //    }
 
     @GetMapping("/getMonthlyPaycheks")
-    public ResponseEntity<String> getMonthlyPaycheks(@RequestParam Date start,
-                                                     @RequestParam Date stop){
-        try{
-            service.getMonthlyPaycheks(start,stop);
-            return ResponseEntity.ok("ok");
-        } catch(Exception e){
-            return  ResponseEntity.status(500).body("Error " + e.getMessage());
+    public ResponseEntity<List<MonthlyProjection>> getMonthlyPaycheks(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date stop) {
+        try {
+            List<MonthlyProjection> wynik = service.getMonthlyPaycheks(start, stop);
+            return ResponseEntity.ok(wynik);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
         }
     }
+
+    @GetMapping("/getWeeklyPaycheksForEmployee")
+    public ResponseEntity<List<WeeklyPayProjection>> getWypłatyPracownikaZakres(
+            @RequestParam String imie,
+            @RequestParam String nazwisko,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date od,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date doData
+    ) {
+        try {
+            List<WeeklyPayProjection> wynik = service.getWeeklyPaychecksForEmployeeInDateRange(imie, nazwisko, od, doData);
+            return ResponseEntity.ok(wynik);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+
 
     @GetMapping("/getMonthlyPaycheck")
     public ResponseEntity<String> getMonthlyPaycheck(@RequestParam Date start,
