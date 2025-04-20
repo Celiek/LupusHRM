@@ -51,6 +51,7 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                             .requestMatchers("/api/auth/login").permitAll()
+                            .requestMatchers("/api/ping").permitAll()
                             .requestMatchers("/admin-dashboard").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/listall").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/addPracownik").hasAnyAuthority("ADMIN","ADAS")
