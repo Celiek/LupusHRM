@@ -92,4 +92,14 @@ public class CzasPracyService {
     public List<Object[]> findCzasPracyByDate(LocalDate dataPracy){
         return repo.findCzasPracyByDate(dataPracy);
     }
+
+    //stop pracy dla pojedynczego pracowbnika
+    public void stopPracyDlaPracownika(Long id){
+        repo.stopPracyDlaPracownika(id);
+    }
+
+    //stop pracy dla wszystkich pracownikow
+    public void stopPracaDlaPracownikow(List<Long> ids){
+        repo.stopPracaDlaWieluPracownikow(ids);
+    }
 }

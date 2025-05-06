@@ -70,6 +70,7 @@ public class SecurityConfig {
                             .requestMatchers("/api/pracownik/czasPracyToday").hasAnyAuthority("ROLE_ADMIN", "ROLE_ADAS")
                             .requestMatchers("/nowiDzis").hasAnyAuthority("ADMIN","ADAS")
                             .requestMatchers("/getWeeklyPaycheksForEmployee").hasAnyAuthority("ADMIN","ADAS")
+                            .requestMatchers("/stopPracy").hasAnyAuthority("ADMIN", "ADAS")
                             .requestMatchers("/pracownik").hasAuthority("FIZYCZNY")
                             .anyRequest().authenticated()
                     )

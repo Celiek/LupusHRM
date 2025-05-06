@@ -37,6 +37,20 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
             "FROM pracownik", nativeQuery = true)
     void insertStartDayForEmployees();
 
+
+    //stop pracy dla pojedynczego uzytkownika
+    @Modifying
+    @Transactional
+    @Query("UPDATE czas_pracy c SET c.stop_pracy = CURRENT_TIME WHERE c.id_pracownik = :id AND c.data_pracy = CURRENT_DATE")
+    void stopPracyDlaPracownika(@Param("id") Long id);
+
+    //stop pracy dla wielu pracowników
+    @Modifying
+    @Transactional
+    @Query("UPDATE czas_pracy c SET c.stop_pracy = CURRENT_TIME WHERE c.id_pracownik IN :ids AND c.data_pracy = CURRENT_DATE")
+    void stopPracaDlaWieluPracownikow(@Param("ids") List<Long> ids);
+
+
     //zlicza ilosc godzin przepracowanych godzin danego dnia dla wszystkich pracownikow
     @Query(value = "SELECT p.imie, p.nazwisko, p.drugie_imie, c.data_pracy, c.start_pracy, c.stop_pracy, " +
             "COALESCE(c.czas_przerwy, INTERVAL '0 seconds') AS czas_przerwy, " +

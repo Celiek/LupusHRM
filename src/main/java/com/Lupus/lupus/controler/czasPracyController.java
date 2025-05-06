@@ -39,6 +39,18 @@ public class czasPracyController {
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
+
+    @PostMapping("/stopPracy")
+    public ResponseEntity<String> stopPracyDlaPracownika(@RequestParam Long id){
+        try
+        {
+            service.stopPracyDlaPracownika(id);
+            return ResponseEntity.ok("Zapisano zakonczenie pracy dal pracownika od ID " + id);
+        } catch (Exception e){
+            return ResponseEntity.status(500).body("Błąd zapisu stopu pracy " + e.getMessage());
+        }
+    }
+
     @GetMapping("/sumGodzinyPracyByIdForEmployee")
     public ResponseEntity<List<Map<String, Object>>> sumGodzinyPracyForEmployeeOnDate(@RequestParam Long idPracownika,
                                                                                @RequestParam  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataStart) {
@@ -112,4 +124,15 @@ public class czasPracyController {
                     .body(Collections.singletonList(new Object[]{"Wystąpił błąd: " + e.getMessage()}));
         }
     }
+
+    @PostMapping("/stopPracaWielu")
+    public ResponseEntity<String> stopPracaDlaWielu(@RequestBody List<Long> ids) {
+        try {
+            service.stopPracaDlaPracownikow(ids);
+            return ResponseEntity.ok("Zatrzymano pracę dla: " + ids.size() + " pracowników");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Błąd zatrzymania pracy: " + e.getMessage());
+        }
+    }
+
 }
