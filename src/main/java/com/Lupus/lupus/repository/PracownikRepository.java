@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
 
-    @Query(value="SELECT DISTINCT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login,haslo From pracownik ORDER BY imie",nativeQuery = true)
+    @Query(value="SELECT DISTINCT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo, kraj_pochodzenia, nr_whatsapp FROM pracownik ORDER BY imie",nativeQuery = true)
     List<Object[]> findallUsers();
 
     //logowanie uzytkownikow
@@ -36,39 +36,45 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     @Query(value="DELETE from pracownik where id_pracownika = :idPracownik",nativeQuery = true)
     void deletePracownikById(@Param("idPracownik")Long idPracownik);
 
-    @Transactional
     @Modifying
-    @Query(value = "Insert into pracownik(imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo )" +
-            "VALUES(:imie,:dimie, :nazwisko, :typ, :zdjecie,:data,:login,:haslo);",nativeQuery = true)
-    void addPracownik(@Param("imie")String imie,
-                      @Param("dimie")String dimie,
-                      @Param("nazwisko")String nazwisko,
-                      @Param("typ")String typ,
+    @Query(value = "INSERT INTO pracownik(imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo, kraj_pochodzenia, nr_whatsapp) " +
+            "VALUES(:imie, :dimie, :nazwisko, :typ, :zdjecie, :data, :login, :haslo, :kraj, :whatsapp)", nativeQuery = true)
+    void addPracownik(@Param("imie") String imie,
+                      @Param("dimie") String dimie,
+                      @Param("nazwisko") String nazwisko,
+                      @Param("typ") String typ,
                       @Param("zdjecie") byte[] zdjecie,
                       @Param("data") LocalDate data,
-                      @Param("login")String login,
-                      @Param("haslo")String haslo);
+                      @Param("login") String login,
+                      @Param("haslo") String haslo,
+                      @Param("kraj") String krajPochodzenia,
+                      @Param("whatsapp") String nrWhatsapp);
 
-    @Query(value="UPDATE pracownik\n" +
-            "SET \n" +
-            "    imie = COALESCE(:imie, imie),\n" +
-            "    drugie_imie = COALESCE(:dimie, drugie_imie),\n" +
-            "    nazwisko = COALESCE(:nazwisko, nazwisko),\n" +
-            "    typ_pracownika = COALESCE(:typ_pracownika, typ_pracownika),\n" +
-            "    zdjecie = COALESCE(:zdjecie, zdjecie),\n" +
-            "    data_dolaczenia = COALESCE(:data_dolaczenia, data_dolaczenia),\n" +
-            "    login = COALESCE(:login, login),\n" +
-            "    haslo = COALESCE(:haslo, haslo)\n" +
-            "WHERE id_pracownika = :id_pracownika;",nativeQuery = true)
-    void updatePracownik(@Param("id_pracownika")Long id_pracownika,
-                         @Param("imie")String imie,
-                         @Param("dimie")String dimie,
-                         @Param("nazwisko")String nazwisko,
-                         @Param("typ")String typ,
+    @Modifying
+    @Query(value = "UPDATE pracownik SET " +
+            "imie = COALESCE(:imie, imie), " +
+            "drugie_imie = COALESCE(:dimie, drugie_imie), " +
+            "nazwisko = COALESCE(:nazwisko, nazwisko), " +
+            "typ_pracownika = COALESCE(:typ, typ_pracownika), " +
+            "zdjecie = COALESCE(:zdjecie, zdjecie), " +
+            "data_dolaczenia = COALESCE(:data, data_dolaczenia), " +
+            "login = COALESCE(:login, login), " +
+            "haslo = COALESCE(:haslo, haslo), " +
+            "kraj_pochodzenia = COALESCE(:kraj, kraj_pochodzenia), " +
+            "nr_whatsapp = COALESCE(:whatsapp, nr_whatsapp) " +
+            "WHERE id_pracownika = :id", nativeQuery = true)
+    void updatePracownik(@Param("id") Long id,
+                         @Param("imie") String imie,
+                         @Param("dimie") String dimie,
+                         @Param("nazwisko") String nazwisko,
+                         @Param("typ") String typ,
                          @Param("zdjecie") byte[] zdjecie,
                          @Param("data") LocalDate data,
-                         @Param("login")String login,
-                         @Param("haslo")String haslo);
+                         @Param("login") String login,
+                         @Param("haslo") String haslo,
+                         @Param("kraj") String krajPochodzenia,
+                         @Param("whatsapp") String nrWhatsapp);
+
 
     @Transactional
     @Modifying

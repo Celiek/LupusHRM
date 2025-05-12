@@ -23,8 +23,9 @@ public class pracownikService {
                              byte[] zdjecie,
                              LocalDate data,
                              String login,
-                             String haslo){
-        repo.addPracownik(imie,dimie,nazwisko,typ,zdjecie,data,login,haslo);
+                             String haslo,
+                             String kraj_pochodzena,String nr_whatsapp){
+        repo.addPracownik(imie,dimie,nazwisko,typ,zdjecie,data,login,haslo,kraj_pochodzena,nr_whatsapp);
     }
 
 
@@ -45,6 +46,8 @@ public class pracownikService {
             dto.setDataDolaczenia((row[6] != null) ? LocalDate.parse(row[6].toString()) : null);
             dto.setLogin((String) row[7]); // login
             dto.setHaslo((String) row[8]); // haslo
+            dto.setKrajPochodzenia((String) row[9]);
+            dto.setNrWhatsapp((String) row[10]);
 
             users.add(dto);
         }
@@ -93,8 +96,8 @@ public class pracownikService {
     }
 
     public void updatePracownik(Long id_Pracownika,String imie, String dimie, String nazwisko, String typPracownika,
-                                byte[] zdjecie, LocalDate data, String login, String haslo) {
-        repo.updatePracownik(id_Pracownika,imie,dimie,nazwisko,typPracownika,zdjecie,data,login,haslo);
+                                byte[] zdjecie, LocalDate data, String login, String haslo,String kraj_pochiodzenia, String nr_whatsapp) {
+        repo.updatePracownik(id_Pracownika,imie,dimie,nazwisko,typPracownika,zdjecie,data,login,haslo,kraj_pochiodzenia,nr_whatsapp);
     }
 
     public void deletePracownikByNameAndSurname(String imie,String nazwisko){

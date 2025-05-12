@@ -30,12 +30,13 @@ public class czasPracyController {
             return  ResponseEntity.status(500).body(error + e.getMessage());
         }
     }
+
     @PostMapping("/startPracy")
-    public ResponseEntity<String> insertStartDayForEmployees(){
-        try{
+    public ResponseEntity<String> insertStartDayForEmployees() {
+        try {
             service.insertStartDayForEmployees();
             return ResponseEntity.ok("Rozpoczeto czas pracy!");
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(500).body(error + e.getMessage());
         }
     }

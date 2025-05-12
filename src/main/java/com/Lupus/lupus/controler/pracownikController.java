@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +32,8 @@ public class pracownikController {
             @RequestParam MultipartFile zdjecie,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
             @RequestParam String login,
-            @RequestParam String haslo) {
+            @RequestParam String haslo,@RequestParam String kraj_pochodzenia,
+            @RequestParam String nr_whatsapp) {
         try {
             // Walidacja pliku (zdjęcia)
             if (zdjecie.isEmpty()) {
@@ -42,7 +42,7 @@ public class pracownikController {
 
             byte[] zdj = zdjecie.getBytes();
             // Wywołanie serwisu
-            service.addPracownik(imie, dimie, nazwisko, typ, zdj, data, login, haslo);
+            service.addPracownik(imie, dimie, nazwisko, typ, zdj, data, login, haslo,kraj_pochodzenia,nr_whatsapp);
 
             return ResponseEntity.ok("Pracownik został dodany pomyślnie.");
         } catch (Exception e) {
@@ -57,8 +57,8 @@ public class pracownikController {
     @GetMapping("/listall")
     public ResponseEntity<?> findAllUsers() {
         try {
-            List<PracownikDto> results = service.findAllUsers();  // Pobierz dane z serwisu
-            return ResponseEntity.ok(results);  // Zwróć odpowiedź z danymi;
+            List<PracownikDto> results = service.findAllUsers();
+            return ResponseEntity.ok(results);
         } catch (Exception e) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
@@ -106,10 +106,11 @@ public class pracownikController {
                                                   @RequestParam String nazwisko, @RequestParam String typPracownika,
                                                   @RequestParam MultipartFile zdjecie, @RequestParam LocalDate data,
                                                   @RequestParam String login, @RequestParam String haslo,
-                                                  @RequestParam Long idPracownika) {
+                                                  @RequestParam Long idPracownika,@RequestParam String kraj_pochodzenia,
+                                                  @RequestParam String nr_whatsapp) {
         try {
             byte[] zdj = zdjecie.getBytes();
-            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdj, data, login, haslo);
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdj, data, login, haslo,kraj_pochodzenia,nr_whatsapp);
             return ResponseEntity.ok("ok");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error" + e.getMessage());
@@ -136,9 +137,10 @@ public class pracownikController {
                                                   @RequestParam byte[] zdjecie,
                                                   @RequestParam LocalDate data,
                                                   @RequestParam String login,
-                                                  @RequestParam String haslo) {
+                                                  @RequestParam String haslo,@RequestParam String kraj_pochodzenia,
+                                                  @RequestParam String nr_whatsapp) {
         try {
-            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecie, data, login, haslo);
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecie, data, login, haslo,kraj_pochodzenia,nr_whatsapp);
             return ResponseEntity.ok("Pracownik został zaktualizowany pomyślnie.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
