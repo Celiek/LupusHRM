@@ -17,8 +17,6 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -43,7 +41,9 @@ public class SecurityConfig {
                         config.setAllowedOrigins(List.of(
                                 "https://lupus24.byst.re",
                                 "http://localhost:5500", // w razie debugowania lokalnie
-                                "http://127.0.0.1:5500"
+                                "http://127.0.0.1:5500",
+                                "http://localhost:80",
+                                "https://127.0.0.1:80"
                         ));
                         config.setAllowCredentials(true);
                         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
