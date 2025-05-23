@@ -192,14 +192,28 @@ public class pracownikController {
 
     //zwraca ilość godzin przecowanych dzisiaj
     @GetMapping("/czasPracyToday")
-    public ResponseEntity<Double> getCzasPracyDlaAdama() {
+    public ResponseEntity<String> getCzasPracyDlaAdama() {
         try {
-            System.out.println("dotarło do kontrolera czasPracyToday");
-            Double czas = service.getCzasPracy();
-            return czas != null ? ResponseEntity.ok(czas) : ResponseEntity.notFound().build();
+            //System.out.println("dotarło do kontrolera czasPracyToday");
+            Double godziny = service.getCzasPracy();
+            return ResponseEntity.ok(godziny !=null ? godziny.toString() :"0");
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
+
+    @GetMapping("/godzinyPracy")
+    public ResponseEntity<List<Object[]>> getGodzinyPracy(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data) {
+        return ResponseEntity.ok(service.getGodzinyPracyForDate(data));
+    }
+
+    @GetMapping("/listallWithHours")
+    public ResponseEntity<List<Object[]>> getAllUsersWithWorkTime(@RequestParam LocalDate data) {
+        List<Object[]> users = service.getUsersWithWorkTimeForDate(data);
+        return ResponseEntity.ok(users);
+    }
+
+
 
 }

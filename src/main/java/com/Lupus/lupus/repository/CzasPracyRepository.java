@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -71,14 +70,6 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
             "GROUP BY id_pracownik  , data_pracy", nativeQuery = true)
     List<Object[]> findGodzinyPracyForEmployeeOnDate(@Param("idPracownika") Long idPracownika,
                                                 @Param("dataPracy") LocalDate dataPracy);
-
-    //ilosc godzin przepracowanych przez jedego pracownika od do
-//    @Query("SELECT new com.Lupus.lupus.dto.CzasPracyDTO(c.id_pracownik, c.data_pracy, c.start_pracy, c.stop_pracy, " +
-//            "COALESCE(c.czas_przerw, 'PT0S'::interval)) " +
-//            "FROM czas_pracy c WHERE c.data_pracy BETWEEN :startDate AND :endDate")
-//    List<CzasPracyDTO> findGodzinyPracyBetweenDates(@Param("startDate") LocalDate startDate,
-//                                                    @Param("endDate") LocalDate endDate);
-
 
     @Query(value = "SELECT c.id_pracownik, " +
             "SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')))/3600) AS godziny_pracy " +

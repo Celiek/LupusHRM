@@ -45,8 +45,7 @@ public class UrlopService {
         repo.updateUrlop(id, idPracownika, dataOd, dataDo, typUrlopu, powod);
     }
 
-    public void usunUrlop(LocalDate data_od,
-                          LocalDate data_do){
-        repo.removeUrlop(data_od, data_do);
+    public void usunUrlop(Long id){
+        repo.removeUrlop(id);
     }
 }

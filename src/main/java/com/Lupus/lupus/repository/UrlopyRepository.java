@@ -2,7 +2,6 @@ package com.Lupus.lupus.repository;
 
 import com.Lupus.lupus.entity.urlopy;
 import jakarta.transaction.Transactional;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public interface UrlopyRepository extends CrudRepository<urlopy, Long> {
 
-    @Query(value = "select p.imie ||' ' || p.nazwisko as 'imie i nazwisko', u.data_od, u.data_do,u.typ_urlopu from pracownik p \n" +
+    @Query(value = "select p.imie ||' ' || p.nazwisko as imie_i_nazwisko, u.data_od, u.data_do,u.typ_urlopu, u.powod, u.id, p.id_pracownika from pracownik p \n" +
             "join urlopy u on u.id_pracownika  = p.id_pracownika", nativeQuery = true)
     List<Object[]> findAllUrlopy();
 
@@ -31,9 +30,11 @@ public interface UrlopyRepository extends CrudRepository<urlopy, Long> {
                                         @Param("data_Od")LocalDate data_Od,
                                         @Param("data_Do")LocalDate data_do,
                                         @Param("typ_Urlopu")String typ_Urlopu,
-                                        @Param("powdo")String powod);
+                                        @Param("powod")String powod);
 
     // awaryjne dodanie urlopu pracownikom
+    @Modifying
+    @Transactional
     @Query(value = """
             INSERT INTO urlopy (id_pracownika, data_od, data_do, typ_urlopu, powod)
                 SELECT p.id_pracownika, :dataOd, :dataDo, :typUrlopu, :powod
@@ -45,29 +46,31 @@ public interface UrlopyRepository extends CrudRepository<urlopy, Long> {
                                         @Param("powod") String powod);
 
     // ususwa urlop po dacie
+    @Modifying
+    @Transactional
     @Query(value = """
-            Delete from urlop
-            Where data_od = :data_od AND data_do = :data_do;
-            """, nativeQuery = true)
-     void removeUrlop(@Param("data_od")LocalDate data_od,
-                      @Param("data_do")LocalDate data_do);
+    DELETE FROM urlopy
+    WHERE id = :id
+    """, nativeQuery = true)
+    void removeUrlop(@Param("id") Long id);
 
     // aktualizuje dane urlopu(nie wszystkie muszą być podane)
     @Modifying
     @Transactional
     @Query(value = """
-            Update urlopy 
-            id_pracownika = Coalesce(:idPracownika, id_pracownika),
-            data_od = Coalesce(:dataOd,data_od),  
-            data_do = Coalesce(:dataDo, data_do),
-            typ_urlop = Coalesce(:typUrlopu, typ_urlopu),
-            powod = Coalesce(:powod, powod)
-            WHERE id = :id
-            """, nativeQuery = true)
+            UPDATE urlopy\s
+                SET id_pracownika = COALESCE(:idPracownika, id_pracownika),
+                    data_od = COALESCE(:dataOd, data_od), \s
+                    data_do = COALESCE(:dataDo, data_do),
+                    typ_urlopu = COALESCE(:typUrlopu, typ_urlopu),
+                    powod = COALESCE(:powod, powod)
+                WHERE id = :id
+    """, nativeQuery = true)
     void updateUrlop(@Param("id") Long id,
                      @Param("idPracownika") Long idPracownika,
-                     @Param("dataOd")LocalDate dataOd,
-                     @Param("dataDo")LocalDate dataDo,
-                     @Param("typUrlopu")String typUrlopu,
-                     @Param("powod")String powod);
+                     @Param("dataOd") LocalDate dataOd,
+                     @Param("dataDo") LocalDate dataDo,
+                     @Param("typUrlopu") String typUrlopu,
+                     @Param("powod") String powod);
+
 }

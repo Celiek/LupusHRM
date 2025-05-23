@@ -1,10 +1,8 @@
 package com.Lupus.lupus.controler;
 
-import com.Lupus.lupus.DTO.UrlopDTO;
 import com.Lupus.lupus.service.UrlopService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,11 +65,11 @@ public class UrlopyController {
 
     @PostMapping("/zaktualizujUrlop")
     public ResponseEntity<String> zaktualizujUrlop(@RequestParam Long id,
-                                                   @RequestParam Long idPracownika,
-                                                   @RequestParam LocalDate dataOd,
-                                                   @RequestParam LocalDate dataDo,
-                                                   @RequestParam String typUrlopu,
-                                                   @RequestParam String powod){
+                                                    @RequestParam(required = false) Long idPracownika,
+                                                    @RequestParam(required = false) LocalDate dataOd,
+                                                    @RequestParam(required = false) LocalDate dataDo,
+                                                    @RequestParam(required = false) String typUrlopu,
+                                                    @RequestParam(required = false) String powod){
         try{
             service.zaktualizujUrlop(id, idPracownika, dataOd, dataDo, typUrlopu, powod);
             return ResponseEntity.ok("Zaktualizowano urlop");
@@ -82,14 +80,22 @@ public class UrlopyController {
     }
 
     @PostMapping("/usunUrlop")
-    public ResponseEntity<String> usunUrlop(@RequestParam LocalDate data_od,
-                                            @RequestParam LocalDate data_do){
+    public ResponseEntity<String> usunUrlop(@RequestParam Long id){
         try{
-            service.usunUrlop(data_od, data_do);
-            return ResponseEntity.ok().body("Usunieto urlop z dnia " + data_od);
+            service.usunUrlop(id);
+            return ResponseEntity.ok().body("Usunieto urlop z id " + id);
         } catch (Exception e){
             return ResponseEntity.status(500).body("Error " + e.getMessage());
         }
     }
 
+    @GetMapping("/urlopyPracownika")
+    public ResponseEntity<List<Object[]>> getUrlopyForPracownik(@RequestParam Long idPracownika) {
+        try {
+            List<Object[]> urlopy = service.findUrlopyFor(idPracownika);
+            return ResponseEntity.ok(urlopy);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

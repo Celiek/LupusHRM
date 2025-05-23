@@ -121,4 +121,12 @@ public class pracownikService {
         return repo.getCzasPracy();
     }
 
+    public List<Object[]> getGodzinyPracyForDate(LocalDate data) {
+        return repo.findGodzinyPracyByDate(data);
+    }
+
+    public List<Object[]> getUsersWithWorkTimeForDate(LocalDate data) {
+        return repo.findAllUsersWithWorkTimeByDate(data);
+    }
+
 }

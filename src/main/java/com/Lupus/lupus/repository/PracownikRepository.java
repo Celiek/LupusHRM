@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 //dodac usuwanie po imieniu i nazwisku
@@ -95,7 +94,7 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     SELECT COUNT(DISTINCT c.id_pracownik)
     FROM czas_pracy c
     WHERE c.data_pracy = CURRENT_DATE
-""", nativeQuery = true)
+    """, nativeQuery = true)
     long countTodayNewEmployees();
 
     //zwraca godzinę startu opracy pracowników
@@ -119,11 +118,11 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     """, nativeQuery = true)
     Double getTotalBreakTimeInMinutesToday();
 
-    //zwraca ilość przepracowanych godzin przez pracowników - czas przerw
+    //zwraca ilość przepracowanych godzin przez pracowników (czas pracy - czas przerw)
     @Query(value = """
-    SELECT ROUND(
-        EXTRACT(EPOCH FROM (NOW() - (CURRENT_DATE + c.start_pracy) - COALESCE(c.czas_przerwy, INTERVAL '0')))
-        / 3600, 2) AS godziny_pracy
+    SELECT
+    EXTRACT(EPOCH FROM (NOW() - (CURRENT_DATE + c.start_pracy) - COALESCE(c.czas_przerwy, INTERVAL '0')))
+        / 3600 AS godziny_pracy
     FROM czas_pracy c
     JOIN pracownik p ON p.id_pracownika = c.id_pracownik
     WHERE c.data_pracy = CURRENT_DATE
@@ -134,5 +133,43 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     """, nativeQuery = true)
     Double getCzasPracy();
 
+    // zwraca przepracowane godziny dla wszystkich pracowników po dacie 
+    @Query(value = """
+    SELECT 
+        p.imie || ' ' || p.nazwisko AS pracownik,
+        EXTRACT(EPOCH FROM (
+            NOW() - (c.data_pracy + c.start_pracy) - COALESCE(c.czas_przerwy, INTERVAL '0')
+        )) / 3600 AS godziny_pracy
+    FROM czas_pracy c
+    JOIN pracownik p ON p.id_pracownika = c.id_pracownik
+    WHERE c.data_pracy = :data
+      AND c.start_pracy IS NOT NULL
+    """, nativeQuery = true)
+    List<Object[]> findGodzinyPracyByDate(@Param("data") LocalDate data);
+
+    // zwraca liste i dane pracownikow pracujacych po dacie
+    @Query(value = """
+    SELECT 
+        p.id_pracownika,
+        p.imie,
+        p.drugie_imie,
+        p.nazwisko,
+        p.typ_pracownika,
+        p.zdjecie,
+        p.data_dolaczenia,
+        p.login,
+        p.haslo,
+        p.kraj_pochodzenia,
+        p.nr_whatsapp,
+        COALESCE(
+            ROUND(CAST(SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, interval '0'))) / 3600) AS numeric), 2),
+            0
+        ) AS godziny
+    FROM pracownik p
+    LEFT JOIN czas_pracy c ON p.id_pracownika = c.id_pracownik AND c.data_pracy = :data
+    GROUP BY p.id_pracownika
+    ORDER BY p.imie
+    """, nativeQuery = true)
+    List<Object[]> findAllUsersWithWorkTimeByDate(@Param("data") LocalDate data);
 
 }
