@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,19 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
     @Query(value = "UPDATE czas_pracy SET start_pracy = CURRENT_TIME WHERE id_pracownik = :id AND data_pracy = CURRENT_DATE",nativeQuery = true)
     void updateStartPracy(Long id);
 
+    @Modifying
+    @Transactional
+    @Query(value = """
+    INSERT INTO czas_pracy (id_pracownik,data_pracy,start_pracy) 
+        VALUES (:id_pracownik,
+                :data,
+                :start)
+    """,nativeQuery =
+            true)
+    void setStartPracyForPracownik(@Param("id_pracownik")Long idPracownik,
+                                   @Param("data")LocalDate data,
+                                   @Param("start")LocalTime start);
+
     //start pracy dla pracownikow
     @Modifying
     @Transactional
@@ -36,6 +50,15 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
             "SELECT id_pracownika, CURRENT_DATE, CURRENT_TIME " +
             "FROM pracownik", nativeQuery = true)
     void insertStartDayForEmployees();
+
+    // dodaje przerwe w ciagu rpacy dla pracownikow
+    @Modifying
+    @Transactional
+    @Query(value="UPDATE czas_pracy \n" +
+            "    SET czas_przerwy = COALESCE(czas_przerwy, INTERVAL '0') + CAST(:przerwa AS INTERVAL) \n" +
+            "    WHERE data_pracy = :data", nativeQuery = true)
+    void insertPrzerwa(@Param("przerwa") String przerwa,
+                       @Param("data") LocalDate data);
 
 
     //stop pracy dla pojedynczego uzytkownika
@@ -107,5 +130,51 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
     @Transactional
     @Query(value = "UPDATE czas_pracy SET start_pracy = CURRENT_TIME WHERE data_pracy = :data_pracy",nativeQuery = true)
     void updateStartPracyByDataPracy(@Param("data_pracy") LocalDate data_pracy);
+
+    @Query(value = """
+    SELECT 
+        c.data_pracy,
+        ROUND(SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy)) / 3600.0), 2) AS suma_godzin,
+        c.id_pracownika
+    FROM 
+        czas_pracy c
+    WHERE 
+        c.start_pracy IS NOT NULL 
+        AND c.stop_pracy IS NOT NULL 
+        AND c.data_pracy BETWEEN :startDate AND :endDate
+    GROUP BY 
+        c.data_pracy, c.id_pracownika
+    ORDER BY 
+        c.data_pracy, c.id_pracownika
+    """, nativeQuery = true)
+    List<Object[]> findGodzinyPracyByDateRange(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
+
+// zwraca liste dni pracy dla pracownika po id i dacie od do
+    @Query(value = """
+    SELECT 
+        p.imie, 
+        p.nazwisko, 
+        p.drugie_imie, 
+        c.data_pracy,
+        ROUND((
+            EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0'))) / 3600
+        )::NUMERIC, 2) AS godziny_pracy
+    FROM pracownik p
+    JOIN czas_pracy c ON c.id_pracownik = p.id_pracownika
+    WHERE c.id_pracownik = :idPracownika
+      AND c.data_pracy BETWEEN :dataOd AND :dataDo
+    ORDER BY c.data_pracy
+""", nativeQuery = true)
+    List<Object[]> findDniPracyZakres(
+            @Param("idPracownika") Long idPracownika,
+            @Param("dataOd") LocalDate dataOd,
+            @Param("dataDo") LocalDate dataDo);
+
+
+
+
 
 }

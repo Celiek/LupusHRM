@@ -2,6 +2,7 @@ package com.Lupus.lupus.controler;
 
 import com.Lupus.lupus.service.UrlopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -98,4 +99,27 @@ public class UrlopyController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/dniUrlopu")
+    public ResponseEntity<List<String>> getDniUrlopu(@RequestParam Long idPracownika) {
+        try {
+            List<String> dni = service.getDniUrlopu(idPracownika);
+            return ResponseEntity.ok(dni);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(List.of("Błąd: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/dniPracyZakres")
+    public ResponseEntity<List<LocalDate>> getDniPracyZakres(
+            @RequestParam Long idPracownika,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataOd,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataDo) {
+        try {
+            List<LocalDate> dni = service.getDniPracy(idPracownika, dataOd, dataDo);
+            return ResponseEntity.ok(dni);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
 }

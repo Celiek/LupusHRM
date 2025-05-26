@@ -52,6 +52,15 @@ public class CzasPracyService {
         return resultList;
     }
 
+    // ustawie start pracy dla pojedynczego pracownika
+    public void setStartPracyForEmployee(Long id, LocalDate data, LocalTime czas){
+        repo.setStartPracyForPracownik(id, data, czas);
+    }
+
+    public void insertPrzerwa(String przerwa, LocalDate data){
+        repo.insertPrzerwa(przerwa,data);
+    }
+
     // Zliczanie godzin pracy dla pracownika w okresie między dwoma datami
     public List<Map<String,Object>> sumGodzinyPracyForEmployeeBetweenDates(Long id_pracownik,LocalDate dataStart, LocalDate dataEnd) {
         //List<CzasPracyDTO> result = repo.findGodzinyPracyBetweenDates(dataStart, dataEnd);
@@ -102,4 +111,13 @@ public class CzasPracyService {
     public void stopPracaDlaPracownikow(List<Long> ids){
         repo.stopPracaDlaWieluPracownikow(ids);
     }
+
+    public List<Object[]> findGodzinyPracyDziennie(LocalDate dataOd, LocalDate dataDo){
+        return repo.findGodzinyPracyByDateRange(dataOd, dataDo);
+    }
+
+    public List<Object[]> getDniPracyZakres(Long idPracownika, LocalDate dataOd, LocalDate dataDo) {
+        return repo.findDniPracyZakres(idPracownika, dataOd, dataDo);
+    }
+
 }

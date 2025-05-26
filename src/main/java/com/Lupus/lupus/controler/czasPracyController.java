@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,18 @@ public class czasPracyController {
             return ResponseEntity.ok("Zapisano zakonczenie pracy dal pracownika od ID " + id);
         } catch (Exception e){
             return ResponseEntity.status(500).body("Błąd zapisu stopu pracy " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/startPraca")
+    public ResponseEntity<String> startPracyDlaPracownika(@RequestParam Long id,
+                                                          @RequestParam LocalDate data,
+                                                          @RequestParam LocalTime czas){
+        try{
+            service.setStartPracyForEmployee(id, data, czas);
+            return ResponseEntity.ok("Rozpoczeco czas pracy dla pracownika: " + id);
+        } catch (Exception e){
+            return ResponseEntity.status(500).body("Error "+ e.getMessage());
         }
     }
 
@@ -110,6 +123,17 @@ public class czasPracyController {
         }
     }
 
+    @PostMapping("/startPracyPojedynczy")
+    public ResponseEntity<String> startPracyPojedynczy(@RequestParam Long idPracownika) {
+        try {
+            service.updateStartPracy(idPracownika, LocalDate.now());
+            return ResponseEntity.ok("Start pracy ustawiony dla ID: " + idPracownika);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Błąd: " + e.getMessage());
+        }
+    }
+
+
     @GetMapping("/findCzasPracyByDate")
     public ResponseEntity<List<Object[]>> findCzasPracyByDate(@RequestParam LocalDate dataPracy){
         try{
@@ -133,6 +157,45 @@ public class czasPracyController {
             return ResponseEntity.ok("Zatrzymano pracę dla: " + ids.size() + " pracowników");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Błąd zatrzymania pracy: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/listDni")
+    public ResponseEntity<List<Object[]>> findGodzinyPracyForPracownik(@RequestParam LocalDate dataOd,
+                                                                       @RequestParam LocalDate dataDo){
+        try{
+            List<Object[]> result =  service.findGodzinyPracyDziennie(dataOd,dataDo);
+            return ResponseEntity.ok(result);
+        } catch (Exception e){
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/dniPracyZakres")
+    public ResponseEntity<?> getDniPracyZakres(
+            @RequestParam("idPracownika") Long idPracownika,
+            @RequestParam("dataOd") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataOd,
+            @RequestParam("dataDo") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataDo) {
+        try {
+            System.out.printf("RECEIVED → id=%s, dataOd=%s, dataDo=%s%n", idPracownika, dataOd, dataDo);
+            List<Object[]> result = service.getDniPracyZakres(idPracownika, dataOd, dataDo);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body("Wystąpił błąd: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/przerwa")
+    public ResponseEntity<String> insertPrzerwa(@RequestParam String przerwa,
+                                                @RequestParam LocalDate data){
+        try{
+            System.out.println("Czas przerwy : " +przerwa);
+            service.insertPrzerwa(przerwa,data);
+            return ResponseEntity.ok().body("Przerwa wstawiona");
+        } catch (Exception e){
+            return ResponseEntity.status(500).body("Error "+e.getMessage());
         }
     }
 
