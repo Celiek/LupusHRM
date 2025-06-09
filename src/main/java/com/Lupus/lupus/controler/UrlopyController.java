@@ -44,10 +44,15 @@ public class UrlopyController {
                                               @RequestParam String typ_Urlopu,
                                               @RequestParam String powod){
         try{
+            System.out.println("Pracownik: " + id_Pracownika);
+            System.out.println("Data od: " + data_Od);
+            System.out.println("Data do: " + data_Do);
+            System.out.println("Typ urlopu: " + typ_Urlopu);
+            System.out.println("Powód: " + powod);
             service.addUrlopForPracownik(id_Pracownika,data_Od,data_Do,typ_Urlopu,powod);
             return  ResponseEntity.ok().build();
         } catch (Exception e){
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.status(500).body(null);
         }
     }
 

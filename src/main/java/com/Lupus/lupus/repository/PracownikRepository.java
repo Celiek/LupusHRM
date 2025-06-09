@@ -50,11 +50,12 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
                       @Param("whatsapp") String nrWhatsapp);
 
     @Modifying
+    @Transactional
     @Query(value = "UPDATE pracownik SET " +
             "imie = COALESCE(:imie, imie), " +
             "drugie_imie = COALESCE(:dimie, drugie_imie), " +
             "nazwisko = COALESCE(:nazwisko, nazwisko), " +
-            "typ_pracownika = COALESCE(:typ, typ_pracownika), " +
+            "typ_pracownika = COALESCE(:typ_pracownika, typ_pracownika), " +
             "zdjecie = COALESCE(:zdjecie, zdjecie), " +
             "data_dolaczenia = COALESCE(:data, data_dolaczenia), " +
             "login = COALESCE(:login, login), " +
@@ -66,7 +67,7 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
                          @Param("imie") String imie,
                          @Param("dimie") String dimie,
                          @Param("nazwisko") String nazwisko,
-                         @Param("typ") String typ,
+                         @Param("typ_pracownika") String typ,
                          @Param("zdjecie") byte[] zdjecie,
                          @Param("data") LocalDate data,
                          @Param("login") String login,

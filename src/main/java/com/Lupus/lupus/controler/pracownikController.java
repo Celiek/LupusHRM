@@ -4,6 +4,7 @@ import com.Lupus.lupus.DTO.PracownikDto;
 import com.Lupus.lupus.service.pracownikService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -129,18 +130,27 @@ public class pracownikController {
     }
 
     @PostMapping("/updatePracownik")
-    public ResponseEntity<String> updatePracownik(@RequestParam Long idPracownika,
-                                                  @RequestParam String imie,
-                                                  @RequestParam String dimie,
-                                                  @RequestParam String nazwisko,
-                                                  @RequestParam String typPracownika,
-                                                  @RequestParam byte[] zdjecie,
-                                                  @RequestParam LocalDate data,
-                                                  @RequestParam String login,
-                                                  @RequestParam String haslo,@RequestParam String kraj_pochodzenia,
-                                                  @RequestParam String nr_whatsapp) {
+    public ResponseEntity<String> updatePracownik(
+            @RequestParam Long idPracownika,
+            @RequestParam String imie,
+            @RequestParam String dimie,
+            @RequestParam String nazwisko,
+            @RequestParam String typPracownika,
+            @RequestParam(required = false) MultipartFile zdjecie,
+            @RequestParam String data,  // String w formacie "yyyy-MM-dd"
+            @RequestParam String login,
+            @RequestParam String haslo,
+            @RequestParam String kraj_pochodzenia,
+            @RequestParam String nr_whatsapp) {
         try {
-            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecie, data, login, haslo,kraj_pochodzenia,nr_whatsapp);
+            // Parsowanie daty, jeśli jest w formacie String
+            LocalDate dataPracownika = LocalDate.parse(data);  // Konwertujemy String na LocalDate
+            byte[] zdjecieBytes = null;
+            if (zdjecie != null && !zdjecie.isEmpty()) {
+                zdjecieBytes = zdjecie.getBytes();
+            }
+
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecieBytes, dataPracownika, login, haslo, kraj_pochodzenia, nr_whatsapp);
             return ResponseEntity.ok("Pracownik został zaktualizowany pomyślnie.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -148,6 +158,7 @@ public class pracownikController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Błąd podczas aktualizacji: " + e.getMessage());
         }
     }
+
 
     //wyswietla ilosc pracowników którzy rozpoczęli pracę dzisiaj
     @GetMapping("/nowiDzis")
