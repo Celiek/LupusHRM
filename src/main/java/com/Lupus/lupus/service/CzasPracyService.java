@@ -136,12 +136,21 @@ public class CzasPracyService {
         LocalTime stopPracy = (stopPracyStr != null && !stopPracyStr.isEmpty()) ?
                 LocalTime.parse(stopPracyStr) : null;
 
-        // Przekształcamy czas przerwy na Duration
-        Duration czasPrzerwy = (czasPrzerwyStr != null && !czasPrzerwyStr.isEmpty()) ?
-                Duration.parse("PT" + czasPrzerwyStr.replace(":", "H") + "M") : null;
+        // Konwertujemy czas przerwy z formatu 'HH:mm' na liczbę minut (long)
+        long czasPrzerwyMinuty = convertStringToMinutes(czasPrzerwyStr);
 
         // Wywołanie repozytorium w celu zaktualizowania danych
-        repo.updateCzasPracy(idPracownika, dataPracy, startPracy, stopPracy, czasPrzerwy);
+        repo.updateCzasPracy(idPracownika, dataPracy, startPracy, stopPracy, czasPrzerwyMinuty);
+    }
+    // Metoda do konwersji 'HH:mm' na liczbę minut
+    public long convertStringToMinutes(String czasPrzerwyStr) {
+        if (czasPrzerwyStr != null && !czasPrzerwyStr.isEmpty()) {
+            String[] parts = czasPrzerwyStr.split(":");
+            long hours = Long.parseLong(parts[0]);
+            long minutes = Long.parseLong(parts[1]);
+            return hours * 60 + minutes;
+        }
+        return 0;  // Jeśli brak przerwy, zwracamy 0 minut
     }
 
     public List<Object[]> getPracownicyNieRozpoczeliPracyDnia(LocalDate data){

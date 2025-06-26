@@ -232,7 +232,8 @@ public class czasPracyController {
         }
     }
 
-    @GetMapping("/nieRozpoczeliPracy")
+    //zwraca liste pracwonikwo kotrzy nie ropzoczeli rpacy
+    @GetMapping("/listaNieRozpoczeliPracy")
     public ResponseEntity<List<Object[]>> getPracownicyNieRozpoczeliPracy(
             @RequestParam(name ="data")LocalDate data){
         try{

@@ -115,13 +115,19 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
 
 
     //ilosc godzin przepracowanych przez pracownikow od od do
-    @Query(value = "SELECT c.id_pracownik, p.imie, p.nazwisko, p.zdjecie, " +
-            "SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')))/3600) " +
-            "FROM czas_pracy c " +
-            "Join pracownik p on p.id_pracownika  = c.id_pracownik "+
-            "WHERE c.data_pracy BETWEEN :startDate AND :endDate " +
-            "GROUP BY c.id_pracownik, p.imie, p.nazwisko, p.zdjecie",
-            nativeQuery = true)
+    @Query(value = """
+    SELECT 
+        c.data_pracy, 
+        p.imie, 
+        p.nazwisko, 
+        p.zdjecie,
+        ROUND(SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')))/3600), 2) AS godziny_pracy
+    FROM czas_pracy c
+    JOIN pracownik p ON p.id_pracownika = c.id_pracownik
+    WHERE c.data_pracy BETWEEN :startDate AND :endDate
+    GROUP BY c.data_pracy, p.imie, p.nazwisko, p.zdjecie
+    ORDER BY c.data_pracy
+    """, nativeQuery = true)
     List<Object[]> sumGodzinyPracy(@Param("startDate") LocalDate startDate,
                                    @Param("endDate") LocalDate endDate);
 
@@ -170,32 +176,37 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
         p.drugie_imie, 
         c.data_pracy,
         ROUND((
-            EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0'))) / 3600
+            EXTRACT(EPOCH FROM SUM(c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0'))) / 3600
         )::NUMERIC, 2) AS godziny_pracy
     FROM pracownik p
     JOIN czas_pracy c ON c.id_pracownik = p.id_pracownika
     WHERE c.id_pracownik = :idPracownika
       AND c.data_pracy >= :dataOd 
       AND c.data_pracy <= :dataDo
+    GROUP BY c.data_pracy, p.imie, p.nazwisko, p.drugie_imie
     ORDER BY c.data_pracy
     """, nativeQuery = true)
-    List<Object[]> findDniPracyZakres(
+List<Object[]> findDniPracyZakres(
         @Param("idPracownika") Long idPracownika,
         @Param("dataOd") LocalDate dataOd,
         @Param("dataDo") LocalDate dataDo);
 
+
     @Transactional
     @Modifying
-    @Query(value = "UPDATE czas_pracy c SET " +
-            "c.start_pracy = COALESCE(:startPracy, c.startPracy), " +
-            "c.stop_pracy = COALESCE(:stopPracy, c.stopPracy), " +
-            "c.czas_przerwy = COALESCE(:czasPrzerwy, c.czasPrzerwy) " +
-            "WHERE c.idPracownika = :idPracownika AND c.dataPracy = :dataPracy",nativeQuery = true)
+    @Query(value = """ 
+            UPDATE czas_pracy SET 
+        start_pracy = COALESCE(:startPracy, start_pracy),
+        stop_pracy = COALESCE(:stopPracy, stop_pracy),
+        czas_przerwy = COALESCE(:czasPrzerwy, czas_przerwy)
+        WHERE id_pracownik = :idPracownika AND data_pracy = :dataPracy;""", nativeQuery = true)
     void updateCzasPracy(@Param("idPracownika") Long idPracownika,
                          @Param("dataPracy") Date dataPracy,
                          @Param("startPracy") LocalTime startPracy,
                          @Param("stopPracy") LocalTime stopPracy,
-                         @Param("czasPrzerwy") Duration czasPrzerwy);
+                         @Param("czasPrzerwy") long czasPrzerwy);
+
+
 
     @Query(value = """
     SELECT p.id_pracownika, p.imie, p.nazwisko,p.zdjecie
