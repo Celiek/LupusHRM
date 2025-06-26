@@ -24,8 +24,11 @@ public class pracownikService {
                              LocalDate data,
                              String login,
                              String haslo,
-                             String kraj_pochodzena,String nr_whatsapp){
-        repo.addPracownik(imie,dimie,nazwisko,typ,zdjecie,data,login,haslo,kraj_pochodzena,nr_whatsapp);
+                             String kraj_pochodzena,
+                             String nr_whatsapp,
+                             String email,
+                             String nr_konta){
+        repo.addPracownik(imie,dimie,nazwisko,typ,zdjecie,data,login,haslo,kraj_pochodzena,nr_whatsapp,email,nr_konta);
     }
 
 
@@ -48,7 +51,8 @@ public class pracownikService {
             dto.setHaslo((String) row[8]); // haslo
             dto.setKrajPochodzenia((String) row[9]);
             dto.setNrWhatsapp((String) row[10]);
-
+            dto.setEmail((String) row[11]);
+            dto.setNrKonta((String) row[12]);
             users.add(dto);
         }
 
@@ -96,8 +100,9 @@ public class pracownikService {
     }
 
     public void updatePracownik(Long id_Pracownika,String imie, String dimie, String nazwisko, String typPracownika,
-                                byte[] zdjecie, LocalDate data, String login, String haslo,String kraj_pochiodzenia, String nr_whatsapp) {
-        repo.updatePracownik(id_Pracownika,imie,dimie,nazwisko,typPracownika,zdjecie,data,login,haslo,kraj_pochiodzenia,nr_whatsapp);
+                                byte[] zdjecie, String login, String haslo,String kraj_pochiodzenia, String nr_whatsapp,
+                                String email, String nr_konta) {
+        repo.updatePracownik(id_Pracownika,imie,dimie,nazwisko,typPracownika,zdjecie,login,haslo,kraj_pochiodzenia,nr_whatsapp,email,nr_konta);
     }
 
     public void deletePracownikByNameAndSurname(String imie,String nazwisko){

@@ -24,7 +24,7 @@ public class UrlopyController {
     public ResponseEntity<List<Object[]>> findAllUrlopy(){
         try{
             List<Object[]> results= service.findAllUrlopy();
-            return ResponseEntity.ok(results);
+            return ResponseEntity.ok( results );
 
         } catch (Exception e){
             System.err.println("Błąd podczas pobierania urlopów: " + e.getMessage());

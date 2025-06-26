@@ -23,4 +23,6 @@ public class PracownikDto {
     private String haslo;
     private String krajPochodzenia;
     private String nrWhatsapp;
+    private String email;
+    private String nrKonta;
 }

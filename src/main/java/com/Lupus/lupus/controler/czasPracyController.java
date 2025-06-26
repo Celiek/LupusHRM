@@ -150,6 +150,22 @@ public class czasPracyController {
         }
     }
 
+    @GetMapping("/findCzasPracyByDateId")
+    public ResponseEntity<List<Object[]>> findCzasPracyByDateId(@RequestParam LocalDate dataPracy){
+        try{
+            List<Object[]> result = service.findCzasPracyByDateId(dataPracy);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            // Obsługa konkretnego wyjątku
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Collections.singletonList(new Object[]{"Błąd argumentów: " + e.getMessage()}));
+        } catch (Exception e) {
+            // Obsługa innych ogólnych wyjątków
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonList(new Object[]{"Wystąpił błąd: " + e.getMessage()}));
+        }
+    }
+
     @PostMapping("/stopPracaWielu")
     public ResponseEntity<String> stopPracaDlaWielu(@RequestBody List<Long> ids) {
         try {
@@ -199,4 +215,31 @@ public class czasPracyController {
         }
     }
 
+    @PutMapping("/updateCzasPracy")
+    public ResponseEntity<String> updateCzasPracy(
+            @RequestParam Long idPracownika,
+            @RequestParam String dataPracy,
+            @RequestParam(required = false) String startPracy,
+            @RequestParam(required = false) String stopPracy,
+            @RequestParam(required = false) String czasPrzerwy) {
+
+        try {
+            // Wywołanie serwisu w celu zaktualizowania danych
+            service.updateCzasPracy(idPracownika, dataPracy, startPracy, stopPracy, czasPrzerwy);
+            return ResponseEntity.ok("Czas pracy został zaktualizowany.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Wystąpił błąd podczas aktualizacji.");
+        }
+    }
+
+    @GetMapping("/nieRozpoczeliPracy")
+    public ResponseEntity<List<Object[]>> getPracownicyNieRozpoczeliPracy(
+            @RequestParam(name ="data")LocalDate data){
+        try{
+            List<Object[]> pracownicy = service.getPracownicyNieRozpoczeliPracyDnia(data);
+            return ResponseEntity.ok(pracownicy);
+        } catch (Exception e){
+            return ResponseEntity.status(500).build();
+        }
+    }
 }

@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -83,6 +85,14 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
             "WHERE c.data_pracy = :dataPracy", nativeQuery = true)
     List<Object[]> findCzasPracyByDate  (@Param("dataPracy") LocalDate dataPracy);
 
+    @Query(value = "SELECT p.id_pracownika, p.imie, p.nazwisko, p.drugie_imie, c.data_pracy, c.start_pracy, c.stop_pracy, " +
+            "COALESCE(c.czas_przerwy, INTERVAL '0 seconds') AS czas_przerwy, " +
+            "NULL AS error_message " +
+            "FROM pracownik p " +
+            "JOIN czas_pracy c ON c.id_pracownik = p.id_pracownika " +
+            "WHERE c.data_pracy = :dataPracy", nativeQuery = true)
+    List<Object[]> findCzasPracyByDateID  (@Param("dataPracy") LocalDate dataPracy);
+
     //zlicza ilosc godzin przepracowanych danego dnia dla jednego pracownika
     //poprawic tak zeby imie nazwisko i zdjecie zwracalo
     //dodac drugie zapytanie dla wszystkich pracownikow
@@ -153,7 +163,7 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
     );
 
 // zwraca liste dni pracy dla pracownika po id i dacie od do
-    @Query(value = """
+@Query(value = """
     SELECT 
         p.imie, 
         p.nazwisko, 
@@ -165,16 +175,37 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
     FROM pracownik p
     JOIN czas_pracy c ON c.id_pracownik = p.id_pracownika
     WHERE c.id_pracownik = :idPracownika
-      AND c.data_pracy BETWEEN :dataOd AND :dataDo
+      AND c.data_pracy >= :dataOd 
+      AND c.data_pracy <= :dataDo
     ORDER BY c.data_pracy
-""", nativeQuery = true)
+    """, nativeQuery = true)
     List<Object[]> findDniPracyZakres(
-            @Param("idPracownika") Long idPracownika,
-            @Param("dataOd") LocalDate dataOd,
-            @Param("dataDo") LocalDate dataDo);
+        @Param("idPracownika") Long idPracownika,
+        @Param("dataOd") LocalDate dataOd,
+        @Param("dataDo") LocalDate dataDo);
 
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE czas_pracy c SET " +
+            "c.start_pracy = COALESCE(:startPracy, c.startPracy), " +
+            "c.stop_pracy = COALESCE(:stopPracy, c.stopPracy), " +
+            "c.czas_przerwy = COALESCE(:czasPrzerwy, c.czasPrzerwy) " +
+            "WHERE c.idPracownika = :idPracownika AND c.dataPracy = :dataPracy",nativeQuery = true)
+    void updateCzasPracy(@Param("idPracownika") Long idPracownika,
+                         @Param("dataPracy") Date dataPracy,
+                         @Param("startPracy") LocalTime startPracy,
+                         @Param("stopPracy") LocalTime stopPracy,
+                         @Param("czasPrzerwy") Duration czasPrzerwy);
 
-
-
+    @Query(value = """
+    SELECT p.id_pracownika, p.imie, p.nazwisko,p.zdjecie
+    FROM pracownik p
+    LEFT JOIN czas_pracy c ON c.id_pracownik = p.id_pracownika
+    AND c.data_pracy = :data
+    WHERE c.start_pracy IS NULL
+    OR c.data_pracy IS NULL
+    ORDER BY p.nazwisko, p.imie
+    """, nativeQuery = true)
+    List<Object[]> findPracownicyNieRozpoczeliPracyDnia(@Param("data") LocalDate data);
 
 }

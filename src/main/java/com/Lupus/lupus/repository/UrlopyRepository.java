@@ -18,10 +18,10 @@ public interface UrlopyRepository extends CrudRepository<urlopy, Long> {
 
     // lista urlopów dla osoby po id pracownika
     // TODO dodać sortowanie urlopów od najnowszych do najstarszych
-    @Query(value = "select p.imie ||' ' || p.nazwisko as imie_i_nazwisko, u.data_od, u.data_do from pracownik p \n" +
-            "join urlopy u on u.id_pracownika  = p.id_pracownika\n" +
-            "where p.id_pracownika = :idPracownika",nativeQuery = true)
-    List<Object[]> findUrlopyFor(@Param("idPracownika")Long idPracownika);
+    @Query(value = "select p.imie ||' ' || p.nazwisko as imie_i_nazwisko, u.data_od, u.data_do, u.powod from pracownik p " +
+            "join urlopy u on u.id_pracownika  = p.id_pracownika " +
+            "where p.id_pracownika = :idPracownika", nativeQuery = true)
+    List<Object[]> findUrlopyFor(@Param("idPracownika") Long idPracownika);
 
 
     @Query(value ="SELECT u,data",nativeQuery = true )

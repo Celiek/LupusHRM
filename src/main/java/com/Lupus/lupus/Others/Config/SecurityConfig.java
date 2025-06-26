@@ -84,12 +84,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/czasPracy/**").hasAnyAuthority("ADMIN","ROLE_ADMIN", "ADAS")
                         .requestMatchers("/api/uwagi/**").hasAnyAuthority("ADMIN","ROLE_ADMIN", "ADAS")
                         .requestMatchers("/api/czasPracy/**").hasAnyAuthority("ADMIN", "ADAS")
-                        //.requestMatchers("/api/pracownik/listallWithHours").permitAll()
                         .requestMatchers("/pracownik").hasAuthority("FIZYCZNY")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(filterValidator, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

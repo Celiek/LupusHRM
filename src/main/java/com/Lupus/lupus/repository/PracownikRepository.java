@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
 
-    @Query(value="SELECT DISTINCT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo, kraj_pochodzenia, nr_whatsapp FROM pracownik ORDER BY imie",nativeQuery = true)
+    @Query(value="SELECT DISTINCT id_pracownika, imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo, kraj_pochodzenia, nr_whatsapp,email,nr_konta FROM pracownik ORDER BY imie",nativeQuery = true)
     List<Object[]> findallUsers();
 
     //logowanie uzytkownikow
@@ -36,8 +36,8 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     void deletePracownikById(@Param("idPracownik")Long idPracownik);
 
     @Modifying
-    @Query(value = "INSERT INTO pracownik(imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo, kraj_pochodzenia, nr_whatsapp) " +
-            "VALUES(:imie, :dimie, :nazwisko, :typ, :zdjecie, :data, :login, :haslo, :kraj, :whatsapp)", nativeQuery = true)
+    @Query(value = "INSERT INTO pracownik(imie, drugie_imie, nazwisko, typ_pracownika, zdjecie, data_dolaczenia, login, haslo, kraj_pochodzenia, nr_whatsapp,email,nr_konta) " +
+            "VALUES(:imie, :dimie, :nazwisko, :typ, :zdjecie, :data, :login, :haslo, :kraj, :whatsapp,:email,:nr_konta)", nativeQuery = true)
     void addPracownik(@Param("imie") String imie,
                       @Param("dimie") String dimie,
                       @Param("nazwisko") String nazwisko,
@@ -47,7 +47,9 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
                       @Param("login") String login,
                       @Param("haslo") String haslo,
                       @Param("kraj") String krajPochodzenia,
-                      @Param("whatsapp") String nrWhatsapp);
+                      @Param("whatsapp") String nrWhatsapp,
+                      @Param("email") String email,
+                      @Param("nr_konta")String nr_konta);
 
     @Modifying
     @Transactional
@@ -57,11 +59,12 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
             "nazwisko = COALESCE(:nazwisko, nazwisko), " +
             "typ_pracownika = COALESCE(:typ_pracownika, typ_pracownika), " +
             "zdjecie = COALESCE(:zdjecie, zdjecie), " +
-            "data_dolaczenia = COALESCE(:data, data_dolaczenia), " +
             "login = COALESCE(:login, login), " +
             "haslo = COALESCE(:haslo, haslo), " +
             "kraj_pochodzenia = COALESCE(:kraj, kraj_pochodzenia), " +
-            "nr_whatsapp = COALESCE(:whatsapp, nr_whatsapp) " +
+            "nr_whatsapp = COALESCE(:whatsapp, nr_whatsapp), " +
+            "email = COALESCE(:email, email), " +
+            "nr_konta = COALESCE(:nr_konta, nr_konta) " +
             "WHERE id_pracownika = :id", nativeQuery = true)
     void updatePracownik(@Param("id") Long id,
                          @Param("imie") String imie,
@@ -69,11 +72,12 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
                          @Param("nazwisko") String nazwisko,
                          @Param("typ_pracownika") String typ,
                          @Param("zdjecie") byte[] zdjecie,
-                         @Param("data") LocalDate data,
                          @Param("login") String login,
                          @Param("haslo") String haslo,
                          @Param("kraj") String krajPochodzenia,
-                         @Param("whatsapp") String nrWhatsapp);
+                         @Param("whatsapp") String nrWhatsapp,
+                         @Param("email") String email,
+                         @Param("nr_konta") String nrKonta);
 
 
     @Transactional

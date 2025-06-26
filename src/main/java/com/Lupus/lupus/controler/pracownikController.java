@@ -4,7 +4,6 @@ import com.Lupus.lupus.DTO.PracownikDto;
 import com.Lupus.lupus.service.pracownikService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +32,11 @@ public class pracownikController {
             @RequestParam MultipartFile zdjecie,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate data,
             @RequestParam String login,
-            @RequestParam String haslo,@RequestParam String kraj_pochodzenia,
-            @RequestParam String nr_whatsapp) {
+            @RequestParam String haslo,
+            @RequestParam String kraj_pochodzenia,
+            @RequestParam String nr_whatsapp,
+            @RequestParam String email,
+            @RequestParam String nr_konta) {
         try {
             // Walidacja pliku (zdjęcia)
             if (zdjecie.isEmpty()) {
@@ -43,7 +45,7 @@ public class pracownikController {
 
             byte[] zdj = zdjecie.getBytes();
             // Wywołanie serwisu
-            service.addPracownik(imie, dimie, nazwisko, typ, zdj, data, login, haslo,kraj_pochodzenia,nr_whatsapp);
+            service.addPracownik(imie, dimie, nazwisko, typ, zdj, data, login, haslo,kraj_pochodzenia,nr_whatsapp,email,nr_konta);
 
             return ResponseEntity.ok("Pracownik został dodany pomyślnie.");
         } catch (Exception e) {
@@ -105,13 +107,14 @@ public class pracownikController {
     @PostMapping("/addUser")
     public ResponseEntity<String> updatePracownik(@RequestParam String imie, @RequestParam String dimie,
                                                   @RequestParam String nazwisko, @RequestParam String typPracownika,
-                                                  @RequestParam MultipartFile zdjecie, @RequestParam LocalDate data,
+                                                  @RequestParam MultipartFile zdjecie,
                                                   @RequestParam String login, @RequestParam String haslo,
                                                   @RequestParam Long idPracownika,@RequestParam String kraj_pochodzenia,
-                                                  @RequestParam String nr_whatsapp) {
+                                                  @RequestParam String nr_whatsapp,@RequestParam String email,
+                                                  @RequestParam String nr_konta) {
         try {
             byte[] zdj = zdjecie.getBytes();
-            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdj, data, login, haslo,kraj_pochodzenia,nr_whatsapp);
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdj, login, haslo,kraj_pochodzenia,nr_whatsapp,email,nr_konta);
             return ResponseEntity.ok("ok");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error" + e.getMessage());
@@ -137,20 +140,20 @@ public class pracownikController {
             @RequestParam String nazwisko,
             @RequestParam String typPracownika,
             @RequestParam(required = false) MultipartFile zdjecie,
-            @RequestParam String data,  // String w formacie "yyyy-MM-dd"
             @RequestParam String login,
             @RequestParam String haslo,
             @RequestParam String kraj_pochodzenia,
-            @RequestParam String nr_whatsapp) {
+            @RequestParam String nr_whatsapp,
+            @RequestParam String email, @RequestParam String nr_konta) {
         try {
             // Parsowanie daty, jeśli jest w formacie String
-            LocalDate dataPracownika = LocalDate.parse(data);  // Konwertujemy String na LocalDate
+            //LocalDate dataPracownika = LocalDate.parse(data);  // Konwertujemy String na LocalDate
             byte[] zdjecieBytes = null;
             if (zdjecie != null && !zdjecie.isEmpty()) {
                 zdjecieBytes = zdjecie.getBytes();
             }
 
-            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecieBytes, dataPracownika, login, haslo, kraj_pochodzenia, nr_whatsapp);
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecieBytes, login, haslo, kraj_pochodzenia, nr_whatsapp,email,nr_konta);
             return ResponseEntity.ok("Pracownik został zaktualizowany pomyślnie.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

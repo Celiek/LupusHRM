@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,8 +35,6 @@ public class CzasPracyService {
 
     //Zliczanie godzin pracy dla pracownika w danym dniu
    public List<Map<String, Object>> sumGodzinyPracyForEmployeeOnDate(Long idPracownika, LocalDate dataPracy){
-//        List<Map<String, Object>> result = repo.findGodzinyPracyForEmployeeOnDate(idPracownika, dataPracy);
-//        return result;
 
        List<Object[]> results = repo.findGodzinyPracyForEmployeeOnDate(idPracownika,dataPracy);
        List<Map<String, Object>> resultList = new ArrayList<>();
@@ -102,6 +101,10 @@ public class CzasPracyService {
         return repo.findCzasPracyByDate(dataPracy);
     }
 
+    public List<Object[]> findCzasPracyByDateId(LocalDate dataPracy){
+        return repo.findCzasPracyByDateID(dataPracy);
+    }
+
     //stop pracy dla pojedynczego pracowbnika
     public void stopPracyDlaPracownika(Long id){
         repo.stopPracyDlaPracownika(id);
@@ -118,6 +121,31 @@ public class CzasPracyService {
 
     public List<Object[]> getDniPracyZakres(Long idPracownika, LocalDate dataOd, LocalDate dataDo) {
         return repo.findDniPracyZakres(idPracownika, dataOd, dataDo);
+    }
+
+    public void updateCzasPracy(Long idPracownika, String dataPracyStr, String startPracyStr,
+                                String stopPracyStr, String czasPrzerwyStr) {
+
+        // Przekształcamy datę
+        Date dataPracy = Date.valueOf(dataPracyStr);
+
+        // Przekształcamy start i stop pracy na LocalTime
+        LocalTime startPracy = (startPracyStr != null && !startPracyStr.isEmpty()) ?
+                LocalTime.parse(startPracyStr) : null;
+
+        LocalTime stopPracy = (stopPracyStr != null && !stopPracyStr.isEmpty()) ?
+                LocalTime.parse(stopPracyStr) : null;
+
+        // Przekształcamy czas przerwy na Duration
+        Duration czasPrzerwy = (czasPrzerwyStr != null && !czasPrzerwyStr.isEmpty()) ?
+                Duration.parse("PT" + czasPrzerwyStr.replace(":", "H") + "M") : null;
+
+        // Wywołanie repozytorium w celu zaktualizowania danych
+        repo.updateCzasPracy(idPracownika, dataPracy, startPracy, stopPracy, czasPrzerwy);
+    }
+
+    public List<Object[]> getPracownicyNieRozpoczeliPracyDnia(LocalDate data){
+        return repo.findPracownicyNieRozpoczeliPracyDnia(data);
     }
 
 }
