@@ -194,17 +194,19 @@ List<Object[]> findDniPracyZakres(
 
     @Transactional
     @Modifying
-    @Query(value = """ 
-            UPDATE czas_pracy SET 
-        start_pracy = COALESCE(:startPracy, start_pracy),
-        stop_pracy = COALESCE(:stopPracy, stop_pracy),
-        czas_przerwy = COALESCE(:czasPrzerwy, czas_przerwy)
-        WHERE id_pracownik = :idPracownika AND data_pracy = :dataPracy;""", nativeQuery = true)
-    void updateCzasPracy(@Param("idPracownika") Long idPracownika,
-                         @Param("dataPracy") Date dataPracy,
-                         @Param("startPracy") LocalTime startPracy,
-                         @Param("stopPracy") LocalTime stopPracy,
-                         @Param("czasPrzerwy") long czasPrzerwy);
+    @Query(value = "UPDATE czas_pracy  SET " +
+            "start_pracy = COALESCE(:startPracy, start_pracy), " +
+            "stop_pracy = COALESCE(:stopPracy, stop_pracy), " +
+            "czas_przerwy = COALESCE(CAST(:czasPrzerwy AS interval), czas_przerwy)\n " +
+            "WHERE id_pracownik = :idPracownika AND data_pracy = :dataPracy",
+            nativeQuery = true)
+    void updateCzasPracy(
+            @Param("idPracownika") Long idPracownika,
+            @Param("dataPracy") Date dataPracy,
+            @Param("startPracy") LocalTime startPracy,
+            @Param("stopPracy") LocalTime stopPracy,
+            @Param("czasPrzerwy") String czasPrzerwy); // czas przerwy przekazujemy jako String (np. '01:30:00')
+
 
 
 

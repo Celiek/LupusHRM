@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -216,7 +217,7 @@ public class czasPracyController {
     }
 
     @PutMapping("/updateCzasPracy")
-    public ResponseEntity<String> updateCzasPracy(
+    public ResponseEntity<Map<String, String>> updateCzasPracy(
             @RequestParam Long idPracownika,
             @RequestParam String dataPracy,
             @RequestParam(required = false) String startPracy,
@@ -224,11 +225,14 @@ public class czasPracyController {
             @RequestParam(required = false) String czasPrzerwy) {
 
         try {
-            // Wywołanie serwisu w celu zaktualizowania danych
             service.updateCzasPracy(idPracownika, dataPracy, startPracy, stopPracy, czasPrzerwy);
-            return ResponseEntity.ok("Czas pracy został zaktualizowany.");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Czas pracy został zaktualizowany.");
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Wystąpił błąd podczas aktualizacji.");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Wystąpił błąd podczas aktualizacji.");
+            return ResponseEntity.status(500).body(response);
         }
     }
 

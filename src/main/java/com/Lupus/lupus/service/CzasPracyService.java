@@ -136,12 +136,10 @@ public class CzasPracyService {
         LocalTime stopPracy = (stopPracyStr != null && !stopPracyStr.isEmpty()) ?
                 LocalTime.parse(stopPracyStr) : null;
 
-        // Konwertujemy czas przerwy z formatu 'HH:mm' na liczbę minut (long)
-        long czasPrzerwyMinuty = convertStringToMinutes(czasPrzerwyStr);
-
         // Wywołanie repozytorium w celu zaktualizowania danych
-        repo.updateCzasPracy(idPracownika, dataPracy, startPracy, stopPracy, czasPrzerwyMinuty);
+        repo.updateCzasPracy(idPracownika, dataPracy, startPracy, stopPracy, czasPrzerwyStr);
     }
+
     // Metoda do konwersji 'HH:mm' na liczbę minut
     public long convertStringToMinutes(String czasPrzerwyStr) {
         if (czasPrzerwyStr != null && !czasPrzerwyStr.isEmpty()) {
