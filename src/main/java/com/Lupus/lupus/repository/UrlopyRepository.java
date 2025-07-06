@@ -32,7 +32,7 @@ public interface UrlopyRepository extends CrudRepository<urlopy, Long> {
     @Transactional
     @Query(value = "insert into urlopy (id_pracownika, data_od, data_do, typ_urlopu,powod)\n" +
             "values (:id_Pracownika, :data_Od,:data_Do, :typ_Urlopu, :powod);\n",nativeQuery = true)
-    List<Object[]> addUrlopForPracownik(@Param("id_Pracownika")Long id_Pracownika,
+    void addUrlopForPracownik(@Param("id_Pracownika")Long id_Pracownika,
                                         @Param("data_Od")LocalDate data_Od,
                                         @Param("data_Do")LocalDate data_do,
                                         @Param("typ_Urlopu")String typ_Urlopu,

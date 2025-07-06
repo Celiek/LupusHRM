@@ -22,12 +22,12 @@ public class UrlopService {
         return repo.findUrlopyFor(idPracownika);
     }
 
-    public List<Object[]> addUrlopForPracownik(Long idPracownika,
+    public void addUrlopForPracownik(Long idPracownika,
                                                LocalDate data_Od,
                                                LocalDate data_Do,
                                                String typ_Urlopu,
                                                String powod){
-        return repo.addUrlopForPracownik(idPracownika,data_Od,data_Do,typ_Urlopu,powod);
+        repo.addUrlopForPracownik(idPracownika,data_Od,data_Do,typ_Urlopu,powod);
     }
 
     public int dodajUrlopDlaWszystkich(LocalDate dataOd,
