@@ -29,8 +29,8 @@ public class CzasPracyService {
 
     // Zainicjowanie rozpoczęcia pracy dla wszystkich pracowników
     @Transactional
-    public void insertStartDayForEmployees(){
-        repo.insertStartDayForEmployees();
+    public int insertStartDayForEmployees(){
+        return repo.insertStartDayForEmployees();
     }
 
     //Zliczanie godzin pracy dla pracownika w danym dniu
@@ -52,8 +52,8 @@ public class CzasPracyService {
     }
 
     // ustawie start pracy dla pojedynczego pracownika
-    public void setStartPracyForEmployee(Long id, LocalDate data, LocalTime czas){
-        repo.setStartPracyForPracownik(id, data, czas);
+    public int setStartPracyForEmployee(Long id, LocalDate data, LocalTime czas) {
+        return repo.setStartPracyForPracownik(id, data, czas);
     }
 
     public void insertPrzerwa(String przerwa, LocalDate data){

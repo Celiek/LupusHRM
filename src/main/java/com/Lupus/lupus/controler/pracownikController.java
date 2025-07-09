@@ -12,10 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/pracownik")
@@ -107,14 +104,14 @@ public class pracownikController {
     @PostMapping("/addUser")
     public ResponseEntity<String> updatePracownik(@RequestParam String imie, @RequestParam String dimie,
                                                   @RequestParam String nazwisko, @RequestParam String typPracownika,
-                                                  @RequestParam MultipartFile zdjecie,
+                                                  @RequestParam MultipartFile zdjecie,@RequestParam Date data_dolaczenia,
                                                   @RequestParam String login, @RequestParam String haslo,
                                                   @RequestParam Long idPracownika,@RequestParam String kraj_pochodzenia,
                                                   @RequestParam String nr_whatsapp,@RequestParam String email,
                                                   @RequestParam String nr_konta) {
         try {
             byte[] zdj = zdjecie.getBytes();
-            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdj, login, haslo,kraj_pochodzenia,nr_whatsapp,email,nr_konta);
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdj,data_dolaczenia, login, haslo,kraj_pochodzenia,nr_whatsapp,email,nr_konta);
             return ResponseEntity.ok("ok");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error" + e.getMessage());
@@ -140,6 +137,7 @@ public class pracownikController {
             @RequestParam String nazwisko,
             @RequestParam String typPracownika,
             @RequestParam(required = false) MultipartFile zdjecie,
+            @RequestParam(required = false) Date data_dolaczenia,
             @RequestParam String login,
             @RequestParam String haslo,
             @RequestParam String kraj_pochodzenia,
@@ -153,7 +151,7 @@ public class pracownikController {
                 zdjecieBytes = zdjecie.getBytes();
             }
 
-            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecieBytes, login, haslo, kraj_pochodzenia, nr_whatsapp,email,nr_konta);
+            service.updatePracownik(idPracownika, imie, dimie, nazwisko, typPracownika, zdjecieBytes,data_dolaczenia, login, haslo, kraj_pochodzenia, nr_whatsapp,email,nr_konta);
             return ResponseEntity.ok("Pracownik został zaktualizowany pomyślnie.");
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -204,7 +202,8 @@ public class pracownikController {
         }
     }
 
-    //zwraca ilość godzin przecowanych dzisiaj
+    //zwraca ilość godzin przecowanych dzisiaj ( wybrany jest Adam Markuszewski jako
+    // pracownik który pracuje codziennie )
     @GetMapping("/czasPracyToday")
     public ResponseEntity<String> getCzasPracyDlaAdama() {
         try {

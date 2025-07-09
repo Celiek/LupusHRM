@@ -100,9 +100,9 @@ public class pracownikService {
     }
 
     public void updatePracownik(Long id_Pracownika,String imie, String dimie, String nazwisko, String typPracownika,
-                                byte[] zdjecie, String login, String haslo,String kraj_pochiodzenia, String nr_whatsapp,
+                                byte[] zdjecie,Date data_dolaczenia, String login, String haslo,String kraj_pochiodzenia, String nr_whatsapp,
                                 String email, String nr_konta) {
-        repo.updatePracownik(id_Pracownika,imie,dimie,nazwisko,typPracownika,zdjecie,login,haslo,kraj_pochiodzenia,nr_whatsapp,email,nr_konta);
+        repo.updatePracownik(id_Pracownika,imie,dimie,nazwisko,typPracownika,zdjecie,data_dolaczenia,login,haslo,kraj_pochiodzenia,nr_whatsapp,email,nr_konta);
     }
 
     public void deletePracownikByNameAndSurname(String imie,String nazwisko){

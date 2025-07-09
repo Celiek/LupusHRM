@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
@@ -32,26 +31,39 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
     @Query(value = "UPDATE czas_pracy SET start_pracy = CURRENT_TIME WHERE id_pracownik = :id AND data_pracy = CURRENT_DATE",nativeQuery = true)
     void updateStartPracy(Long id);
 
+    //start pracy dla pracownika
     @Modifying
     @Transactional
     @Query(value = """
-    INSERT INTO czas_pracy (id_pracownik,data_pracy,start_pracy) 
-        VALUES (:id_pracownik,
-                :data,
-                :start)
-    """,nativeQuery =
-            true)
-    void setStartPracyForPracownik(@Param("id_pracownik")Long idPracownik,
+    INSERT INTO czas_pracy (id_pracownik, data_pracy, start_pracy)
+    SELECT :id_pracownik, :data, :start
+    WHERE NOT EXISTS (
+        SELECT 1 FROM czas_pracy
+        WHERE id_pracownik = :id_pracownik
+          AND data_pracy = :data
+          AND stop_pracy IS NULL
+    )
+""", nativeQuery = true)
+    int setStartPracyForPracownik(@Param("id_pracownik")Long idPracownik,
                                    @Param("data")LocalDate data,
                                    @Param("start")LocalTime start);
 
     //start pracy dla pracownikow
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO czas_pracy (id_pracownik, data_pracy, start_pracy) " +
-            "SELECT id_pracownika, CURRENT_DATE, CURRENT_TIME " +
-            "FROM pracownik", nativeQuery = true)
-    void insertStartDayForEmployees();
+    @Query(value = """
+    INSERT INTO czas_pracy (id_pracownik, data_pracy, start_pracy)
+    SELECT p.id_pracownika, CURRENT_DATE, CURRENT_TIME
+    FROM pracownik p
+    WHERE NOT EXISTS (
+        SELECT 1 FROM czas_pracy c
+        WHERE c.id_pracownik = p.id_pracownik
+          AND c.data_pracy = CURRENT_DATE
+          AND c.stop_pracy IS NULL
+    )
+    """, nativeQuery = true)
+    int insertStartDayForEmployees();
+
 
     // dodaje przerwe w ciagu rpacy dla pracownikow
     @Modifying

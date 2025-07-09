@@ -33,13 +33,19 @@ public class czasPracyController {
         }
     }
 
+    // start pracy dla wszystkich pracowników
+    // nie uruchomi się nowy start pracy jeśli poprzedni nie został zakończony
+    //
     @PostMapping("/startPracy")
     public ResponseEntity<String> insertStartDayForEmployees() {
         try {
-            service.insertStartDayForEmployees();
-            return ResponseEntity.ok("Rozpoczeto czas pracy!");
+            int inserted = service.insertStartDayForEmployees();
+            if (inserted == 0) {
+                return ResponseEntity.status(409).body("Nie zaczęto OGARNIJ SIĘ LUDZIE JUŻ ZAPIERDALajĄ!1!!!.");
+            }
+            return ResponseEntity.ok("Dodano nowe wpisy dla " + inserted + " pracowników.");
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(error + e.getMessage());
+            return ResponseEntity.status(500).body("Błąd: " + e.getMessage());
         }
     }
 
@@ -54,15 +60,19 @@ public class czasPracyController {
         }
     }
 
+    // start nalizcania pracy dl pojedynczego pracownika
     @PostMapping("/startPraca")
     public ResponseEntity<String> startPracyDlaPracownika(@RequestParam Long id,
                                                           @RequestParam LocalDate data,
-                                                          @RequestParam LocalTime czas){
-        try{
-            service.setStartPracyForEmployee(id, data, czas);
-            return ResponseEntity.ok("Rozpoczeco czas pracy dla pracownika: " + id);
-        } catch (Exception e){
-            return ResponseEntity.status(500).body("Error "+ e.getMessage());
+                                                          @RequestParam LocalTime czas) {
+        try {
+            int rows = service.setStartPracyForEmployee(id, data, czas);
+            if (rows == 0) {
+                return ResponseEntity.status(409).body("️Pracownik " + id + " już zapierdala prosze jechać prosto.");
+            }
+            return ResponseEntity.ok("✅ Rozpoczęto czas pracy dla pracownika: " + id);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("❌ Błąd: " + e.getMessage());
         }
     }
 

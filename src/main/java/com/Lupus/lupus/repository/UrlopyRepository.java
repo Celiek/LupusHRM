@@ -27,7 +27,7 @@ public interface UrlopyRepository extends CrudRepository<urlopy, Long> {
     @Query(value ="SELECT u,data",nativeQuery = true )
     List<Object[]> findListaUrlopow(@Param("idPracownika")Long idPracownika);
 
-    //dodaje urlopy pracownikowi
+    // dodaje urlopy pracownikowi
     @Modifying
     @Transactional
     @Query(value = "insert into urlopy (id_pracownika, data_od, data_do, typ_urlopu,powod)\n" +

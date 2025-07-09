@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +59,8 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
             "drugie_imie = COALESCE(:dimie, drugie_imie), " +
             "nazwisko = COALESCE(:nazwisko, nazwisko), " +
             "typ_pracownika = COALESCE(:typ_pracownika, typ_pracownika), " +
-            "zdjecie = COALESCE(:zdjecie, zdjecie), " +
+            "zdjecie = COALESCE(:zdjecie, zdjecie)," +
+            "data_dolaczenia = COALESCE(:data_dolaczenia, data_dolaczenia), " +
             "login = COALESCE(:login, login), " +
             "haslo = COALESCE(:haslo, haslo), " +
             "kraj_pochodzenia = COALESCE(:kraj, kraj_pochodzenia), " +
@@ -72,6 +74,7 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
                          @Param("nazwisko") String nazwisko,
                          @Param("typ_pracownika") String typ,
                          @Param("zdjecie") byte[] zdjecie,
+                         @Param("data_dolaczenia") Date data_dolaczenia,
                          @Param("login") String login,
                          @Param("haslo") String haslo,
                          @Param("kraj") String krajPochodzenia,
@@ -124,9 +127,10 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     Double getTotalBreakTimeInMinutesToday();
 
     //zwraca ilość przepracowanych godzin przez pracowników (czas pracy - czas przerw)
+    // jako wzór bierze adasia
     @Query(value = """
     SELECT
-    EXTRACT(EPOCH FROM (NOW() - (CURRENT_DATE + c.start_pracy) - COALESCE(c.czas_przerwy, INTERVAL '0')))
+    EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')))
         / 3600 AS godziny_pracy
     FROM czas_pracy c
     JOIN pracownik p ON p.id_pracownika = c.id_pracownik
@@ -138,19 +142,21 @@ public interface PracownikRepository extends CrudRepository<Pracownik, Long> {
     """, nativeQuery = true)
     Double getCzasPracy();
 
-    // zwraca przepracowane godziny dla wszystkich pracowników po dacie 
+    // zwraca ilość godzin przepracowanych przez każdego pracownika dzisiaj
     @Query(value = """
     SELECT 
         p.imie || ' ' || p.nazwisko AS pracownik,
         EXTRACT(EPOCH FROM (
-            NOW() - (c.data_pracy + c.start_pracy) - COALESCE(c.czas_przerwy, INTERVAL '0')
+            c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')
         )) / 3600 AS godziny_pracy
     FROM czas_pracy c
     JOIN pracownik p ON p.id_pracownika = c.id_pracownik
     WHERE c.data_pracy = :data
       AND c.start_pracy IS NOT NULL
+      AND c.stop_pracy IS NOT NULL
     """, nativeQuery = true)
     List<Object[]> findGodzinyPracyByDate(@Param("data") LocalDate data);
+
 
     // zwraca liste i dane pracownikow pracujacych po dacie
     @Query(value = """
