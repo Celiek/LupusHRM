@@ -129,19 +129,20 @@ public interface CzasPracyRepository extends JpaRepository<czas_pracy,Long> {
     //ilosc godzin przepracowanych przez pracownikow od od do
     @Query(value = """
     SELECT 
-        c.data_pracy, 
         p.imie, 
         p.nazwisko, 
-        p.zdjecie,
-        ROUND(SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')))/3600), 2) AS godziny_pracy
+        ROUND(SUM(EXTRACT(EPOCH FROM (
+            c.stop_pracy - c.start_pracy - COALESCE(c.czas_przerwy, INTERVAL '0')
+        )) / 3600)::numeric, 2) AS godziny_pracy
     FROM czas_pracy c
     JOIN pracownik p ON p.id_pracownika = c.id_pracownik
     WHERE c.data_pracy BETWEEN :startDate AND :endDate
-    GROUP BY c.data_pracy, p.imie, p.nazwisko, p.zdjecie
-    ORDER BY c.data_pracy
-    """, nativeQuery = true)
+    GROUP BY p.imie, p.nazwisko, p.zdjecie
+    ORDER BY p.nazwisko, p.imie
+""", nativeQuery = true)
     List<Object[]> sumGodzinyPracy(@Param("startDate") LocalDate startDate,
                                    @Param("endDate") LocalDate endDate);
+
 
 
     //aktualizuje godzine startu czasu pracy dla pracownika
