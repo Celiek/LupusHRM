@@ -53,7 +53,7 @@ public class PracownikService {
     }
 
     public void updateZdjecie(Long id, String zdjecie){
-        if(id <= 0 || id ==null){
+        if(id <= 0 || id == null){
             throw new PracownikException(
                     PracownikError.PROVIDED_WRONG_ID,"ID pracownika nie może być mniejsze od zera !"
             );

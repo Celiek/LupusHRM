@@ -1,0 +1,27 @@
+services:
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: rustfs
+    restart: unless-stopped
+
+    environment:
+      RUSTFS_ACCESS_KEY: lupusAdmin
+      RUSTFS_SECRET_KEY: bardzo_mocny_secret_key
+
+    command:
+      - server
+      - --address
+      - 0.0.0.0:9000
+      - --console-address
+      - 0.0.0.0:9001
+      - /data
+
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+
+    volumes:
+      - rustfs_data:/data
+
+volumes:
+  rustfs_data:
