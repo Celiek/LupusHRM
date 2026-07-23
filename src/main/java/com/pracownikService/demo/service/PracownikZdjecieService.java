@@ -1,5 +1,6 @@
 package com.pracownikService.demo.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -15,7 +16,7 @@ public class PracownikZdjecieService {
     private final S3Client s3;
     private final String bucket;
 
-    public PracownikZdjecieService(S3Client s3, String bucket) {
+    public PracownikZdjecieService(S3Client s3, @Value("${rustfs.bucket}") String bucket) {
         this.s3 = s3;
         this.bucket = bucket;
     }

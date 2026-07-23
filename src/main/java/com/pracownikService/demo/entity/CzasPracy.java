@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -19,6 +20,10 @@ public class CzasPracy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_czasPracy;
     private Long id_pracownik;
-    private LocalDate data_pracy;
-    private LocalTime stop_pracy;
+    private LocalDateTime data_pracy;
+    private LocalDateTime stop_pracy;
+
+    @ManyToOne
+    @JoinColumn(name = "id_pracownik")
+    private Pracownik pracownik;
 }
