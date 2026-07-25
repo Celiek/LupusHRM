@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 public interface CzasPracyRepository extends JpaRepository<CzasPracy, Long> {
 
     @Modifying
@@ -17,4 +20,14 @@ public interface CzasPracyRepository extends JpaRepository<CzasPracy, Long> {
             """
             ,nativeQuery = true)
     void updateCzasPracyForPracownik(Long id);
+
+    boolean existsByPracownikIdPracownikAndDataPracy(
+            Long idPracownik,
+            LocalDate dataPracy
+    );
+
+    Optional<CzasPracy> findByPracownikIdPracownikAndDataPracy(
+            Long idPracownik,
+            LocalDate dataPracy
+    );
 }

@@ -11,12 +11,13 @@ CREATE TABLE pracownik (
 
 CREATE TABLE czas_pracy (
     id_czas_pracy BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    id_pracownik BIGINT NOT NULL,
-    start_pracy TIMESTAMP NOT NULL,
-    stop_pracy TIMESTAMP NOT NULL,
+    pracownik_id BIGINT NOT NULL,
+    data_pracy DATE NOT NULL,
+    start_pracy TIME NOT NULL,
+    stop_pracy TIME,
 
     CONSTRAINT fk_pracownik
-        FOREIGN KEY (id_pracownik)
+        FOREIGN KEY (pracownik_id)
         REFERENCES pracownik(id_pracownik)
         ON DELETE CASCADE
 );

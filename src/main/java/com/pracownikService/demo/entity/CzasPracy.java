@@ -18,12 +18,16 @@ import java.time.LocalTime;
 public class CzasPracy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_czas_pracy")
     private Long id_czasPracy;
-    private Long id_pracownik;
-    private LocalDateTime data_pracy;
-    private LocalDateTime stop_pracy;
+    @Column(name = "data_pracy", nullable = false)
+    private LocalDate dataPracy;
+    @Column(name = "start_pracy", nullable = false)
+    private LocalTime startPracy;
+    @Column(name = "stop_pracy")
+    private LocalTime stopPracy;
 
-    @ManyToOne
-    @JoinColumn(name = "id_pracownik")
+    @ManyToOne(fetch= FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_pracownik",nullable = false)
     private Pracownik pracownik;
 }

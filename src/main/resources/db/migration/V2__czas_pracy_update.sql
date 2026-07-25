@@ -1,1 +1,0 @@
-alter table czas_pracy add column data_pracy Date NOT NULl;
