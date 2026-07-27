@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -69,7 +68,69 @@ public class CzasPracyService {
         czasPracyRepo.saveAll(czasyPracy);
     }
 
-    public void stopPracyDlaPracownika(){
+    @Transactional
+    public void stopPracyDlaPracownika(Long idPracownik){
+            CzasPracy czasPracy = czasPracyRepo
+                    .findByPracownikIdPracownikAndDataPracy(
+                            idPracownik,
+                            LocalDate.now()
+                    )
+                    .orElseThrow(()->
+                            new RuntimeException("pracownik o podanym id nie pracuje dzisiaj + " +idPracownik));
 
+            if (czasPracy.getStopPracy() != null){
+                throw new RuntimeException("Praca została już zakończona !");
+            }
+
+            czasPracy.setStopPracy(LocalTime.now());
+    }
+
+    @Transactional
+    public void setStopPracyForPracownicy(List<Long> idPracownikow){
+       LocalDate dzisiaj = LocalDate.now();
+       List<CzasPracy> czasyPracy =
+               czasPracyRepo
+               .findAllByPracownik_IdPracownikInAndDataPracy(
+                       idPracownikow,dzisiaj);
+
+       if(czasyPracy.isEmpty()){
+           throw new RuntimeException(
+                   "Nie znaleziono wpisu dla podanych pracowników"
+           );
+       }
+       LocalTime teraz = LocalTime.now();
+        czasyPracy.forEach(czasPracy -> {
+            if(czasPracy.getStopPracy() == null){
+                czasPracy.setStopPracy(teraz);
+            }
+        });
+    }
+
+    @Transactional
+    public void updateStartPracyForPracownik(Long id,
+                                             LocalDate dataPracy,
+                                             LocalTime startPracy){
+
+        CzasPracy czasPracy = czasPracyRepo.findByPracownik_IdPracownikAndDataPracy(
+                id,dataPracy
+        ).orElseThrow( ()->
+                new RuntimeException("Nie znaleziono czasu pracy dla pracownika o Id: "
+                        + id +
+                        " dla daty: "+
+                        dataPracy)
+        );
+
+        czasPracy.setStartPracy(startPracy);
+    }
+
+    @Transactional
+    public void updateStartPracyForPracownicy(List<Long> ids,
+                                              LocalDate dataPracy,
+                                              LocalTime startPracy){
+        List<CzasPracy> czasyPRacy = czasPracyRepo.findAllByPracownik_IdPracownikInAndDataPracy(
+                ids,
+                dataPracy
+        );
+        czasyPRacy.forEach(czasPracy -> czasPracy.setStartPracy(startPracy));
     }
 }

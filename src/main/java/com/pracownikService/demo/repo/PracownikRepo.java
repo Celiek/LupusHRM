@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 public interface PracownikRepo extends JpaRepository<Pracownik,Long> {
     
 
@@ -19,4 +21,5 @@ public interface PracownikRepo extends JpaRepository<Pracownik,Long> {
             """,nativeQuery = true)
     int updateZdjecie(@Param("id")Long id,
                        @Param("zdjecie")String zdjecie);
+
 }
