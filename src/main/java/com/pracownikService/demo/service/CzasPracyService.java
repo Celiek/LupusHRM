@@ -4,6 +4,10 @@ import com.pracownikService.demo.entity.CzasPracy;
 import com.pracownikService.demo.entity.Pracownik;
 import com.pracownikService.demo.repo.CzasPracyRepository;
 import com.pracownikService.demo.repo.PracownikRepo;
+import com.pracownikService.exception.CzasPracyError;
+import com.pracownikService.exception.CzasPracyException;
+import com.pracownikService.exception.PracownikError;
+import com.pracownikService.exception.PracownikException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,4 +137,55 @@ public class CzasPracyService {
         );
         czasyPRacy.forEach(czasPracy -> czasPracy.setStartPracy(startPracy));
     }
+    @Transactional
+    public void updateStopPracyForPracownik(Long idPracownika,
+                                            LocalDate dataPracy,
+                                            LocalTime stop){
+        if(!pracownikRepo.existsById(idPracownika)){
+            throw new PracownikException(
+                    PracownikError.PRACOWNIK_NOT_FOUND
+                    ,"Nie znaleziono pracownika");
+        }
+
+        CzasPracy czasPracy = czasPracyRepo
+                .findByPracownik_IdPracownikAndDataPracy(idPracownika,dataPracy)
+                .orElseThrow(()->
+                        new CzasPracyException(
+                                CzasPracyError.PRACA_JUZ_ZAKONCZONA
+                                ,"Dzień pracy został już zakończony"));
+
+        if(czasPracy.getStopPracy() == null){
+            throw new CzasPracyException(CzasPracyError.BRAK_WPISU_DLA_DNIA
+                    ,"Dzień nie został jescze zakończony");
+        }
+        czasPracy.setStopPracy(stop);
+    }
+
+    @Transactional
+    public void updateStopPracyForPracownicy(List<Long> idsPRacownikow,
+                                             LocalDate dataPracy,
+                                             LocalTime stop){
+        List<CzasPracy> czasyPracy = czasPracyRepo.findAllByPracownik_IdPracownikInAndDataPracy(
+                idsPRacownikow,
+                dataPracy);
+        czasyPracy.forEach(czasPracy -> czasPracy.setStopPracy(stop));
+    }
+
+
+    // TODO:
+    // dodać testy
+    public Double sumGodzinyPracyForPracownik(Long idPracownika,
+                                            LocalDate start,
+                                            LocalDate stop){
+        if(!pracownikRepo.existsById(idPracownika)){
+            throw new PracownikException(PracownikError.PROVIDED_WRONG_ID,"Pracownik o podanym id nie istnieje");
+        }
+
+        if(start == null || stop == null ){
+            throw new RuntimeException("Daty są typu null");
+        }
+
+        return czasPracyRepo.sumGodiznyPracyBetweenDatesForPracownik(idPracownika,start,stop);
+    }
+
 }
