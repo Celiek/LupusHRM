@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -216,5 +215,46 @@ class CzasPracyServiceTest {
         assertEquals(startPracy,cp1.getStartPracy());
         assertEquals(startPracy,cp2.getStartPracy());
         assertEquals(startPracy,cp3.getStartPracy());
+    }
+    @Test
+    void shouldUpdateStopPracyForPracownicy(){
+        //given
+        LocalDate dataPracy = LocalDate.now();
+        List<Long> idPracownikow = List.of(1L,2L,3L);
+        LocalTime stopPracy = LocalTime.of(16,30);
+
+        CzasPracy cp1 = new CzasPracy();
+        cp1.setStopPracy(null);
+        CzasPracy cp2 = new CzasPracy();
+        cp2.setStopPracy(null);
+        CzasPracy cp3 = new CzasPracy();
+        cp3.setStopPracy(null);
+
+        List<CzasPracy> czasyPracy =
+                List.of(cp1,cp2,cp3);
+
+        when(czasPracyRepo.findAllByPracownik_IdPracownikInAndDataPracy(
+                idPracownikow,
+                dataPracy))
+                .thenReturn(czasyPracy);
+
+        //when
+
+        czasPracyService.updateStopPracyForPracownicy(
+                idPracownikow,
+                dataPracy,
+                stopPracy);
+
+        //then
+        assertTrue(
+                czasyPracy.stream()
+                        .allMatch(cp -> stopPracy.equals(cp.getStopPracy()))
+        );
+
+        verify(czasPracyRepo)
+                .findAllByPracownik_IdPracownikInAndDataPracy(
+                        idPracownikow,
+                        dataPracy
+                );
     }
 }
