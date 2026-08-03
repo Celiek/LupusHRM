@@ -172,8 +172,6 @@ public class CzasPracyService {
     }
 
 
-    // TODO:
-    // dodać testy
     public Double sumGodzinyPracyForPracownik(Long idPracownika,
                                             LocalDate start,
                                             LocalDate stop){
