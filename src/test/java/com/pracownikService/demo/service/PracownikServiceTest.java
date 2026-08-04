@@ -1,20 +1,14 @@
 package com.pracownikService.demo.service;
 
-import com.pracownikService.demo.Dto.PracownikDTO;
-import com.pracownikService.demo.entity.TypPracownika;
-import com.pracownikService.demo.entity.Uprawnienia;
 import com.pracownikService.demo.repo.PracownikRepo;
 import com.pracownikService.exception.PracownikError;
 import com.pracownikService.exception.PracownikException;
 import jdk.jfr.Name;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

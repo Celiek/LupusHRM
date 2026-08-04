@@ -1,7 +1,7 @@
 package com.pracownikService.demo.Dto;
 
 import com.pracownikService.demo.entity.TypPracownika;
-import com.pracownikService.demo.entity.Uprawnienia;
+import com.pracownikService.demo.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ public class PracownikCreateDTO {
     private String nazwa;
     private int wiek;
     private TypPracownika typPracownika;
-    private Uprawnienia uprawnienia;
+    private Role role;
     private LocalDate dataDolaczenia;
     private LocalDate dataRozpoczeciaPracy;
     private MultipartFile zdjecie;

@@ -18,7 +18,7 @@ public class Pracownik {
     private String nazwa;
     private int wiek;
     private TypPracownika typ_pracownika;
-    private Uprawnienia uprawnienia;
+    private Role role;
     private String zdjecie; // link do zdjecia na garage
     private LocalDate data_dolaczenia;
     private LocalDate data_rozpoczecia_pracy;
