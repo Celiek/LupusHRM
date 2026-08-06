@@ -1,8 +1,8 @@
 package com.pracownikService.demo.config.security;
 
+import com.pracownikService.demo.entity.User;
 import com.pracownikService.demo.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,10 +17,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String login)
             throws UsernameNotFoundException {
 
-        SecurityProperties.User user =
-                userRepo.findByLogin(login)
-                        .orElseThrow(() ->
-                                new UsernameNotFoundException(login));
+        User user = userRepo.findByLogin(login)
+                            .orElseThrow(() ->
+                                    new UsernameNotFoundException(login));
 
         return org.springframework.security.core.userdetails.User
                 .builder()

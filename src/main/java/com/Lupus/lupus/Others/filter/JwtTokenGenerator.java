@@ -34,7 +34,7 @@ public class JwtTokenGenerator {
 
     public String validateToken(String token){
         try{
-            Jws<Claims> claims = Jwts.parserBuilder()
+            Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
@@ -55,7 +55,7 @@ public class JwtTokenGenerator {
     }
 
     public Jws<Claims> parseToken(String token) {
-        return Jwts.parserBuilder()
+        return Jwts.parser()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token);
