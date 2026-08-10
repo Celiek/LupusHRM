@@ -35,6 +35,7 @@ public class SecurityConfig {
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
                         config.setAllowedOrigins(List.of(
+                                "https://localhost:5173"
 //                                dodać liste
                         ));
                         config.setAllowCredentials(true);

@@ -1,14 +1,16 @@
 package com.pracownikService.demo.controller;
 
+import com.Lupus.lupus.DTO.PracownikDto;
 import com.pracownikService.demo.Dto.PracownikCreateDTO;
+import com.pracownikService.demo.Dto.PracownikDTO;
+import com.pracownikService.demo.entity.Pracownik;
 import com.pracownikService.demo.service.PracownikService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,4 +45,8 @@ public class PracownikController {
         }
     }
 
+    @GetMapping("/listAll")
+    public ResponseEntity<List<PracownikDto>> listAllPracownik() {
+        return ResponseEntity.ok(service.findAllPracownik());
+    }
 }

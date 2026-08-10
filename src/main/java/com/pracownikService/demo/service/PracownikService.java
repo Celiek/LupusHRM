@@ -1,5 +1,6 @@
 package com.pracownikService.demo.service;
 
+import com.Lupus.lupus.DTO.PracownikDto;
 import com.pracownikService.demo.Dto.PracownikCreateDTO;
 import com.pracownikService.demo.entity.Pracownik;
 import com.pracownikService.demo.repo.PracownikRepo;
@@ -8,6 +9,8 @@ import com.pracownikService.exception.PracownikException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -68,5 +71,7 @@ public class PracownikService {
         }
     }
 
-
+    public List<PracownikDto> findAllPracownik(){
+        return repo.findAllPracownikById();
+    }
 }
