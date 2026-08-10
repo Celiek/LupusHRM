@@ -26,7 +26,7 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(
             name = "pracownik_id",
             nullable = false,

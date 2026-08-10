@@ -18,6 +18,7 @@ public class Pracownik {
     private String nazwa;
     private int wiek;
     private TypPracownika typ_pracownika;
+    @Enumerated(EnumType.STRING)
     private Role role;
     private String zdjecie; // link do zdjecia na garage
     private LocalDate data_dolaczenia;
