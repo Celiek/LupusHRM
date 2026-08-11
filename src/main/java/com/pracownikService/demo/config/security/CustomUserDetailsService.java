@@ -28,7 +28,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .roles(
                         user.getRole()
                                 .name()
-                                .replace("ROLE_","")
                 )
                 .disabled(!user.isEnabled())
                 .build();
