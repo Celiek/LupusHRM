@@ -54,6 +54,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login," +
                                 "/auth/logout").permitAll()
+                        .requestMatchers("/api/czasPracy/**").authenticated()
+                        .requestMatchers("/api/pracownik/**").authenticated()
+                        .requestMatchers("/api/user/**").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
