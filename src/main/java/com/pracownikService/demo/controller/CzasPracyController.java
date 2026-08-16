@@ -1,14 +1,12 @@
 package com.pracownikService.demo.controller;
 
+import com.pracownikService.demo.Dto.CzasPracyPerPersonDTO;
 import com.pracownikService.demo.service.CzasPracyService;
 import com.pracownikService.exception.PracownikException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -125,5 +123,14 @@ public class CzasPracyController {
                     .internalServerError()
                     .body(e.getMessage());
         }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<CzasPracyPerPersonDTO>> getCzasPracyBetweenDates(
+            @RequestParam LocalDate start,
+            @RequestParam LocalDate stop){
+
+        return ResponseEntity.ok(czasPracyService.getCzasPracyDTOBetweenDates(start,stop));
+
     }
 }

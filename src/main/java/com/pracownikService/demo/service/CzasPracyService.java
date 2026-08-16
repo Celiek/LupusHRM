@@ -1,5 +1,7 @@
 package com.pracownikService.demo.service;
 
+import com.Lupus.lupus.DTO.CzasPracyDTO;
+import com.pracownikService.demo.Dto.CzasPracyPerPersonDTO;
 import com.pracownikService.demo.entity.CzasPracy;
 import com.pracownikService.demo.entity.Pracownik;
 import com.pracownikService.demo.repo.CzasPracyRepository;
@@ -186,4 +188,16 @@ public class CzasPracyService {
         return czasPracyRepo.sumGodiznyPracyBetweenDatesForPracownik(idPracownika,start,stop);
     }
 
+    @Transactional
+    public List<CzasPracyPerPersonDTO> getCzasPracyDTOBetweenDates(LocalDate start, LocalDate stop){
+        if (start == null || stop == null){
+            throw new RuntimeException("Data początkowa i końcowa nie mogą być null !");
+        }
+
+        if(start.isAfter(stop)){
+            throw new RuntimeException("Data początkowa nie może być późniejsza niż końcowa");
+        }
+
+        return czasPracyRepo.findAllByDataPracyBetween(start,stop);
+    }
 }

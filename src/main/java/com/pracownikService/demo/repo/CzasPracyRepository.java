@@ -1,6 +1,6 @@
 package com.pracownikService.demo.repo;
 
-import com.Lupus.lupus.DTO.CzasPracyDTO;
+import com.pracownikService.demo.Dto.CzasPracyPerPersonDTO;
 import com.pracownikService.demo.entity.CzasPracy;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -64,11 +64,20 @@ public interface CzasPracyRepository extends JpaRepository<CzasPracy, Long> {
                                                    @Param("start") LocalDate start,
                                                    @Param("stop") LocalDate stop);
 
+    //zwraca czas Pracy dla pracowników pomiędzy datami
     @Query(value= """
-                SELECT p.nazwa,
-                ROUND(SUM(EXTRACT(EPOCH FROM( c.stop_pracy - c.start_pracy , INTERVAL '0')) /3600)::numeric,2) AS godziny_pracy
-                FROM czas_pracy c 
-                join pracownik p on p.id_pracownik = c.id_pracownik
+             Select new com.pracownikService.demo.Dto.CzasPracyPerPersonDTO(
+             c.id_czasPracy,
+             p.idPracownik,
+             p.nazwa,
+             c.dataPracy
+             c.startPracy,
+             c.stopPracy)
+             FROM CzasPracy c 
+             JOIN c.pracownik p
+             WHERE c.dataPracy BETWEEN :start AND :stop 
             """)
-    List<CzasPracyDTO>findCzasPracyBetweenDates();
+    List<CzasPracyPerPersonDTO> findAllByDataPracyBetween(
+            LocalDate start,
+            LocalDate stop);
 }
