@@ -17,6 +17,7 @@ public class Pracownik {
     private Long idPracownik;
     private String nazwa;
     private int wiek;
+    @Enumerated(EnumType.STRING)
     private TypPracownika typ_pracownika;
     @Enumerated(EnumType.STRING)
     private Role role;

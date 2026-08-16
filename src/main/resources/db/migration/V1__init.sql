@@ -3,6 +3,7 @@ CREATE TABLE pracownik (
     nazwa VARCHAR(255) NOT NULL,
     wiek INTEGER NOT NULL,
     typ_pracownika VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
     uprawnienia VARCHAR(255) NOT NULL,
     zdjecie VARCHAR(255),
     data_dolaczenia DATE NOT NULL,

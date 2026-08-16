@@ -1,6 +1,6 @@
 package com.pracownikService.demo.service;
 
-import com.Lupus.lupus.DTO.PracownikDto;
+import com.pracownikService.demo.Dto.PracownikDTO;
 import com.pracownikService.demo.Dto.PracownikCreateDTO;
 import com.pracownikService.demo.entity.Pracownik;
 import com.pracownikService.demo.repo.PracownikRepo;
@@ -71,7 +71,7 @@ public class PracownikService {
         }
     }
 
-    public List<PracownikDto> findAllPracownik(){
-        return repo.findAllPracownikById();
+    public List<PracownikDTO> findAllPracownikDTO(){
+        return repo.findAllPracownikDto();
     }
 }
