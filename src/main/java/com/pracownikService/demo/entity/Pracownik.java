@@ -20,6 +20,7 @@ public class Pracownik {
     @Enumerated(EnumType.STRING)
     private TypPracownika typ_pracownika;
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
     private String zdjecie; // link do zdjecia na garage
     private LocalDate data_dolaczenia;

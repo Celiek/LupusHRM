@@ -55,28 +55,30 @@ public interface CzasPracyRepository extends JpaRepository<CzasPracy, Long> {
 
     @Query(value = """
             Select COALESCE(
-                SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy))/3600,0
+                SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy))/3600),
+                0
             ) FROM czas_pracy c
-            WHERE c.id:pracownika = :id 
+            WHERE c.pracownik_id = :id 
                 AND c.data_pracy BETWEEN :start AND :stop
             """,nativeQuery = true)
     Double sumGodiznyPracyBetweenDatesForPracownik(@Param("id")Long id,
                                                    @Param("start") LocalDate start,
                                                    @Param("stop") LocalDate stop);
 
-    //zwraca czas Pracy dla pracowników pomiędzy datami
+    //zwraca czas Pracy dla pracowników pomiędzy datami w godzinach
     @Query(value= """
              Select new com.pracownikService.demo.Dto.CzasPracyPerPersonDTO(
              c.id_czasPracy,
              p.idPracownik,
              p.nazwa,
-             c.dataPracy
+             c.dataPracy,
              c.startPracy,
-             c.stopPracy)
+             c.stopPracy
+             )
              FROM CzasPracy c 
              JOIN c.pracownik p
              WHERE c.dataPracy BETWEEN :start AND :stop 
-            """)
+            """, nativeQuery = false)
     List<CzasPracyPerPersonDTO> findAllByDataPracyBetween(
             LocalDate start,
             LocalDate stop);

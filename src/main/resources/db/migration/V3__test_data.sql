@@ -1,8 +1,8 @@
 INSERT INTO pracownik
-    (nazwa, wiek, typ_pracownika, uprawnienia, role,
+    (nazwa, wiek, typ_pracownika, role,
      zdjecie, data_dolaczenia, data_rozpoczecia_pracy)
 VALUES
-    ('Juan Sanchez', 30, 'FIZYCZNY', 'PRACOWNIK', 'SZEF',
+    ('Juan Sanchez', 30, 'FIZYCZNY', 'SZEF',
      'zdjecie1.jpg', CURRENT_DATE, CURRENT_DATE);
 
 INSERT INTO app_user

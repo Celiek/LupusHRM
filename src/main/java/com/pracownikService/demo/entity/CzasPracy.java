@@ -25,8 +25,7 @@ public class CzasPracy {
     private LocalTime startPracy;
     @Column(name = "stop_pracy")
     private LocalTime stopPracy;
-
-    @ManyToOne(fetch= FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_pracownik",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "pracownik_id", nullable = false)
     private Pracownik pracownik;
 }
