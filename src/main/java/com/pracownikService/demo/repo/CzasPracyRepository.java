@@ -53,6 +53,7 @@ public interface CzasPracyRepository extends JpaRepository<CzasPracy, Long> {
     )
     Double sumGodzinyPracyBetweenDatesForPracownicy(LocalDate startPracy, LocalDate stopPracy);
 
+    //zlicza ilość przepracowanych godzin dla pracownika pomiędzy datami w godzinach po przecinku
     @Query(value = """
             Select COALESCE(
                 SUM(EXTRACT(EPOCH FROM (c.stop_pracy - c.start_pracy))/3600),

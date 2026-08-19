@@ -62,21 +62,21 @@ public class CzasPracyController {
     }
 
     @PostMapping("/updateStartPracyForPracownik")
-    public ResponseEntity<String> updateStartPracyForPracownik(Long id,
-                                                               LocalDate dataPracy,
-                                                               LocalTime startPracy){
+    public ResponseEntity<String> updateStartPracyForPracownik(@RequestParam Long id,
+                                                               @RequestParam LocalDate dataPracy,
+                                                               @RequestParam LocalTime startPracy){
         try{
             czasPracyService.updateStartPracyForPracownik(id,dataPracy,startPracy);
-            return ResponseEntity.ok("Zaktualizowano start pracy dla pracownika");
+            return ResponseEntity.ok("Zaktualizowano start pracy dla pracownika "+ id +" w dzien: "+ dataPracy + " o godzinie " + startPracy);
         } catch (Exception e){
             return ResponseEntity.status(500).body("Wystąpił błąd "+e.getMessage());
         }
     }
 
     @PostMapping("/updateStartPracyForPracownicy")
-    public ResponseEntity<String> updateStartPracyForPracownicy(List<Long> id,
-                                                               LocalDate dataPracy,
-                                                               LocalTime startPracy){
+    public ResponseEntity<String> updateStartPracyForPracownicy(@RequestParam List<Long> id,
+                                                                @RequestParam LocalDate dataPracy,
+                                                                @RequestParam LocalTime startPracy){
         try{
             czasPracyService.updateStartPracyForPracownicy(id,dataPracy,startPracy);
             return ResponseEntity.ok("Zaktualizowano start pracy dla pracownikow");
@@ -86,9 +86,9 @@ public class CzasPracyController {
     }
 
     @PostMapping("/updateStopPracyForPracownik")
-    public ResponseEntity<String> updateStopPracyForPracownik(Long idPracownika,
-                                                              LocalDate dataPracy,
-                                                              LocalTime stop){
+    public ResponseEntity<String> updateStopPracyForPracownik(@RequestParam Long idPracownika,
+                                                              @RequestParam LocalDate dataPracy,
+                                                              @RequestParam LocalTime stop){
         try {
             czasPracyService.updateStopPracyForPracownik(idPracownika,dataPracy,stop);
             return ResponseEntity.ok("Zaktualizowano stop pracy dla pracownika");
@@ -98,9 +98,9 @@ public class CzasPracyController {
     }
 
     @PostMapping("/updateStopPracyForPracownicy")
-    public ResponseEntity<String> updateStopPracyForPracownicy(List<Long> idsPracownikow,
-                                                               LocalDate dataPracy,
-                                                               LocalTime stop){
+    public ResponseEntity<String> updateStopPracyForPracownicy(@RequestParam List<Long> idsPracownikow,
+                                                               @RequestParam LocalDate dataPracy,
+                                                               @RequestParam LocalTime stop){
         try {
             czasPracyService.updateStopPracyForPracownicy(idsPracownikow, dataPracy, stop);
             return ResponseEntity.ok().body("Zaktualizowano stop pracy dla pracowników");
