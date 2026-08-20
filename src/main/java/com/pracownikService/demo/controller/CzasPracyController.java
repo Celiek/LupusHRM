@@ -32,7 +32,7 @@ public class CzasPracyController {
     }
 
     @PostMapping("/startPracyForPracownicy")
-    public ResponseEntity<String> startCzasPracyForPracownicy(List<Long> ids){
+    public ResponseEntity<String> startCzasPracyForPracownicy(@RequestParam List<Long> ids){
         try{
             czasPracyService.startCzasPracyForPracownicy(ids);
             return ResponseEntity.ok("Rozpoczęto czas pracy dla pracowników");
@@ -52,10 +52,10 @@ public class CzasPracyController {
     }
 
     @PostMapping("/stopPracyForPracownicy")
-    public ResponseEntity<String> setStopPracyForPracownicy(List<Long> idPracownikow){
+    public ResponseEntity<String> setStopPracyForPracownicy(@RequestParam List<Long> idPracownikow){
         try{
             czasPracyService.setStopPracyForPracownicy(idPracownikow);
-            return ResponseEntity.ok("Rozpoczeto czas pracy dla pracownikow");
+            return ResponseEntity.ok("Zakonczono czas pracy dla pracownikow");
         } catch (Exception e){
             return ResponseEntity.status(500).body("Wystąpił błąd " +e.getMessage());
         }
