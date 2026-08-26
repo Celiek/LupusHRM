@@ -1,6 +1,5 @@
 package com.pracownikService.demo.repo;
 
-import com.pracownikService.demo.Dto.UpdateWyplatyDTO;
 import com.pracownikService.demo.Dto.WyplatyDTO;
 import com.pracownikService.demo.entity.Wyplaty;
 import org.springframework.data.jpa.repository.Query;

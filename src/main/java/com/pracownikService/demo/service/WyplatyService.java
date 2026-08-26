@@ -9,7 +9,6 @@ import com.pracownikService.demo.repo.WyplatyRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -74,7 +73,7 @@ public class WyplatyService {
         wyplata.setDataWyplaty(dto.getDataWyplaty());
         wyplata.setDataOd(dto.getDataOd());
         wyplata.setDataDo(dto.getDataDo());
-        wyplata.setDataWyplaty(LocalDate.now());
+        wyplata.setDataWyplaty(dto.getDataWyplaty());
 
         wyplatyRepo.save(wyplata);
     }
@@ -89,8 +88,8 @@ public class WyplatyService {
         return wyplatyRepo.findAllWyplatyForPracownik(idPracownik);
     }
 
-    public List<WyplatyDTO> findAllWyplatyBetweenDates(@RequestParam("start") LocalDate start,
-                                                       @RequestParam("stop") LocalDate stop){
+    public List<WyplatyDTO> findAllWyplatyBetweenDates(LocalDate start,
+                                                       LocalDate stop){
         return wyplatyRepo.findAllWyplatyBetweenDates(start, stop);
     }
 
