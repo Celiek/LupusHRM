@@ -39,7 +39,7 @@ public interface ZaliczkiRepository {
 
     void save(Zaliczki zaliczka);
 
-    Optional<Zaliczki> findByIdZaliczkiAndPracownik_IdPracownik(
+    Optional<ZaliczkaDTO> findByIdZaliczkiAndPracownik_IdPracownik(
             Long idZaliczki,
             Long idPracownik
     );

@@ -120,10 +120,6 @@ public class ZaliczkiService {
     }
 
 
-    // ==========================================
-    // AKTUALIZACJA
-    // ==========================================
-
     // aktualizacja konkretnej zaliczki
     @Transactional
     public void updateZaliczka(
