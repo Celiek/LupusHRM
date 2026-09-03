@@ -1,4 +1,4 @@
-package com.pracownikService.demo.Dto;
+package com.pracownikService.demo.Dto.pracownik;
 
 import com.pracownikService.demo.entity.TypPracownika;
 import com.pracownikService.demo.entity.Role;

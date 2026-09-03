@@ -1,7 +1,7 @@
 package com.pracownikService.demo.controller;
 
-import com.pracownikService.demo.Dto.PracownikCreateDTO;
-import com.pracownikService.demo.Dto.PracownikDTO;
+import com.pracownikService.demo.Dto.pracownik.PracownikCreateDTO;
+import com.pracownikService.demo.Dto.pracownik.PracownikDTO;
 import com.pracownikService.demo.service.PracownikService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

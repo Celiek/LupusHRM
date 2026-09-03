@@ -1,7 +1,7 @@
 package com.pracownikService.demo.repo;
 
 
-import com.pracownikService.demo.Dto.PracownikDTO;
+import com.pracownikService.demo.Dto.pracownik.PracownikDTO;
 import com.pracownikService.demo.entity.Pracownik;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
