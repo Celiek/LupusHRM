@@ -2,10 +2,12 @@ package com.pracownikService.demo.service;
 
 import com.pracownikService.demo.Dto.pracownik.PracownikDTO;
 import com.pracownikService.demo.Dto.pracownik.PracownikCreateDTO;
+import com.pracownikService.demo.Dto.pracownik.PracownikWithIdDTO;
 import com.pracownikService.demo.entity.Pracownik;
 import com.pracownikService.demo.repo.PracownikRepo;
 import com.pracownikService.exception.PracownikError;
 import com.pracownikService.exception.PracownikException;
+import com.pracownikService.exception.PracownikNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -74,4 +76,15 @@ public class PracownikService {
     public List<PracownikDTO> findAllPracownikDTO(){
         return repo.findAllPracownikDto();
     }
+
+    public PracownikWithIdDTO findPracownikDetailsById(Long idPracownika){
+        if(idPracownika <= 0){
+            throw  new RuntimeException("Id pracownika nie może być mniejsze od 1");
+        }
+
+        return repo.findProjectedById(idPracownika)
+                .orElseThrow( () -> new PracownikNotFoundException("Pracownik o podanym id nie istnieje"));
+    }
+
+
 }

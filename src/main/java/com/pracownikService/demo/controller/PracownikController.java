@@ -2,6 +2,7 @@ package com.pracownikService.demo.controller;
 
 import com.pracownikService.demo.Dto.pracownik.PracownikCreateDTO;
 import com.pracownikService.demo.Dto.pracownik.PracownikDTO;
+import com.pracownikService.demo.Dto.pracownik.PracownikWithIdDTO;
 import com.pracownikService.demo.service.PracownikService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,4 +48,11 @@ public class PracownikController {
     public ResponseEntity<List<PracownikDTO>> listAllPracownik() {
         return ResponseEntity.ok(service.findAllPracownikDTO());
     }
+
+    //pracownik Details
+    @GetMapping("/findProjectionByPracownikId")
+    public ResponseEntity<PracownikWithIdDTO> findProjectionByPracownikId(@RequestParam Long idPracownik){
+        return ResponseEntity.ok().body(service.findPracownikDetailsById(idPracownik));
+    }
+
 }
