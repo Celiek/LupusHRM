@@ -139,7 +139,7 @@ public class WyplatyService {
             Long idPracownik) {
 
         return wyplatyRepo
-                .findByIdWyplatyAndPracownikId(
+                .findByIdWyplatyAndIdPracownik(
                         idWyplaty,
                         idPracownik
                 )

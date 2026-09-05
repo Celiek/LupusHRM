@@ -31,6 +31,12 @@ public interface PracownikRepo extends JpaRepository<Pracownik,Long> {
             """,nativeQuery = true)
     List<PracownikDTO> findAllPracownikDto();
 
-    Optional<PracownikWithIdDTO> findProjectedById(Long idPracownik);
+    Optional<PracownikWithIdDTO> findByIdPracownik(Long idPracownik);
+
+    @Query("""
+            SELECT COUNT(p)
+            FROM Pracownik p
+            """)
+    Long countPracownicy();
 
 }

@@ -18,11 +18,11 @@ public class Pracownik {
     private String nazwa;
     private int wiek;
     @Enumerated(EnumType.STRING)
-    private TypPracownika typ_pracownika;
+    private TypPracownika typPracownika;
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role;
     private String zdjecie; // link do zdjecia na garage
-    private LocalDate data_dolaczenia;
-    private LocalDate data_rozpoczecia_pracy;
+    private LocalDate dataDolaczenia;
+    private LocalDate dataRozpoczeciaPracy;
 }

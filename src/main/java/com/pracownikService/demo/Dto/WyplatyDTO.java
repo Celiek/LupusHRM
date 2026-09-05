@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class WyplatyDTO {
     private Long idWyplaty;
-    private Long idPracownik;
+    private Long pracownikId;
     private String nazwaPracownika;
     private LocalDate dataWyplaty;
     private LocalDate dataOd;

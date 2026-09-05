@@ -50,7 +50,7 @@ public class PracownikService {
 
             pracownik.setNazwa(dto.getNazwa());
             pracownik.setWiek(dto.getWiek());
-            pracownik.setTyp_pracownika(dto.getTypPracownika());
+            pracownik.setTypPracownika(dto.getTypPracownika());
 
             pracownik.setZdjecie(linkDoZdjecia);
 
@@ -82,9 +82,18 @@ public class PracownikService {
             throw  new RuntimeException("Id pracownika nie może być mniejsze od 1");
         }
 
-        return repo.findProjectedById(idPracownika)
+        return repo.findByIdPracownik(idPracownika)
                 .orElseThrow( () -> new PracownikNotFoundException("Pracownik o podanym id nie istnieje"));
     }
 
+    public Long countAllPracownicy(){
+        Long pracownicy = repo.countPracownicy();
+
+        if(pracownicy == 0){
+            return 0L;
+        }
+
+        return pracownicy;
+    }
 
 }

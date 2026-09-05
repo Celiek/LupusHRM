@@ -6,12 +6,12 @@ import com.pracownikService.demo.entity.TypPracownika;
 import java.time.LocalDate;
 
 public interface PracownikWithIdDTO {
-     Long getId();
+     Long getIdPracownik();
      String getNazwa();
      int getWiek();
-     TypPracownika getTyp_pracownika();
+     TypPracownika getTypPracownika();
      Role getRole();
      String getZdjecie(); // link do zdjecia na garage
-     LocalDate getData_dolaczenia();
-     LocalDate getData_rozpoczenia_pracy();
+     LocalDate getDataDolaczenia();
+     LocalDate getDataRozpoczeciaPracy();
 }
