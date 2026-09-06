@@ -11,6 +11,7 @@ import com.pracownikService.exception.PracownikNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -57,14 +58,20 @@ public class PracownikService {
             repo.save(pracownik);
     }
 
-    public void updateZdjecie(Long id, String zdjecie){
+    public void updateZdjecie(Long id, MultipartFile zdjecie){
         if(id <= 0 || id == null){
             throw new PracownikException(
                     PracownikError.PROVIDED_WRONG_ID,"ID pracownika nie może być mniejsze od zera !"
             );
         }
 
-        int updated = repo.updateZdjecie(id,zdjecie);
+        if(zdjecie == null || zdjecie.isEmpty()){
+            throw new RuntimeException("Nie przesłano zdjęcia ");
+        }
+
+        String sciezka = uploadService.uploadZdjecie(id,zdjecie);
+
+        int updated = repo.updateZdjecie(id,sciezka);
 
         if(updated == 0){
             throw new PracownikException(

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
-//DTO domenowe
+// DTO domenowe
 // tylko do reprezentacji pracownika w systemie
 // zawiera link w bazie danych do RustFs (s3 comaptible fileStorage)
 public class PracownikDTO { ;

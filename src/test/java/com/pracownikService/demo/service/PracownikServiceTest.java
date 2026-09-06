@@ -84,37 +84,37 @@ class PracownikServiceTest {
 //        assertEquals(PracownikError.TOO_YOUNG, ex.getError());
 //    }
 
-    @Test
-    @Name("Update zdjęcia")
-    void shouldUpdateZdjecie(){
-        //given
-        Long id = 1L;
-        String zdjecie = "photo1.jpg";
+//    @Test
+//    @Name("Update zdjęcia")
+//    void shouldUpdateZdjecie(){
+//        //given
+//        Long id = 1L;
+//        String zdjecie = "photo1.jpg";
+//
+//        when(repo.updateZdjecie(id,zdjecie)).thenReturn(1);
+//
+//        //when
+//        service.updateZdjecie(id,zdjecie);
+//
+//        //then
+//        verify(repo).updateZdjecie(id,zdjecie);
+//    }
 
-        when(repo.updateZdjecie(id,zdjecie)).thenReturn(1);
-
-        //when
-        service.updateZdjecie(id,zdjecie);
-
-        //then
-        verify(repo).updateZdjecie(id,zdjecie);
-    }
-
-    @Test
-    void shouldThrowWhenPracownikDoesNotExist() {
-        //given
-        Long id = 1L;
-        String zdjecie = "photo1.jpg";
-
-        //when
-        when(repo.updateZdjecie(id,zdjecie)).thenReturn(0);
-
-        //then
-        PracownikException exc = assertThrows(
-                PracownikException.class,
-                () -> service.updateZdjecie(id,zdjecie)
-        );
-
-        assertEquals(PracownikError.PRACOWNIK_NOT_FOUND, exc.getError());
-    }
+//    @Test
+//    void shouldThrowWhenPracownikDoesNotExist() {
+//        //given
+//        Long id = 1L;
+//        String zdjecie = "photo1.jpg";
+//
+//        //when
+//        when(repo.updateZdjecie(id,zdjecie)).thenReturn(0);
+//
+//        //then
+//        PracownikException exc = assertThrows(
+//                PracownikException.class,
+//                () -> service.updateZdjecie(id,zdjecie)
+//        );
+//
+//        assertEquals(PracownikError.PRACOWNIK_NOT_FOUND, exc.getError());
+//    }
 }

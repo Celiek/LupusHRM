@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,9 +32,11 @@ public class PracownikController {
         }
     }
 
+    //TODO
+    // poprawić dodawnaie zdjęcia do MInio i usuwanie starego
     @PostMapping("/updateZdjecie")
     public ResponseEntity<?> updateZdjecie(@RequestParam Long id,
-                                           @RequestParam String zdjecie){
+                                           @RequestParam MultipartFile zdjecie){
         try{
             service.updateZdjecie(id,zdjecie);
             return ResponseEntity.ok("Zaktualizowano zdjecie dla " + id);
@@ -44,6 +47,7 @@ public class PracownikController {
         }
     }
 
+    //zmienić PracownikDTO na
     @GetMapping("/listAll")
     public ResponseEntity<List<PracownikDTO>> listAllPracownik() {
         return ResponseEntity.ok(service.findAllPracownikDTO());
