@@ -2,6 +2,7 @@ package com.pracownikService.demo.repo;
 
 import com.pracownikService.demo.Dto.ZaliczkaDTO;
 import com.pracownikService.demo.entity.Zaliczki;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ZaliczkiRepository {
+public interface ZaliczkiRepository extends JpaRepository<Zaliczki,Long> {
 
     @Modifying
     @Query("""
@@ -34,10 +35,6 @@ public interface ZaliczkiRepository {
             """)
     int updateZaliczkiForPracownicyByDate(@Param("dataZaliczki") LocalDate dataZaliczki,
                                           @Param("kwotaZaliczki") BigDecimal kwotaZaliczki);
-
-    void saveAll(List<Zaliczki> zaliczki);
-
-    void save(Zaliczki zaliczka);
 
     Optional<ZaliczkaDTO> findByIdZaliczkiAndPracownik_IdPracownik(
             Long idZaliczki,

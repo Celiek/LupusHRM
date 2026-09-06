@@ -55,7 +55,7 @@ public class PracownikController {
         return ResponseEntity.ok().body(service.findPracownikDetailsById(idPracownik));
     }
 
-    @GetMapping("/listAll")
+    @GetMapping("/countAll")
     public ResponseEntity<Long> countAllPracownicy(){
         return ResponseEntity.ok().body(service.countAllPracownicy());
     }

@@ -58,10 +58,10 @@ public interface WyplatyRepository extends JpaRepository<Wyplaty, Long> {
     List<WyplatyDTO> findByPracownik_IdPracownikAndDataWyplaty(Long idPracownik, LocalDate dataWyplaty);
 
     //zwraca Wyplaty dla pracownika po id
-    Optional<Wyplaty> findByIdWyplatyAndIdPracownik(Long idWyplaty, Long idPracownik);
+    Optional<Wyplaty> findByIdWyplatyAndPracownikIdPracownik(Long idWyplaty, Long idPracownik);
 
     //zwraca Wyplaty dla pracownikow po idWyplaty
-    List<Wyplaty> findAllWyplatyAndPracownik_IdPracownikIn(Long idWyplaty, List<Long> idPracownika);
+    List<Wyplaty> findAllByIdWyplatyAndPracownik_IdPracownikIn(Long idWyplaty, List<Long> idPracownika);
 
 //    void saveAll(List<Wyplaty> wyplaty);
 

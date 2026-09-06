@@ -20,8 +20,8 @@ public class ZaliczkiController {
     private final ZaliczkiService zaliczkiService;
 
     @PostMapping
-    public ResponseEntity<?> createZaliczka(
-            @RequestBody ZaliczkaDTO dto) {
+    public ResponseEntity<?> createZaliczka(@RequestBody ZaliczkaDTO dto)
+    {
         try{
 
             zaliczkiService.createZaliczka(dto);
@@ -34,7 +34,8 @@ public class ZaliczkiController {
         }
     }
 
-    @PostMapping
+    //dodawanie wielu zaliczek
+    @PostMapping("/bulk")
     public ResponseEntity<?> createZaliczki(@Valid List<ZaliczkaDTO> zaliczki){
         try{
             zaliczkiService.createZaliczki(zaliczki);

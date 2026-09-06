@@ -139,7 +139,7 @@ public class WyplatyService {
             Long idPracownik) {
 
         return wyplatyRepo
-                .findByIdWyplatyAndIdPracownik(
+                .findByIdWyplatyAndPracownikIdPracownik(
                         idWyplaty,
                         idPracownik
                 )
@@ -159,7 +159,7 @@ public class WyplatyService {
             List<Long> idPracownikow) {
 
         return wyplatyRepo
-                .findAllWyplatyAndPracownik_IdPracownikIn(
+                .findAllByIdWyplatyAndPracownik_IdPracownikIn(
                         idWyplaty,
                         idPracownikow
                 );
