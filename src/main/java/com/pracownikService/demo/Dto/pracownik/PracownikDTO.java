@@ -16,7 +16,8 @@ import java.time.LocalDate;
 // DTO domenowe
 // tylko do reprezentacji pracownika w systemie
 // zawiera link w bazie danych do RustFs (s3 comaptible fileStorage)
-public class PracownikDTO { ;
+public class PracownikDTO {
+    private Long idPracownika;
     private String nazwa;
     private int wiek;
     private TypPracownika typ_pracownika;

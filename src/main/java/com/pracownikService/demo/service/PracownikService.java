@@ -2,12 +2,15 @@ package com.pracownikService.demo.service;
 
 import com.pracownikService.demo.Dto.pracownik.PracownikDTO;
 import com.pracownikService.demo.Dto.pracownik.PracownikCreateDTO;
+import com.pracownikService.demo.Dto.pracownik.PracownikUpdateDTO;
 import com.pracownikService.demo.Dto.pracownik.PracownikWithIdDTO;
 import com.pracownikService.demo.entity.Pracownik;
+import com.pracownikService.demo.entity.TypPracownika;
 import com.pracownikService.demo.repo.PracownikRepo;
 import com.pracownikService.exception.PracownikError;
 import com.pracownikService.exception.PracownikException;
 import com.pracownikService.exception.PracownikNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,6 +104,49 @@ public class PracownikService {
         }
 
         return pracownicy;
+    }
+
+    @Transactional
+    public void updatePracownik(
+            Long idPracownik,
+            PracownikUpdateDTO dto
+        ) {
+            Pracownik pracownik = repo.findById(idPracownik)
+                    .orElseThrow(() ->
+                            new RuntimeException(
+                                    "Nie znaleziono pracownika o id: " + idPracownik
+                            )
+                    );
+
+            if (dto.getNazwa() != null) {
+                pracownik.setNazwa(dto.getNazwa());
+            }
+
+            if (dto.getWiek() != null) {
+                pracownik.setWiek(dto.getWiek());
+            }
+
+            if (dto.getTypPracownika() != null) {
+                pracownik.setTypPracownika(dto.getTypPracownika());
+            }
+
+            if (dto.getRole() != null) {
+                pracownik.setRole(dto.getRole());
+            }
+
+            if (dto.getZdjecie() != null) {
+                pracownik.setZdjecie(dto.getZdjecie());
+            }
+
+            if (dto.getDataDolaczenia() != null) {
+                pracownik.setDataDolaczenia(dto.getDataDolaczenia());
+            }
+
+            if (dto.getDataRozpoczeciaPracy() != null) {
+                pracownik.setDataRozpoczeciaPracy(
+                        dto.getDataRozpoczeciaPracy()
+                );
+            }
     }
 
 }
